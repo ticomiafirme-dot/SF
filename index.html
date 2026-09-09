@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SF PARFUMS — Perfumes Árabes, Brand Collection, Importados e Victoria's Secret</title>
+<meta name="description" content="SF PARFUMS — perfumaria em Santa Fé do Sul. Perfumes árabes, Brand Collection, importados originais e Victoria's Secret. Entrega grátis na região e pedido direto pelo WhatsApp.">
+<meta name="theme-color" content="#c9a227">
+<meta property="og:title" content="SF PARFUMS — Perfumaria">
+<meta property="og:description" content="Perfumes árabes, Brand Collection, importados e Victoria's Secret. Entrega grátis na região.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Bootstrap 5.3 — base de grid, utilitários, offcanvas e modais -->
+<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='84' font-family='Georgia,serif' fill='%23c9a227'>SF</text></svg>">
+</head>
+<body>
+
+<!-- ===================================================== ÍCONES (sprite) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gradOuro" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#f0d489"/>
+      <stop offset="35%"  stop-color="#c9a227"/>
+      <stop offset="62%"  stop-color="#a8801a"/>
+      <stop offset="100%" stop-color="#f5dc9c"/>
+    </linearGradient>
+  </defs>
+
+  <symbol id="logoSF" viewBox="0 0 210 96">
+    <text x="105" y="60" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="66" font-weight="700" fill="url(#gradOuro)" letter-spacing="1">SF</text>
+    <text x="105" y="86" text-anchor="middle" font-family="Jost,Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="currentColor" letter-spacing="7.5">PARFUMS</text>
+  </symbol>
+
+  <symbol id="monograma" viewBox="0 0 120 70">
+    <text x="60" y="55" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="58" font-weight="700" fill="currentColor">SF</text>
+  </symbol>
+
+  <symbol id="ic-busca" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></symbol>
+  <symbol id="ic-carrinho" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+  <symbol id="ic-sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M19.1 4.9l-1.7 1.7M6.6 17.4l-1.7 1.7"/></symbol>
+  <symbol id="ic-lua" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="ic-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="ic-fechar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="ic-mais" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="ic-lixo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol>
+  <symbol id="ic-zap" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-1.7-.9-2.9-1.6-4-3.5-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.6s-.7-1.6-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.9 5.1 2.2.9 3 1 4.1.8.7-.1 2.1-.8 2.4-1.7.3-.9.3-1.6.2-1.7-.1-.2-.3-.3-.6-.4z"/><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></symbol>
+  <symbol id="ic-insta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="2.8" y="2.8" width="18.4" height="18.4" rx="5.4"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.4" cy="6.6" r="1.15" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="ic-topo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+</svg>
+
+<!-- ================================================= AVISO DEMONSTRAÇÃO -->
+<div class="faixa-demo" id="faixaDemo" hidden>
+  <span id="faixaDemoTexto">Catálogo em modo demonstração — os produtos exibidos são exemplos.</span>
+  <button type="button" aria-label="Fechar aviso" onclick="this.parentElement.hidden=true">&times;</button>
+</div>
+
+<!-- ========================================================== BARRA TOPO -->
+<div class="barra-topo">
+  <div class="container">
+    <span>🚚 Entrega <b>grátis</b> em Santa Fé do Sul e região</span>
+    <span>💬 Pedido direto pelo WhatsApp</span>
+    <span>✨ Perfumes selecionados</span>
+  </div>
+</div>
+
+<!-- ============================================================== HEADER -->
+<header class="header" id="header">
+  <div class="container">
+    <div class="header-linha">
+
+      <a href="#inicio" class="logo" aria-label="SF PARFUMS — página inicial">
+        <svg viewBox="0 0 210 96" role="img"><use href="#logoSF"></use></svg>
+      </a>
+
+      <nav class="nav-desktop" aria-label="Navegação principal">
+        <a href="#inicio" class="link-secao ativo" data-secao="inicio">Início</a>
+        <a href="#catalogo" class="link-cat" data-cat="arabes">Árabes</a>
+        <a href="#catalogo" class="link-cat" data-cat="brand-collection">Brand Collection</a>
+        <a href="#catalogo" class="link-cat" data-cat="importados">Importados</a>
+        <a href="#catalogo" class="link-cat" data-cat="victorias-secret">Victoria's Secret</a>
+        <a href="#catalogo" class="link-cat" data-cat="todos">Todos os produtos</a>
+      </nav>
+
+      <div class="busca-header d-none d-lg-flex">
+        <svg aria-hidden="true"><use href="#ic-busca"></use></svg>
+        <input type="search" id="buscaHeader" placeholder="Buscar perfume..." aria-label="Buscar perfume" autocomplete="off">
+      </div>
+
+      <div class="acoes">
+        <a href="#" id="linkInstagramHeader" class="icone-btn insta d-none d-sm-grid" target="_blank" rel="noopener" aria-label="Instagram da SF PARFUMS" title="Siga @sf_parfums no Instagram">
+          <svg aria-hidden="true"><use href="#ic-insta"></use></svg>
+        </a>
+
+        <button type="button" class="icone-btn" id="btnTema" aria-label="Alternar modo claro e escuro" title="Alternar tema">
+          <svg id="iconeTema" aria-hidden="true"><use href="#ic-lua"></use></svg>
+        </button>
+
+        <button type="button" class="icone-btn" id="btnCarrinho" data-bs-toggle="offcanvas" data-bs-target="#carrinhoDrawer" aria-label="Abrir carrinho">
+          <svg aria-hidden="true"><use href="#ic-carrinho"></use></svg>
+          <span class="badge-carrinho" id="badgeCarrinho" hidden>0</span>
+        </button>
+
+        <button type="button" class="icone-btn btn-menu d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#menuDrawer" aria-label="Abrir menu">
+          <svg aria-hidden="true"><use href="#ic-menu"></use></svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+<!-- ================================================= MENU MOBILE (offcanvas) -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="menuDrawer" aria-labelledby="menuDrawerTitulo" style="width:min(88vw,360px)">
+  <div class="drawer-topo">
+    <svg class="marca" viewBox="0 0 210 96" role="img" aria-labelledby="menuDrawerTitulo"><use href="#logoSF"></use></svg>
+    <span class="sr-only" id="menuDrawerTitulo">Menu SF PARFUMS</span>
+    <button type="button" class="icone-btn" data-bs-dismiss="offcanvas" aria-label="Fechar menu">
+      <svg aria-hidden="true"><use href="#ic-fechar"></use></svg>
+    </button>
+  </div>
+  <div class="drawer-corpo">
+    <div class="drawer-busca">
+      <svg aria-hidden="true"><use href="#ic-busca"></use></svg>
+      <input type="search" id="buscaDrawer" placeholder="Buscar perfume..." aria-label="Buscar perfume" autocomplete="off">
+    </div>
+    <a href="#inicio" class="link-nav link-secao" data-bs-dismiss="offcanvas"><span>Início</span><span class="emoji">🏠</span></a>
+    <a href="#catalogo" class="link-nav link-cat" data-cat="arabes" data-bs-dismiss="offcanvas"><span>Árabes</span><span class="emoji">🕌</span></a>
+    <a href="#catalogo" class="link-nav link-cat" data-cat="brand-collection" data-bs-dismiss="offcanvas"><span>Brand Collection</span><span class="emoji">🎯</span></a>
+    <a href="#catalogo" class="link-nav link-cat" data-cat="importados" data-bs-dismiss="offcanvas"><span>Importados</span><span class="emoji">✈️</span></a>
+    <a href="#catalogo" class="link-nav link-cat" data-cat="victorias-secret" data-bs-dismiss="offcanvas"><span>Victoria's Secret</span><span class="emoji">💗</span></a>
+    <a href="#catalogo" class="link-nav link-cat" data-cat="todos" data-bs-dismiss="offcanvas"><span>Todos os produtos</span><span class="emoji">✨</span></a>
+  </div>
+  <div class="drawer-rodape">
+    <a href="#" id="linkInstagramMenu" class="btn btn-contorno btn-bloco" target="_blank" rel="noopener">
+      <svg width="17" height="17" aria-hidden="true"><use href="#ic-insta"></use></svg> Instagram
+    </a>
+    <button type="button" class="btn btn-ouro btn-bloco" data-bs-dismiss="offcanvas" data-bs-toggle="offcanvas" data-bs-target="#carrinhoDrawer">
+      <svg width="17" height="17" aria-hidden="true"><use href="#ic-carrinho"></use></svg> Ver carrinho
+    </button>
+  </div>
+</div>
+
+<main>
+
+<!-- ================================================================ HERO -->
+<section class="hero" id="inicio">
+  <div class="container">
+    <span class="hero-selo">✦ Perfumaria SF PARFUMS ✦</span>
+    <h1>O perfume certo<br>deixa uma <em class="texto-ouro">assinatura</em>.</h1>
+    <p class="sub">Árabes, Brand Collection, importados e Victoria's Secret reunidos em um só lugar. Escolha, monte seu pedido e finalize em segundos pelo WhatsApp.</p>
+    <div class="hero-cta">
+      <a href="#catalogo" class="btn btn-ouro btn-lg link-cat" data-cat="todos">Ver todos os produtos</a>
+      <a href="#categorias" class="btn btn-contorno btn-lg">Explorar categorias</a>
+    </div>
+    <div class="hero-provas">
+      <div><strong class="texto-ouro" id="statTotal">0</strong><span>Perfumes</span></div>
+      <div><strong class="texto-ouro">4</strong><span>Categorias</span></div>
+      <div><strong class="texto-ouro">5</strong><span>Cidades c/ frete grátis</span></div>
+      <div><strong class="texto-ouro">2</strong><span>Vendedores</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================== CATEGORIAS -->
+<section class="secao" id="categorias">
+  <div class="container">
+    <div class="secao-topo">
+      <span class="secao-etiqueta">Nossas linhas</span>
+      <h2>Quatro coleções, um só padrão</h2>
+      <p>Cada linha foi selecionada para um tipo de cliente. Escolha a sua e explore o catálogo completo.</p>
+      <div class="divisor-ouro"></div>
+    </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4" id="gradeCategorias"></div>
+  </div>
+</section>
+
+<!-- ============================================================ DESTAQUES -->
+<section class="secao alt" id="destaques">
+  <div class="container">
+    <div class="secao-topo">
+      <span class="secao-etiqueta">Seleção da casa</span>
+      <h2>Destaques da semana</h2>
+      <p>Os perfumes que mais saem — escolhidos a dedo pela equipe SF PARFUMS.</p>
+      <div class="divisor-ouro"></div>
+    </div>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-3 g-md-4" id="gradeDestaques"></div>
+  </div>
+</section>
+
+<!-- ============================================================= CATÁLOGO -->
+<section class="secao" id="catalogo">
+  <div class="container">
+    <div class="secao-topo">
+      <span class="secao-etiqueta">Catálogo completo</span>
+      <h2 id="tituloCatalogo">Todos os produtos</h2>
+      <p id="subtituloCatalogo">Use a busca e os filtros para achar seu perfume em segundos.</p>
+      <div class="divisor-ouro"></div>
+    </div>
+
+    <div class="barra-filtros">
+      <div class="chips" id="chipsCategorias" role="group" aria-label="Filtrar por categoria"></div>
+      <div class="ferramentas">
+        <div class="busca-catalogo">
+          <svg aria-hidden="true"><use href="#ic-busca"></use></svg>
+          <input type="search" id="buscaCatalogo" placeholder="Buscar por nome..." aria-label="Buscar produto por nome" autocomplete="off">
+          <button type="button" class="limpar" id="limparBusca" aria-label="Limpar busca" hidden>&times;</button>
+        </div>
+        <select class="ordenar" id="ordenar" aria-label="Ordenar produtos">
+          <option value="padrao">Ordenar: Relevância</option>
+          <option value="menor">Menor preço</option>
+          <option value="maior">Maior preço</option>
+          <option value="az">Nome (A–Z)</option>
+          <option value="za">Nome (Z–A)</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="contador-result" id="contadorResultados"></p>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-3 g-md-4" id="gradeProdutos"></div>
+  </div>
+</section>
+
+<!-- ============================================================ VANTAGENS -->
+<section class="secao alt">
+  <div class="container">
+    <div class="secao-topo">
+      <span class="secao-etiqueta">Por que comprar aqui</span>
+      <h2>Simples do começo ao fim</h2>
+      <div class="divisor-ouro"></div>
+    </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+      <div class="col"><div class="vantagem"><div class="ico">🚚</div><h3>Entrega grátis na região</h3><p>Santa Fé do Sul, Três Fronteiras, Rubinéia, Santa Rita e Santa Clara sem custo de frete.</p></div></div>
+      <div class="col"><div class="vantagem"><div class="ico">💬</div><h3>Pedido pelo WhatsApp</h3><p>Monte o carrinho, escolha seu vendedor e o pedido chega pronto, com todos os dados.</p></div></div>
+      <div class="col"><div class="vantagem"><div class="ico">💳</div><h3>PIX, débito e crédito</h3><p>Você informa a forma de pagamento no pedido e acerta direto com o vendedor.</p></div></div>
+      <div class="col"><div class="vantagem"><div class="ico">🏪</div><h3>Retirada disponível</h3><p>Prefere buscar? Escolha retirada no checkout e combine o horário pelo WhatsApp.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ FAIXA CTA -->
+<section class="secao">
+  <div class="container">
+    <div class="faixa-cta">
+      <h2>Pronto para escolher o seu?</h2>
+      <p>Monte seu pedido agora. Em poucos cliques ele chega pronto no WhatsApp do vendedor.</p>
+      <a href="#catalogo" class="btn btn-lg link-cat" data-cat="todos">Ver catálogo completo</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================== RODAPÉ -->
+<footer class="rodape">
+  <div class="container">
+    <div class="rodape-grade">
+      <div class="marca-rodape">
+        <svg viewBox="0 0 210 96" role="img" aria-label="SF PARFUMS"><use href="#logoSF"></use></svg>
+        <p>Perfumaria em Santa Fé do Sul. Árabes, Brand Collection, importados e Victoria's Secret com atendimento próximo e pedido direto pelo WhatsApp.</p>
+        <div class="sociais">
+          <a href="#" id="linkInstagramRodape" class="social ig" target="_blank" rel="noopener" aria-label="Instagram da SF PARFUMS" title="@sf_parfums">
+            <svg aria-hidden="true"><use href="#ic-insta"></use></svg>
+          </a>
+          <a href="#" id="linkZapRodape" class="social" target="_blank" rel="noopener" aria-label="WhatsApp SF PARFUMS">
+            <svg aria-hidden="true"><use href="#ic-zap"></use></svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h4>Categorias</h4>
+        <ul>
+          <li><a href="#catalogo" class="link-cat" data-cat="arabes">Árabes</a></li>
+          <li><a href="#catalogo" class="link-cat" data-cat="brand-collection">Brand Collection</a></li>
+          <li><a href="#catalogo" class="link-cat" data-cat="importados">Importados</a></li>
+          <li><a href="#catalogo" class="link-cat" data-cat="victorias-secret">Victoria's Secret</a></li>
+          <li><a href="#catalogo" class="link-cat" data-cat="todos">Todos os produtos</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Entrega grátis</h4>
+        <ul id="listaCidadesRodape"></ul>
+      </div>
+
+      <div>
+        <h4>Fale com a gente</h4>
+        <ul id="listaVendedoresRodape"></ul>
+        <ul style="margin-top:14px">
+          <li><a href="#" id="linkInstagramLista" target="_blank" rel="noopener">Instagram <span id="instaHandle"></span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rodape-base">
+      <span>&copy; <span id="ano"></span> SF PARFUMS. Todos os direitos reservados.</span>
+      <span>Demais cidades: frete a combinar com o vendedor.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ======================================================= FLUTUANTES -->
+<div class="flutuante">
+  <button type="button" class="fab topo" id="btnTopo" aria-label="Voltar ao topo">
+    <svg aria-hidden="true"><use href="#ic-topo"></use></svg>
+  </button>
+  <a href="#" id="fabZap" class="fab zap" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+    <svg aria-hidden="true"><use href="#ic-zap"></use></svg>
+  </a>
+</div>
+
+<!-- ============================================= CARRINHO (offcanvas) -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="carrinhoDrawer" aria-labelledby="carrinhoTitulo">
+  <div class="carrinho-topo">
+    <h2 id="carrinhoTitulo">
+      <svg width="20" height="20" aria-hidden="true"><use href="#ic-carrinho"></use></svg>
+      Seu carrinho
+      <span class="qtd-itens" id="carrinhoQtdItens" hidden>0</span>
+    </h2>
+    <button type="button" class="icone-btn" data-bs-dismiss="offcanvas" aria-label="Fechar carrinho">
+      <svg aria-hidden="true"><use href="#ic-fechar"></use></svg>
+    </button>
+  </div>
+  <div id="carrinhoConteudo" class="d-flex flex-column flex-grow-1" style="min-height:0"></div>
+</div>
+
+<!-- ================================================ MODAL: DETALHE PRODUTO -->
+<div class="modal fade" id="modalProduto" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <button type="button" class="fechar-modal" data-bs-dismiss="modal" aria-label="Fechar">
+        <svg aria-hidden="true"><use href="#ic-fechar"></use></svg>
+      </button>
+      <div class="modal-body" id="modalProdutoCorpo"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================= MODAL: CHECKOUT -->
+<div class="modal fade" id="modalCheckout" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <button type="button" class="fechar-modal" data-bs-dismiss="modal" aria-label="Fechar">
+        <svg aria-hidden="true"><use href="#ic-fechar"></use></svg>
+      </button>
+
+      <div class="checkout-topo">
+        <h2 id="checkoutTitulo">Finalizar pedido</h2>
+        <p id="checkoutSubtitulo">Leva menos de um minuto. Nenhum pagamento é feito no site.</p>
+      </div>
+
+      <div class="passos" id="passos">
+        <div class="passo atual" data-passo="1"><div class="barra"></div><span class="rot">1. Seus dados</span></div>
+        <div class="passo" data-passo="2"><div class="barra"></div><span class="rot">2. Entrega</span></div>
+        <div class="passo" data-passo="3"><div class="barra"></div><span class="rot">3. Pagamento</span></div>
+        <div class="passo" data-passo="4"><div class="barra"></div><span class="rot">4. Revisão</span></div>
+      </div>
+
+      <div class="modal-body checkout-corpo">
+        <form id="formCheckout" novalidate>
+
+          <!-- ETAPA 1 — DADOS + CIDADE -->
+          <section class="etapa ativa" data-etapa="1">
+            <div class="campo" id="campoNome">
+              <label for="inNome">Nome completo <span class="obrig">*</span></label>
+              <input type="text" id="inNome" name="nome" placeholder="Ex.: Maria Silva Souza" autocomplete="name" required>
+              <p class="erro-msg">Informe seu nome completo (nome e sobrenome).</p>
+            </div>
+
+            <div class="campo" id="campoCidade">
+              <label for="inCidade">Sua cidade <span class="obrig">*</span></label>
+              <select id="inCidade" name="cidade" required>
+                <option value="">Selecione sua cidade...</option>
+              </select>
+              <p class="erro-msg">Selecione sua cidade para calcularmos a entrega.</p>
+              <p class="dica">Cidades atendidas com <b>entrega gratuita</b> aparecem primeiro na lista.</p>
+            </div>
+
+            <div class="campo" id="campoCidadeOutra" hidden>
+              <label for="inCidadeOutra">Qual é a sua cidade? <span class="obrig">*</span></label>
+              <input type="text" id="inCidadeOutra" name="cidadeOutra" placeholder="Ex.: Jales - SP" autocomplete="address-level2">
+              <p class="erro-msg">Informe o nome da sua cidade.</p>
+            </div>
+
+            <div class="alerta-box ok" id="avisoFreteGratis" hidden>
+              <span class="ic">✅</span>
+              <div><b>Entrega grátis para sua cidade!</b><br>Você não paga frete em <span id="nomeCidadeGratis"></span>.</div>
+            </div>
+
+            <div class="alerta-box aviso" id="avisoFreteCombinar" hidden>
+              <span class="ic">⚠️</span>
+              <div><b>Frete a combinar.</b><br>Para cidades fora da nossa região o valor do frete é combinado diretamente com o vendedor pelo WhatsApp. Ele verifica a melhor opção de envio, inclusive pelos Correios.</div>
+            </div>
+          </section>
+
+          <!-- ETAPA 2 — ENTREGA / RETIRADA + ENDEREÇO -->
+          <section class="etapa" data-etapa="2">
+            <div class="campo" id="campoModalidade">
+              <label>Como você quer receber? <span class="obrig">*</span></label>
+              <div class="grupo-opcoes" id="grupoModalidade">
+                <label class="opcao">
+                  <input type="radio" name="modalidade" value="entrega" required>
+                  <span class="marcador"></span>
+                  <span class="emoji">🚚</span>
+                  <span class="conteudo">
+                    <span class="titulo">Entrega <span class="tag gratis" id="tagEntrega">Grátis</span></span>
+                    <span class="sub" id="subEntrega">Entregamos no seu endereço.</span>
+                  </span>
+                </label>
+                <label class="opcao">
+                  <input type="radio" name="modalidade" value="retirada">
+                  <span class="marcador"></span>
+                  <span class="emoji">🏪</span>
+                  <span class="conteudo">
+                    <span class="titulo">Retirada</span>
+                    <span class="sub">Você combina local e horário com o vendedor pelo WhatsApp.</span>
+                  </span>
+                </label>
+              </div>
+              <p class="erro-msg">Escolha entre entrega e retirada.</p>
+            </div>
+
+            <div id="blocoEndereco" hidden>
+              <div class="detalhe-sep" style="margin-bottom:18px"></div>
+
+              <div class="campo" id="campoCep">
+                <label for="inCep">CEP <span class="obrig">*</span></label>
+                <div class="campo-cep">
+                  <input type="text" id="inCep" name="cep" placeholder="00000-000" inputmode="numeric" maxlength="9" autocomplete="postal-code">
+                  <button type="button" class="btn btn-contorno" id="btnBuscarCep">Buscar</button>
+                </div>
+                <p class="erro-msg">Informe um CEP válido com 8 dígitos.</p>
+                <p class="dica" id="dicaCep">Preenchemos rua, bairro, cidade e estado automaticamente.</p>
+              </div>
+
+              <div class="campo" id="campoRua">
+                <label for="inRua">Rua / Logradouro <span class="obrig">*</span></label>
+                <input type="text" id="inRua" name="rua" placeholder="Ex.: Avenida Navarro de Andrade" autocomplete="address-line1">
+                <p class="erro-msg">Informe a rua.</p>
+              </div>
+
+              <div class="campo-duplo">
+                <div class="campo" id="campoNumero">
+                  <label for="inNumero">Número <span class="obrig">*</span></label>
+                  <input type="text" id="inNumero" name="numero" placeholder="Ex.: 1234" inputmode="numeric">
+                  <p class="erro-msg">Informe o número.</p>
+                </div>
+                <div class="campo" id="campoBairro">
+                  <label for="inBairro">Bairro <span class="obrig">*</span></label>
+                  <input type="text" id="inBairro" name="bairro" placeholder="Ex.: Centro">
+                  <p class="erro-msg">Informe o bairro.</p>
+                </div>
+              </div>
+
+              <div class="campo-duplo">
+                <div class="campo" id="campoUf">
+                  <label for="inUf">Estado</label>
+                  <input type="text" id="inUf" name="uf" placeholder="SP" maxlength="2">
+                </div>
+                <div class="campo" id="campoComplemento">
+                  <label for="inComplemento">Complemento</label>
+                  <input type="text" id="inComplemento" name="complemento" placeholder="Apto, bloco, referência...">
+                </div>
+              </div>
+            </div>
+
+            <div class="alerta-box info" id="avisoRetirada" hidden>
+              <span class="ic">🏪</span>
+              <div>Você escolheu <b>retirada</b>. Não precisamos do seu endereço — o local e o horário são combinados no WhatsApp.</div>
+            </div>
+          </section>
+
+          <!-- ETAPA 3 — PAGAMENTO -->
+          <section class="etapa" data-etapa="3">
+            <div class="campo" id="campoPagamento">
+              <label>Forma de pagamento <span class="obrig">*</span></label>
+              <div class="grupo-opcoes">
+                <label class="opcao">
+                  <input type="radio" name="pagamento" value="PIX" required>
+                  <span class="marcador"></span><span class="emoji">⚡</span>
+                  <span class="conteudo"><span class="titulo">PIX</span><span class="sub">A chave é enviada pelo vendedor no WhatsApp.</span></span>
+                </label>
+                <label class="opcao">
+                  <input type="radio" name="pagamento" value="Cartão de débito">
+                  <span class="marcador"></span><span class="emoji">💳</span>
+                  <span class="conteudo"><span class="titulo">Cartão de débito</span><span class="sub">Pagamento na entrega ou na retirada.</span></span>
+                </label>
+                <label class="opcao">
+                  <input type="radio" name="pagamento" value="Cartão de crédito">
+                  <span class="marcador"></span><span class="emoji">💳</span>
+                  <span class="conteudo"><span class="titulo">Cartão de crédito</span><span class="sub">Condições combinadas com o vendedor.</span></span>
+                </label>
+              </div>
+              <p class="erro-msg">Selecione uma forma de pagamento.</p>
+            </div>
+            <div class="alerta-box info">
+              <span class="ic">🔒</span>
+              <div>Nenhum pagamento é processado neste site. A forma escolhida vai apenas informada no pedido enviado ao vendedor.</div>
+            </div>
+          </section>
+
+          <!-- ETAPA 4 — REVISÃO -->
+          <section class="etapa" data-etapa="4">
+            <div class="alerta-box info">
+              <span class="ic">👀</span>
+              <div>Confira tudo antes de enviar. Toque em <b>Editar</b> para corrigir qualquer informação.</div>
+            </div>
+            <div class="resumo-caixa">
+              <div class="resumo-cab"><span>🛒 Produtos</span><button type="button" data-ir="carrinho">Editar carrinho</button></div>
+              <div class="resumo-corpo">
+                <ul class="resumo-produtos" id="revProdutos"></ul>
+                <div class="resumo-linha destaque"><span class="rot">Total dos produtos</span><span class="val" id="revTotal">R$ 0,00</span></div>
+              </div>
+            </div>
+            <div class="resumo-caixa">
+              <div class="resumo-cab"><span>👤 Cliente e entrega</span><button type="button" data-ir="1">Editar</button></div>
+              <div class="resumo-corpo" id="revCliente"></div>
+            </div>
+            <div class="resumo-caixa">
+              <div class="resumo-cab"><span>💳 Pagamento</span><button type="button" data-ir="3">Editar</button></div>
+              <div class="resumo-corpo" id="revPagamento"></div>
+            </div>
+          </section>
+
+        </form>
+      </div>
+
+      <div class="checkout-rodape">
+        <button type="button" class="btn btn-neutro" id="btnVoltarEtapa">Voltar</button>
+        <button type="button" class="btn btn-ouro" id="btnAvancarEtapa">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================= MODAL: VENDEDOR -->
+<div class="modal fade" id="modalVendedor" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <button type="button" class="fechar-modal" data-bs-dismiss="modal" aria-label="Fechar">
+        <svg aria-hidden="true"><use href="#ic-fechar"></use></svg>
+      </button>
+      <div class="checkout-topo" style="padding-bottom:6px">
+        <h2>Com qual vendedor você deseja falar?</h2>
+        <p>Seu pedido já está pronto. Escolha o atendente e o WhatsApp abre com tudo preenchido.</p>
+      </div>
+      <div class="modal-body checkout-corpo" style="padding-top:16px">
+        <div class="vendedores" id="listaVendedores"></div>
+        <div class="alerta-box info" style="margin:16px 0 0">
+          <span class="ic">💬</span>
+          <div>Ao escolher, o WhatsApp abre com a mensagem do pedido já escrita. É só enviar.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================== TOASTS -->
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="true"></div>
+
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/produtos.js"></script>
+<script src="js/loja.js"></script>
+<script src="js/carrinho.js"></script>
+<script src="js/checkout.js"></script>
+</body>
+</html>

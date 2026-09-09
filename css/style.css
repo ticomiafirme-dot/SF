@@ -1,0 +1,780 @@
+/* =============================================================================
+   SF PARFUMS — Folha de estilo principal
+   Identidade: branco + dourado | Modo claro e modo escuro
+============================================================================= */
+
+/* ------------------------------------------------------- 1. TOKENS / TEMA */
+:root{
+  /* Dourado da marca */
+  --ouro:#c9a227;
+  --ouro-claro:#e8c766;
+  --ouro-escuro:#9c7c14;
+  --ouro-grad:linear-gradient(135deg,#e8c766 0%,#c9a227 38%,#a8801a 68%,#f0d489 100%);
+  --ouro-suave:rgba(201,162,39,.12);
+  --ouro-borda:rgba(201,162,39,.32);
+
+  /* Superfícies e texto — MODO CLARO */
+  --bg:#ffffff;
+  --bg-alt:#faf8f3;
+  --bg-fundo:#f4f1e9;
+  --superficie:#ffffff;
+  --superficie-2:#faf8f3;
+  --texto:#16150f;
+  --texto-suave:#5f5b50;
+  --texto-fraco:#8d887b;
+  --borda:#e9e3d5;
+  --borda-forte:#d8cfba;
+  --sombra:0 1px 2px rgba(22,21,15,.05), 0 8px 28px rgba(22,21,15,.06);
+  --sombra-alta:0 18px 50px rgba(22,21,15,.14);
+  --overlay:rgba(22,21,15,.5);
+
+  --sucesso:#1f8a51;
+  --alerta:#b0721a;
+  --erro:#c0392b;
+  --zap:#25d366;
+
+  --raio:14px;
+  --raio-sm:9px;
+  --raio-lg:22px;
+  --maxw:1240px;
+  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --sans:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --t:260ms cubic-bezier(.4,0,.2,1);
+}
+
+[data-tema="escuro"]{
+  --ouro:#e0be5a;
+  --ouro-claro:#f2dc9a;
+  --ouro-escuro:#b8952f;
+  --ouro-grad:linear-gradient(135deg,#f2dc9a 0%,#e0be5a 38%,#b8952f 68%,#f7e9bb 100%);
+  --ouro-suave:rgba(224,190,90,.13);
+  --ouro-borda:rgba(224,190,90,.34);
+
+  --bg:#0b0b0c;
+  --bg-alt:#121214;
+  --bg-fundo:#080809;
+  --superficie:#171719;
+  --superficie-2:#1e1e21;
+  --texto:#f6f3ea;
+  --texto-suave:#b2ada1;
+  --texto-fraco:#837f75;
+  --borda:#2b2b30;
+  --borda-forte:#3d3d44;
+  --sombra:0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.45);
+  --sombra-alta:0 18px 50px rgba(0,0,0,.6);
+  --overlay:rgba(0,0,0,.68);
+}
+
+/* --------------------------------------------------------------- 2. BASE */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:96px;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--texto);
+  line-height:1.6;
+  overflow-x:hidden;
+  transition:background var(--t),color var(--t);
+}
+body.trava-scroll{overflow:hidden}
+img{max-width:100%;display:block}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+a{color:inherit;text-decoration:none}
+input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3,h4{margin:0;font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:.01em}
+p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+:focus-visible{outline:2px solid var(--ouro);outline-offset:3px;border-radius:4px}
+::selection{background:var(--ouro);color:#fff}
+
+.container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:20px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.texto-ouro{background:var(--ouro-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+
+/* ------------------------------------------------------------ 3. BOTÕES */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:13px 26px;border-radius:999px;
+  font-size:.83rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  transition:transform var(--t),box-shadow var(--t),background var(--t),color var(--t),border-color var(--t),opacity var(--t);
+  white-space:nowrap;line-height:1;
+}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+.btn-ouro{background:var(--ouro-grad);color:#12100a;box-shadow:0 4px 18px rgba(201,162,39,.32)}
+.btn-ouro:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 28px rgba(201,162,39,.45)}
+[data-tema="escuro"] .btn-ouro{color:#0f0e08}
+
+.btn-contorno{border:1.5px solid var(--ouro-borda);color:var(--ouro);background:transparent}
+.btn-contorno:hover:not(:disabled){background:var(--ouro-suave);border-color:var(--ouro);transform:translateY(-2px)}
+
+.btn-neutro{border:1.5px solid var(--borda-forte);color:var(--texto-suave);background:var(--superficie)}
+.btn-neutro:hover:not(:disabled){border-color:var(--texto-suave);color:var(--texto)}
+
+.btn-zap{background:var(--zap);color:#062e14;box-shadow:0 4px 18px rgba(37,211,102,.3)}
+.btn-zap:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 28px rgba(37,211,102,.42)}
+
+.btn-bloco{width:100%}
+.btn-sm{padding:10px 18px;font-size:.72rem}
+.btn-lg{padding:16px 36px;font-size:.88rem}
+
+/* --------------------------------------------------- 4. AVISO DEMONSTRAÇÃO */
+.faixa-demo{
+  background:repeating-linear-gradient(45deg,#b0721a,#b0721a 12px,#976113 12px,#976113 24px);
+  color:#fff;font-size:.78rem;font-weight:600;letter-spacing:.03em;
+  padding:9px 44px 9px 16px;text-align:center;position:relative;z-index:60;
+}
+.faixa-demo button{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1.15rem;line-height:1;opacity:.85;padding:4px 8px}
+.faixa-demo button:hover{opacity:1}
+
+/* --------------------------------------------------------- 5. BARRA TOPO */
+.barra-topo{
+  background:var(--texto);color:var(--bg);
+  font-size:.74rem;letter-spacing:.11em;text-transform:uppercase;font-weight:500;
+  padding:9px 0;overflow:hidden;
+}
+[data-tema="escuro"] .barra-topo{background:var(--ouro-grad);color:#12100a}
+.barra-topo .container{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;text-align:center}
+.barra-topo span{display:inline-flex;align-items:center;gap:7px}
+@media (max-width:720px){.barra-topo .container span:not(:first-child){display:none}}
+
+/* ------------------------------------------------------------ 6. HEADER */
+.header{
+  position:sticky;top:0;z-index:50;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:saturate(180%) blur(14px);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--borda);
+  transition:background var(--t),border-color var(--t),box-shadow var(--t);
+}
+.header.rolou{box-shadow:var(--sombra)}
+.header-linha{display:flex;align-items:center;gap:18px;height:74px}
+
+.logo{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.logo svg{height:44px;width:auto;display:block}
+
+.nav-desktop{display:flex;align-items:center;gap:2px;margin-inline:auto}
+.nav-desktop a{
+  position:relative;padding:9px 14px;border-radius:8px;
+  font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--texto-suave);transition:color var(--t),background var(--t);
+}
+.nav-desktop a::after{
+  content:'';position:absolute;left:14px;right:14px;bottom:3px;height:1.5px;
+  background:var(--ouro-grad);transform:scaleX(0);transform-origin:center;transition:transform var(--t);
+}
+.nav-desktop a:hover{color:var(--texto)}
+.nav-desktop a:hover::after,.nav-desktop a.ativo::after{transform:scaleX(1)}
+.nav-desktop a.ativo{color:var(--ouro)}
+
+.acoes{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.icone-btn{
+  display:grid;place-items:center;width:42px;height:42px;border-radius:50%;
+  color:var(--texto-suave);position:relative;
+  transition:background var(--t),color var(--t),transform var(--t);
+}
+.icone-btn:hover{background:var(--ouro-suave);color:var(--ouro);transform:translateY(-1px)}
+.icone-btn svg{width:20px;height:20px;stroke-width:1.7}
+.icone-btn.insta:hover{background:rgba(225,48,108,.12);color:#e1306c}
+
+.badge-carrinho{
+  position:absolute;top:3px;right:2px;min-width:19px;height:19px;padding:0 5px;
+  border-radius:999px;background:var(--ouro-grad);color:#12100a;
+  font-size:.66rem;font-weight:700;display:grid;place-items:center;
+  border:2px solid var(--bg);transition:transform var(--t);
+}
+.badge-carrinho[hidden]{display:none!important}
+.badge-carrinho.pulsa{animation:pulsa .45s ease}
+@keyframes pulsa{0%,100%{transform:scale(1)}45%{transform:scale(1.45)}}
+
+/* Busca no header */
+.busca-header{position:relative;display:flex;align-items:center;max-width:230px;flex:1}
+.busca-header svg{position:absolute;left:14px;width:17px;height:17px;color:var(--texto-fraco);pointer-events:none}
+.busca-header input{
+  width:100%;padding:11px 14px 11px 40px;border-radius:999px;
+  border:1.5px solid var(--borda);background:var(--superficie-2);
+  font-size:.86rem;transition:border-color var(--t),background var(--t),box-shadow var(--t);
+}
+.busca-header input::placeholder{color:var(--texto-fraco)}
+.busca-header input:focus{outline:none;border-color:var(--ouro);background:var(--superficie);box-shadow:0 0 0 3px var(--ouro-suave)}
+
+.btn-menu{display:none}
+
+@media (max-width:1080px){
+  .nav-desktop{display:none}
+  .btn-menu{display:grid}
+  .busca-header{max-width:none}
+}
+@media (max-width:720px){
+  .header-linha{height:64px;gap:10px}
+  .logo svg{height:36px}
+  .busca-header{display:none}
+  .acoes{margin-left:auto}
+  .icone-btn{width:40px;height:40px}
+}
+
+/* ------------------------------- 7. OFFCANVAS (menu mobile + carrinho) */
+/* Base visual aplicada aos componentes do Bootstrap. */
+.offcanvas{
+  background:var(--bg);color:var(--texto);
+  border-color:var(--borda)!important;
+  box-shadow:var(--sombra-alta);
+  transition:transform var(--t),background var(--t),color var(--t);
+}
+.offcanvas-backdrop.show{opacity:.55;backdrop-filter:blur(2px)}
+[data-tema="escuro"] .offcanvas-backdrop.show{opacity:.72}
+
+.drawer-topo{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--borda)}
+.drawer-topo svg.marca{height:34px;width:auto}
+.drawer-corpo{padding:12px 14px 28px;overflow-y:auto;flex:1}
+.drawer-corpo a.link-nav{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:15px 14px;border-radius:var(--raio-sm);
+  font-size:.95rem;font-weight:500;letter-spacing:.04em;
+  border-bottom:1px solid var(--borda);transition:background var(--t),color var(--t),padding-left var(--t);
+}
+.drawer-corpo a.link-nav:hover{background:var(--ouro-suave);color:var(--ouro);padding-left:20px}
+.drawer-corpo a.link-nav .emoji{font-size:1.1rem}
+.drawer-busca{position:relative;margin:6px 0 16px}
+.drawer-busca svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--texto-fraco)}
+.drawer-busca input{width:100%;padding:13px 14px 13px 42px;border-radius:999px;border:1.5px solid var(--borda);background:var(--superficie-2);font-size:.92rem}
+.drawer-busca input:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px var(--ouro-suave)}
+.drawer-rodape{padding:18px;border-top:1px solid var(--borda);display:grid;gap:10px}
+
+/* ------------------------------------------------------------- 8. HERO */
+.hero{
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(1100px 520px at 85% -10%,var(--ouro-suave),transparent 62%),
+    radial-gradient(760px 420px at 8% 108%,var(--ouro-suave),transparent 60%),
+    var(--bg-alt);
+  padding:clamp(56px,8vw,104px) 0 clamp(52px,7vw,92px);
+  border-bottom:1px solid var(--borda);
+}
+.hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(var(--ouro-borda) 1px,transparent 1px),linear-gradient(90deg,var(--ouro-borda) 1px,transparent 1px);
+  background-size:76px 76px;opacity:.13;
+  -webkit-mask-image:radial-gradient(ellipse 78% 62% at 50% 42%,#000,transparent 76%);
+          mask-image:radial-gradient(ellipse 78% 62% at 50% 42%,#000,transparent 76%);
+}
+.hero .container{position:relative;text-align:center;max-width:860px}
+.hero-selo{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:8px 20px;border-radius:999px;margin-bottom:24px;
+  border:1px solid var(--ouro-borda);background:var(--ouro-suave);color:var(--ouro);
+  font-size:.7rem;font-weight:600;letter-spacing:.19em;text-transform:uppercase;
+}
+.hero h1{font-size:clamp(2.5rem,7.5vw,4.7rem);line-height:1.03;margin-bottom:20px;letter-spacing:-.01em}
+.hero h1 em{font-style:italic}
+.hero p.sub{font-size:clamp(1rem,2.1vw,1.16rem);color:var(--texto-suave);max-width:620px;margin:0 auto 34px}
+.hero-cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap}
+.hero-provas{
+  display:flex;gap:clamp(20px,5vw,58px);justify-content:center;flex-wrap:wrap;
+  margin-top:52px;padding-top:34px;border-top:1px solid var(--borda);
+}
+.hero-provas div{text-align:center;min-width:104px}
+.hero-provas strong{display:block;font-family:var(--serif);font-size:1.85rem;line-height:1}
+.hero-provas span{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--texto-fraco)}
+
+/* ----------------------------------------------------------- 9. SEÇÕES */
+.secao{padding:clamp(52px,7vw,88px) 0}
+.secao.alt{background:var(--bg-alt);border-block:1px solid var(--borda)}
+.secao-topo{text-align:center;max-width:660px;margin:0 auto clamp(34px,5vw,52px)}
+.secao-etiqueta{
+  display:block;font-size:.7rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--ouro);margin-bottom:12px;
+}
+.secao-topo h2{font-size:clamp(1.85rem,4.4vw,2.85rem);margin-bottom:13px}
+.secao-topo p{color:var(--texto-suave);font-size:1.02rem}
+.divisor-ouro{width:62px;height:2px;background:var(--ouro-grad);margin:16px auto 0;border-radius:2px}
+
+/* -------------------------------------------------- 10. CARDS CATEGORIA */
+.card-cat{
+  position:relative;overflow:hidden;isolation:isolate;
+  border:1px solid var(--borda);border-radius:var(--raio-lg);
+  background:var(--superficie);padding:34px 28px 30px;
+  display:flex;flex-direction:column;gap:11px;text-align:left;
+  transition:transform var(--t),box-shadow var(--t),border-color var(--t);
+}
+.card-cat::before{
+  content:'';position:absolute;inset:0 0 auto;height:3px;background:var(--ouro-grad);
+  transform:scaleX(0);transform-origin:left;transition:transform 380ms cubic-bezier(.4,0,.2,1);
+}
+.card-cat:hover{transform:translateY(-6px);box-shadow:var(--sombra-alta);border-color:var(--ouro-borda)}
+.card-cat:hover::before{transform:scaleX(1)}
+.card-cat .emoji{font-size:2rem;line-height:1}
+.card-cat h3{font-size:1.5rem}
+.card-cat .chamada{font-size:.71rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ouro);font-weight:600}
+.card-cat p{color:var(--texto-suave);font-size:.93rem;flex:1}
+.card-cat .qtd{font-size:.78rem;color:var(--texto-fraco)}
+.card-cat .btn{margin-top:8px;align-self:flex-start}
+
+/* ---------------------------------------------------- 11. FILTROS/BUSCA */
+.barra-filtros{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between;
+  margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid var(--borda);
+}
+.chips{display:flex;gap:9px;flex-wrap:wrap}
+.chip{
+  padding:10px 20px;border-radius:999px;border:1.5px solid var(--borda);
+  background:var(--superficie);color:var(--texto-suave);
+  font-size:.78rem;font-weight:600;letter-spacing:.06em;
+  transition:all var(--t);white-space:nowrap;
+}
+.chip:hover{border-color:var(--ouro-borda);color:var(--ouro)}
+.chip.ativo{background:var(--ouro-grad);border-color:transparent;color:#12100a;box-shadow:0 4px 14px rgba(201,162,39,.28)}
+[data-tema="escuro"] .chip.ativo{color:#0f0e08}
+
+.ferramentas{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.busca-catalogo{position:relative;display:flex;align-items:center}
+.busca-catalogo svg{position:absolute;left:14px;width:17px;height:17px;color:var(--texto-fraco);pointer-events:none}
+.busca-catalogo input{
+  width:240px;padding:11px 36px 11px 40px;border-radius:999px;
+  border:1.5px solid var(--borda);background:var(--superficie);font-size:.88rem;
+  transition:border-color var(--t),box-shadow var(--t),width var(--t);
+}
+.busca-catalogo input:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px var(--ouro-suave)}
+.busca-catalogo .limpar{position:absolute;right:8px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:var(--texto-fraco);font-size:1.05rem;line-height:1}
+.busca-catalogo .limpar:hover{background:var(--ouro-suave);color:var(--ouro)}
+select.ordenar{
+  padding:11px 16px;border-radius:999px;border:1.5px solid var(--borda);
+  background:var(--superficie);font-size:.85rem;cursor:pointer;
+}
+select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px var(--ouro-suave)}
+.contador-result{font-size:.82rem;color:var(--texto-fraco);margin-bottom:20px}
+.contador-result b{color:var(--texto)}
+
+@media (max-width:575.98px){
+  .barra-filtros{gap:12px}
+  .ferramentas{width:100%;flex-direction:column;align-items:stretch}
+  .busca-catalogo{width:100%}
+  .busca-catalogo input{width:100%}
+  select.ordenar{width:100%}
+}
+
+/* ------------------------------------------------------ 12. CARD PRODUTO */
+@media (max-width:520px){
+  }
+
+.card-prod{
+  display:flex;flex-direction:column;overflow:hidden;position:relative;
+  background:var(--superficie);border:1px solid var(--borda);border-radius:var(--raio);
+  transition:transform var(--t),box-shadow var(--t),border-color var(--t);
+  animation:surge .42s ease both;
+}
+@keyframes surge{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card-prod:hover{transform:translateY(-5px);box-shadow:var(--sombra-alta);border-color:var(--ouro-borda)}
+
+.card-prod .moldura{
+  position:relative;aspect-ratio:1/1;overflow:hidden;
+  background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));
+  cursor:pointer;display:grid;place-items:center;
+}
+.card-prod .moldura img{width:100%;height:100%;object-fit:cover;transition:transform 520ms cubic-bezier(.4,0,.2,1)}
+.card-prod:hover .moldura img{transform:scale(1.07)}
+.placeholder-marca{display:grid;place-items:center;gap:6px;width:100%;height:100%;color:var(--ouro);opacity:.42}
+.placeholder-marca svg{width:46%;max-width:104px;height:auto}
+.placeholder-marca span{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--texto-fraco)}
+
+.selo{
+  position:absolute;top:10px;left:10px;z-index:2;
+  padding:5px 11px;border-radius:999px;
+  font-size:.62rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+}
+.selo.oferta{background:var(--ouro-grad);color:#12100a}
+.selo.esgotado{background:var(--texto);color:var(--bg);left:auto;right:10px}
+
+.olhada{
+  position:absolute;inset:auto 0 0;padding:11px;z-index:2;
+  background:linear-gradient(to top,rgba(0,0,0,.62),transparent);
+  color:#fff;font-size:.72rem;font-weight:600;letter-spacing:.11em;text-transform:uppercase;text-align:center;
+  transform:translateY(100%);transition:transform var(--t);
+}
+.card-prod:hover .olhada{transform:translateY(0)}
+@media (hover:none){.olhada{display:none}}
+
+.card-prod .info{padding:15px 15px 17px;display:flex;flex-direction:column;gap:7px;flex:1}
+.card-prod .cat{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ouro);font-weight:700}
+.card-prod h3{font-family:var(--sans);font-size:.94rem;font-weight:600;line-height:1.32;letter-spacing:0}
+.card-prod .vol{font-size:.75rem;color:var(--texto-fraco)}
+.card-prod .precos{margin-top:auto;padding-top:6px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.card-prod .preco{font-family:var(--serif);font-size:1.42rem;font-weight:700;color:var(--texto)}
+.card-prod .preco-antigo{font-size:.83rem;color:var(--texto-fraco);text-decoration:line-through}
+.card-prod .acoes-card{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:11px}
+.card-prod .acoes-card .btn{padding:11px 12px;font-size:.68rem;letter-spacing:.07em}
+.btn-add-rapido{
+  width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;
+  background:var(--ouro-suave);color:var(--ouro);border:1.5px solid var(--ouro-borda);
+  transition:all var(--t);
+}
+.btn-add-rapido:hover:not(:disabled){background:var(--ouro-grad);color:#12100a;border-color:transparent;transform:scale(1.08)}
+.btn-add-rapido:disabled{opacity:.4;cursor:not-allowed}
+.btn-add-rapido svg{width:18px;height:18px}
+
+.vazio{
+  grid-column:1/-1;text-align:center;padding:64px 20px;color:var(--texto-suave);
+  border:1px dashed var(--borda-forte);border-radius:var(--raio-lg);
+}
+.vazio .icone{font-size:2.6rem;display:block;margin-bottom:14px;opacity:.55}
+.vazio h3{font-size:1.35rem;margin-bottom:8px}
+.vazio p{margin-bottom:20px;font-size:.94rem}
+
+/* --------------------------------------------------------- 13. VANTAGENS */
+.vantagem{
+  text-align:center;padding:30px 22px;border-radius:var(--raio);
+  background:var(--superficie);border:1px solid var(--borda);
+  transition:transform var(--t),border-color var(--t);
+}
+.vantagem:hover{transform:translateY(-4px);border-color:var(--ouro-borda)}
+.vantagem .ico{
+  width:52px;height:52px;margin:0 auto 15px;border-radius:50%;
+  display:grid;place-items:center;background:var(--ouro-suave);color:var(--ouro);font-size:1.4rem;
+}
+.vantagem h3{font-size:1.05rem;font-family:var(--sans);font-weight:600;margin-bottom:7px}
+.vantagem p{font-size:.87rem;color:var(--texto-suave)}
+
+/* ------------------------------------------------------------ 14. FAIXA CTA */
+.faixa-cta{
+  background:var(--ouro-grad);color:#12100a;border-radius:var(--raio-lg);
+  padding:clamp(34px,5vw,54px);text-align:center;
+}
+.faixa-cta h2{font-size:clamp(1.6rem,3.6vw,2.4rem);margin-bottom:10px}
+.faixa-cta p{max-width:520px;margin:0 auto 24px;opacity:.82;font-size:1rem}
+.faixa-cta .btn{background:#12100a;color:var(--ouro-claro);box-shadow:0 6px 22px rgba(0,0,0,.22)}
+.faixa-cta .btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.3)}
+
+/* ----------------------------------------------------------- 15. RODAPÉ */
+.rodape{background:var(--bg-alt);border-top:1px solid var(--borda);padding:56px 0 26px;margin-top:0}
+.rodape-grade{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr;gap:38px;margin-bottom:40px}
+@media (max-width:880px){.rodape-grade{grid-template-columns:1fr 1fr;gap:30px}}
+@media (max-width:520px){.rodape-grade{grid-template-columns:1fr}}
+.rodape h4{font-family:var(--sans);font-size:.76rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--ouro);margin-bottom:16px}
+.rodape li{margin-bottom:10px}
+.rodape li a,.rodape li span{font-size:.9rem;color:var(--texto-suave);transition:color var(--t)}
+.rodape li a:hover{color:var(--ouro)}
+.rodape .marca-rodape svg{height:52px;width:auto;margin-bottom:14px}
+.rodape .marca-rodape p{font-size:.9rem;color:var(--texto-suave);max-width:290px}
+.sociais{display:flex;gap:10px;margin-top:18px}
+.social{
+  width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+  border:1.5px solid var(--borda-forte);color:var(--texto-suave);transition:all var(--t);
+}
+.social:hover{border-color:transparent;background:var(--ouro-grad);color:#12100a;transform:translateY(-3px)}
+.social.ig:hover{background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);color:#fff}
+.social svg{width:19px;height:19px}
+.rodape-base{
+  border-top:1px solid var(--borda);padding-top:22px;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:.8rem;color:var(--texto-fraco);
+}
+.vendedor-linha{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--texto-suave)}
+.vendedor-linha b{color:var(--texto);font-weight:600}
+
+/* -------------------------------------------- 16. BOTÃO FLUTUANTE WHATSAPP */
+.flutuante{
+  position:fixed;right:18px;bottom:18px;z-index:45;
+  display:flex;flex-direction:column;gap:10px;align-items:flex-end;
+}
+.fab{
+  width:54px;height:54px;border-radius:50%;display:grid;place-items:center;
+  box-shadow:0 6px 22px rgba(0,0,0,.24);transition:transform var(--t),box-shadow var(--t);
+}
+.fab:hover{transform:scale(1.09)}
+.fab.zap{background:var(--zap);color:#fff}
+.fab.topo{background:var(--superficie);border:1.5px solid var(--borda-forte);color:var(--texto-suave);width:46px;height:46px;opacity:0;visibility:hidden}
+.fab.topo.visivel{opacity:1;visibility:visible}
+.fab svg{width:26px;height:26px}
+.fab.topo svg{width:19px;height:19px}
+@media (max-width:720px){.flutuante{right:14px;bottom:14px}.fab{width:50px;height:50px}}
+
+/* --------------------------------------- 17. MODAIS (Bootstrap + tema SF) */
+.modal-content{
+  background:var(--bg);color:var(--texto);
+  border:1px solid var(--borda);border-radius:var(--raio-lg);
+  box-shadow:var(--sombra-alta);overflow:hidden;
+}
+.modal-backdrop.show{opacity:.55}
+[data-tema="escuro"] .modal-backdrop.show{opacity:.75}
+.modal-dialog-scrollable .modal-content{max-height:100%}
+
+.fechar-modal{
+  position:absolute;top:14px;right:14px;z-index:5;
+  width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+  background:var(--superficie);border:1px solid var(--borda);color:var(--texto-suave);
+  transition:all var(--t);
+}
+.fechar-modal:hover{background:var(--ouro-suave);color:var(--ouro);border-color:var(--ouro-borda);transform:rotate(90deg)}
+.fechar-modal svg{width:17px;height:17px}
+
+/* Detalhe do produto */
+.detalhe{display:grid;grid-template-columns:1fr 1fr}
+@media (max-width:767.98px){.detalhe{grid-template-columns:1fr}}
+.detalhe-img{
+  aspect-ratio:1/1;background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));
+  display:grid;place-items:center;overflow:hidden;
+}
+.detalhe-img img{width:100%;height:100%;object-fit:cover}
+@media (max-width:767.98px){.detalhe-img{aspect-ratio:16/10}}
+.detalhe-info{padding:clamp(22px,4vw,38px);display:flex;flex-direction:column;gap:14px}
+.detalhe-info .cat{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ouro);font-weight:700}
+.detalhe-info h2{font-size:clamp(1.45rem,3.4vw,2rem);line-height:1.14}
+.detalhe-info .vol{font-size:.86rem;color:var(--texto-fraco)}
+.detalhe-precos{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;padding-block:4px}
+.detalhe-precos .preco{font-family:var(--serif);font-size:2.1rem;font-weight:700}
+.detalhe-precos .preco-antigo{font-size:1rem;color:var(--texto-fraco);text-decoration:line-through}
+.detalhe-precos .economia{font-size:.72rem;font-weight:700;letter-spacing:.06em;padding:4px 10px;border-radius:999px;background:var(--ouro-suave);color:var(--ouro)}
+.detalhe-info .desc{font-size:.95rem;color:var(--texto-suave);line-height:1.72}
+.detalhe-sep{height:1px;background:var(--borda);margin-block:4px}
+
+.qtd-linha{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.qtd-linha .rot{font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--texto-fraco);font-weight:600}
+.stepper{display:flex;align-items:center;border:1.5px solid var(--borda);border-radius:999px;overflow:hidden;background:var(--superficie)}
+.stepper button{width:40px;height:42px;display:grid;place-items:center;color:var(--texto-suave);font-size:1.15rem;transition:background var(--t),color var(--t)}
+.stepper button:hover:not(:disabled){background:var(--ouro-suave);color:var(--ouro)}
+.stepper button:disabled{opacity:.3;cursor:not-allowed}
+.stepper input{width:48px;height:42px;text-align:center;border:none;background:transparent;font-weight:600;font-size:.95rem;-moz-appearance:textfield}
+.stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stepper input:focus{outline:none}
+
+.detalhe-total{font-size:.88rem;color:var(--texto-suave)}
+.detalhe-total b{font-family:var(--serif);font-size:1.3rem;color:var(--texto)}
+.detalhe-acoes{display:grid;gap:10px;margin-top:4px}
+.detalhe-nota{display:flex;gap:9px;align-items:flex-start;font-size:.82rem;color:var(--texto-fraco);line-height:1.5}
+.detalhe-nota span{color:var(--ouro);flex-shrink:0}
+
+/* -------------------------------------------------- 18. CARRINHO (offcanvas) */
+#carrinhoDrawer{width:min(93vw,432px)}
+.carrinho-topo{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:20px;border-bottom:1px solid var(--borda);flex-shrink:0;
+}
+.carrinho-topo h2{font-size:1.3rem;display:flex;align-items:center;gap:10px}
+.carrinho-topo .qtd-itens{
+  font-size:.68rem;font-weight:700;padding:3px 10px;border-radius:999px;
+  background:var(--ouro-suave);color:var(--ouro);letter-spacing:.05em;
+}
+.carrinho-itens{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.item-carrinho{
+  display:grid;grid-template-columns:74px 1fr auto;gap:13px;align-items:start;
+  padding-bottom:14px;border-bottom:1px solid var(--borda);
+}
+.item-carrinho:last-child{border-bottom:none;padding-bottom:0}
+.item-carrinho .mini{
+  width:74px;height:74px;border-radius:var(--raio-sm);overflow:hidden;flex-shrink:0;
+  background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));display:grid;place-items:center;
+}
+.item-carrinho .mini img{width:100%;height:100%;object-fit:cover}
+.item-carrinho .mini .placeholder-marca svg{width:56%}
+.item-carrinho .mini .placeholder-marca span{display:none}
+.item-carrinho .dados{min-width:0;display:flex;flex-direction:column;gap:5px}
+.item-carrinho .cat{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ouro);font-weight:700}
+.item-carrinho h4{font-family:var(--sans);font-size:.88rem;font-weight:600;line-height:1.32;margin:0}
+.item-carrinho .unit{font-size:.78rem;color:var(--texto-fraco)}
+.item-carrinho .stepper{transform:scale(.82);transform-origin:left center;margin-top:3px}
+.item-carrinho .lado{display:flex;flex-direction:column;align-items:flex-end;gap:9px;justify-content:space-between;height:100%}
+.item-carrinho .sub{font-family:var(--serif);font-size:1.08rem;font-weight:700;white-space:nowrap}
+.btn-remover{
+  width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+  color:var(--texto-fraco);transition:all var(--t);
+}
+.btn-remover:hover{background:rgba(192,57,43,.12);color:var(--erro)}
+.btn-remover svg{width:15px;height:15px}
+
+.carrinho-vazio{flex:1;display:grid;place-content:center;text-align:center;gap:12px;padding:40px 24px;color:var(--texto-suave)}
+.carrinho-vazio .icone{font-size:3rem;opacity:.4}
+.carrinho-vazio h3{font-size:1.25rem}
+.carrinho-vazio p{font-size:.9rem}
+
+.carrinho-rodape{border-top:1px solid var(--borda);padding:18px 20px 22px;background:var(--superficie-2);display:grid;gap:12px;flex-shrink:0}
+.linha-total{display:flex;justify-content:space-between;align-items:baseline;font-size:.9rem;color:var(--texto-suave)}
+.linha-total.principal{padding-top:10px;border-top:1px dashed var(--borda-forte);font-size:1rem;color:var(--texto);font-weight:600}
+.linha-total.principal b{font-family:var(--serif);font-size:1.75rem}
+.linha-total .gratis{color:var(--sucesso);font-weight:700}
+.carrinho-rodape .aviso{font-size:.76rem;color:var(--texto-fraco);text-align:center;line-height:1.5}
+
+/* ----------------------------------------------------------- 19. CHECKOUT */
+.checkout-topo{padding:24px 28px 0;flex-shrink:0}
+.checkout-topo h2{font-size:1.55rem;margin-bottom:4px}
+.checkout-topo p{font-size:.88rem;color:var(--texto-suave)}
+.passos{display:flex;gap:6px;margin:20px 0 0;padding:0 28px 20px;border-bottom:1px solid var(--borda);flex-shrink:0}
+.passo{flex:1;display:flex;flex-direction:column;gap:7px;min-width:0}
+.passo .barra{height:3px;border-radius:2px;background:var(--borda);transition:background var(--t)}
+.passo.feito .barra,.passo.atual .barra{background:var(--ouro-grad)}
+.passo .rot{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--texto-fraco);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.passo.atual .rot{color:var(--ouro)}
+.passo.feito .rot{color:var(--texto-suave)}
+@media (max-width:600px){.passos{padding-inline:18px}.passo .rot{font-size:.56rem}}
+
+.checkout-corpo{flex:1;overflow-y:auto;padding:24px 28px}
+@media (max-width:600px){.checkout-topo,.checkout-corpo{padding-inline:18px}}
+.etapa{display:none;animation:entra .3s ease both}
+.etapa.ativa{display:block}
+@keyframes entra{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+
+.campo{margin-bottom:18px}
+.campo > label{display:block;font-size:.76rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--texto-suave);margin-bottom:8px}
+.campo label .obrig{color:var(--erro)}
+.campo > input,.campo > select,.campo > textarea,.campo-cep > input,.campo-duplo .campo > input{
+  width:100%;padding:13px 15px;border-radius:var(--raio-sm);
+  border:1.5px solid var(--borda);background:var(--superficie);
+  font-size:.95rem;transition:border-color var(--t),box-shadow var(--t),background var(--t);
+}
+.campo > input:focus,.campo > select:focus,.campo > textarea:focus,.campo-cep > input:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px var(--ouro-suave)}
+.campo > input::placeholder{color:var(--texto-fraco)}
+.campo > input:disabled,.campo > select:disabled{background:var(--bg-alt);color:var(--texto-fraco);cursor:not-allowed}
+.campo.invalido > input,.campo.invalido > select,.campo.invalido .campo-cep > input{border-color:var(--erro);box-shadow:0 0 0 3px rgba(192,57,43,.12)}
+.campo .erro-msg{display:none;font-size:.78rem;color:var(--erro);margin-top:6px;font-weight:500}
+.campo.invalido .erro-msg{display:block}
+.campo .dica{font-size:.78rem;color:var(--texto-fraco);margin-top:6px}
+.campo-duplo{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.campo-cep{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+@media (max-width:520px){.campo-duplo{grid-template-columns:1fr}}
+
+.grupo-opcoes{display:grid;gap:11px;margin-bottom:18px}
+.opcao{
+  display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;
+  border:1.5px solid var(--borda);border-radius:var(--raio);background:var(--superficie);
+  transition:all var(--t);position:relative;
+}
+/* Em telas de toque o hover "gruda" após o clique, então fica só no ponteiro real. */
+@media (hover:hover){
+  .opcao:hover{border-color:var(--ouro-borda);background:var(--ouro-suave)}
+}
+.opcao input{position:absolute;opacity:0;pointer-events:none}
+.opcao .marcador{
+  width:21px;height:21px;border-radius:50%;border:2px solid var(--borda-forte);
+  flex-shrink:0;display:grid;place-items:center;transition:border-color var(--t);
+}
+.opcao .marcador::after{content:'';width:11px;height:11px;border-radius:50%;background:var(--ouro-grad);transform:scale(0);transition:transform var(--t)}
+.opcao input:checked ~ .marcador{border-color:var(--ouro)}
+.opcao input:checked ~ .marcador::after{transform:scale(1)}
+.opcao:has(input:checked){border-color:var(--ouro);background:var(--ouro-suave);box-shadow:0 0 0 3px var(--ouro-suave)}
+.opcao .conteudo{flex:1;min-width:0}
+.opcao .titulo{font-weight:600;font-size:.98rem;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.opcao .sub{font-size:.83rem;color:var(--texto-suave);margin-top:3px}
+.opcao .tag{font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.opcao .tag.gratis{background:rgba(31,138,81,.15);color:var(--sucesso)}
+.opcao .tag.combinar{background:rgba(176,114,26,.16);color:var(--alerta)}
+.opcao .emoji{font-size:1.35rem}
+
+.alerta-box{
+  display:flex;gap:12px;padding:15px 17px;border-radius:var(--raio);
+  font-size:.87rem;line-height:1.6;margin-bottom:18px;
+}
+.alerta-box .ic{font-size:1.1rem;flex-shrink:0;line-height:1.4}
+.alerta-box.ok{background:rgba(31,138,81,.1);border:1px solid rgba(31,138,81,.25);color:var(--sucesso)}
+.alerta-box.aviso{background:rgba(176,114,26,.1);border:1px solid rgba(176,114,26,.28);color:var(--alerta)}
+.alerta-box.info{background:var(--ouro-suave);border:1px solid var(--ouro-borda);color:var(--texto-suave)}
+.alerta-box b{color:inherit}
+
+.resumo-caixa{border:1px solid var(--borda);border-radius:var(--raio);overflow:hidden;margin-bottom:18px}
+.resumo-cab{
+  padding:12px 17px;background:var(--superficie-2);border-bottom:1px solid var(--borda);
+  font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--ouro);
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+.resumo-cab button{font-size:.68rem;font-weight:600;letter-spacing:.06em;color:var(--texto-suave);text-transform:none}
+.resumo-cab button:hover{color:var(--ouro);text-decoration:underline}
+.resumo-corpo{padding:15px 17px;display:grid;gap:9px}
+.resumo-linha{display:flex;justify-content:space-between;gap:14px;font-size:.89rem;align-items:baseline}
+.resumo-linha .rot{color:var(--texto-fraco);flex-shrink:0}
+.resumo-linha .val{text-align:right;font-weight:500;word-break:break-word}
+.resumo-linha.destaque{padding-top:10px;margin-top:2px;border-top:1px dashed var(--borda-forte);font-size:1rem}
+.resumo-linha.destaque .val{font-family:var(--serif);font-size:1.5rem;font-weight:700}
+.resumo-produtos{display:grid;gap:8px;font-size:.86rem}
+.resumo-produtos li{display:flex;justify-content:space-between;gap:12px;color:var(--texto-suave)}
+.resumo-produtos li span:first-child{min-width:0}
+.resumo-produtos li b{color:var(--texto);font-weight:600;white-space:nowrap}
+
+.checkout-rodape{
+  border-top:1px solid var(--borda);padding:16px 28px 20px;background:var(--superficie-2);
+  display:flex;gap:11px;justify-content:space-between;align-items:center;flex-shrink:0;
+}
+@media (max-width:600px){.checkout-rodape{padding-inline:18px;flex-direction:column-reverse}.checkout-rodape .btn{width:100%}}
+
+/* Escolha do vendedor */
+.vendedores{display:grid;gap:14px;padding:4px 0 8px}
+.card-vendedor{
+  display:flex;align-items:center;gap:16px;padding:19px;text-align:left;width:100%;
+  border:1.5px solid var(--borda);border-radius:var(--raio);background:var(--superficie);
+  transition:all var(--t);
+}
+@media (hover:hover){
+  .card-vendedor:hover{border-color:var(--ouro);background:var(--ouro-suave);transform:translateY(-2px);box-shadow:var(--sombra)}
+}
+.card-vendedor .avatar{
+  width:52px;height:52px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;
+  background:var(--ouro-grad);color:#12100a;font-family:var(--serif);font-size:1.25rem;font-weight:700;
+}
+.card-vendedor .txt{flex:1;min-width:0}
+.card-vendedor .nome{font-weight:600;font-size:1.05rem}
+.card-vendedor .fone{font-size:.87rem;color:var(--texto-suave);display:flex;align-items:center;gap:6px;margin-top:2px}
+.card-vendedor .seta{color:var(--ouro);flex-shrink:0}
+.card-vendedor .seta svg{width:20px;height:20px}
+
+/* ------------------------------------------------------------ 20. TOASTS */
+.toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:95;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:calc(100% - 32px);max-width:400px}
+.toast-sf{
+  display:flex;align-items:center;gap:11px;padding:13px 19px;border-radius:999px;
+  background:var(--texto);color:var(--bg);font-size:.88rem;font-weight:500;
+  box-shadow:var(--sombra-alta);pointer-events:auto;
+  animation:toastEntra .32s cubic-bezier(.2,.8,.3,1.2) both;max-width:100%;
+}
+.toast-sf.saindo{animation:toastSai .28s ease forwards}
+.toast-sf .ic{font-size:1.05rem;flex-shrink:0}
+.toast-sf.sucesso{background:var(--sucesso);color:#fff}
+.toast-sf.erro{background:var(--erro);color:#fff}
+@keyframes toastEntra{from{opacity:0;transform:translateY(22px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes toastSai{to{opacity:0;transform:translateY(14px) scale(.94)}}
+@media (max-width:720px){.toasts{bottom:82px}}
+
+/* ------------------------------------------------------- 21. ACESSIBILIDADE */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+/* =============================================================================
+   22. PONTE COM O BOOTSTRAP
+   O Bootstrap entra como base de grid, utilitários, offcanvas e modais.
+   Aqui os tokens da SF PARFUMS sobrescrevem os padrões do framework, para que
+   os componentes nativos herdem a identidade branco + dourado nos dois temas.
+============================================================================= */
+:root{
+  --bs-body-bg:var(--bg);
+  --bs-body-color:var(--texto);
+  --bs-body-font-family:var(--sans);
+  --bs-border-color:var(--borda);
+  --bs-primary:var(--ouro);
+  --bs-link-color:var(--ouro);
+  --bs-link-hover-color:var(--ouro-escuro);
+  --bs-emphasis-color:var(--texto);
+  --bs-secondary-color:var(--texto-suave);
+  --bs-tertiary-bg:var(--bg-alt);
+  --bs-border-radius:var(--raio);
+  --bs-focus-ring-color:var(--ouro-suave);
+}
+/* Largura editorial da marca em todas as faixas */
+.container,.container-fluid,.container-lg,.container-xl{
+  --bs-gutter-x:40px;max-width:calc(var(--maxw) + 40px);
+}
+@media (max-width:575.98px){.container,.container-fluid{--bs-gutter-x:32px}}
+
+/* O tema controla a cor de fundo dos componentes do framework */
+.offcanvas,.modal-content,.dropdown-menu{--bs-offcanvas-bg:var(--bg);--bs-offcanvas-color:var(--texto);--bs-offcanvas-border-color:var(--borda)}
+.modal-content{--bs-modal-bg:var(--bg);--bs-modal-color:var(--texto);--bs-modal-border-color:var(--borda);--bs-modal-border-radius:var(--raio-lg)}
+.offcanvas-header,.offcanvas-body,.modal-body{padding:0}
+.offcanvas{display:flex;flex-direction:column}
+
+/* Colunas do grid Bootstrap encostam nos cards sem margem extra */
+.row > [class^="col"],.row > [class*=" col"]{display:flex}
+.row > [class^="col"] > *,.row > [class*=" col"] > *{width:100%}
+
+/* Reforço mobile: nada estoura a viewport em telas estreitas */
+@media (max-width:400px){
+  .btn{padding-inline:18px;font-size:.75rem}
+  .card-prod .info{padding:12px 12px 14px}
+  .card-prod .preco{font-size:1.22rem}
+}
