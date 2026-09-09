@@ -19,15 +19,10 @@ aparece no topo do site.
 são bloqueados pela política de rede do ambiente onde este projeto foi construído
 (HTTP 403 no proxy de saída). Nenhum produto, preço ou imagem foi inventado.
 
-Para colocar o catálogo real no ar, escolha um dos caminhos:
-
-1. **Pela ferramenta visual (recomendado)** — abra `admin.html` no navegador, cole ou
-   digite seus produtos, clique em *Gerar código* e substitua o conteúdo de `js/produtos.js`.
-2. **Editando o arquivo** — abra `js/produtos.js` e preencha a lista `CATALOGO.produtos`
-   seguindo o modelo comentado no topo do arquivo.
-
-Depois de cadastrar os produtos reais, mude `modoDemonstracao: true` para `false`
-(o botão *Baixar produtos.js* do `admin.html` já entrega o arquivo com `false`).
+Para colocar o catálogo real no ar, abra `js/produtos.js` e preencha a lista
+`CATALOGO.produtos` seguindo o modelo comentado no topo do arquivo. Depois de
+cadastrar os produtos reais, mude `modoDemonstracao: true` para `false` — isso
+remove a faixa de aviso do topo do site.
 
 ---
 
@@ -36,20 +31,18 @@ Depois de cadastrar os produtos reais, mude `modoDemonstracao: true` para `false
 ```
 SF/
 ├── index.html              Loja (página única)
-├── admin.html              Ferramenta interna para montar o catálogo
 ├── css/
 │   └── style.css           Tema branco + dourado, modo claro/escuro, componentes
 ├── js/
 │   ├── produtos.js         ← CATÁLOGO E CONFIGURAÇÃO (único arquivo a editar)
 │   ├── loja.js             Tema, renderização, busca, filtros, modal de produto
 │   ├── carrinho.js         Carrinho + persistência em localStorage
-│   ├── checkout.js         Checkout em 4 etapas, frete, CEP, vendedor, WhatsApp
-│   └── admin.js            Lógica da ferramenta de cadastro
+│   └── checkout.js         Checkout em 4 etapas, frete, CEP, vendedor, WhatsApp
 └── vendor/bootstrap/       Bootstrap 5.3.3 (CSS + JS bundle)
 ```
 
 O Bootstrap está **embutido no projeto** para o site funcionar mesmo sem internet ou
-se um CDN cair. Para usar o CDN, troque as duas tags em `index.html` e `admin.html` por:
+se um CDN cair. Para usar o CDN, troque as duas tags em `index.html` por:
 
 ```html
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -111,7 +104,9 @@ número escolhido, com a mensagem do pedido já montada.
 
 **Outros**
 - Modo claro/escuro com transição suave e preferência salva
+- Logos oficiais e vetorizadas do Instagram e do WhatsApp, nas cores originais das marcas
 - Botão para o Instagram [@sf_parfums](https://www.instagram.com/sf_parfums) no cabeçalho, menu e rodapé
+- Crédito "Site desenvolvido pro PRAG" no rodapé
 - Botão flutuante de WhatsApp e voltar ao topo
 - Notificações visuais ao adicionar/remover produtos e ao validar o formulário
 - Nenhum pagamento é processado no site — a forma escolhida vai apenas informada no pedido

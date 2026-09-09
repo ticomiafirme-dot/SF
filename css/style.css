@@ -177,7 +177,7 @@ ul{margin:0;padding:0;list-style:none}
 }
 .icone-btn:hover{background:var(--ouro-suave);color:var(--ouro);transform:translateY(-1px)}
 .icone-btn svg{width:20px;height:20px;stroke-width:1.7}
-.icone-btn.insta:hover{background:rgba(225,48,108,.12);color:#e1306c}
+.icone-btn.insta:hover{background:rgba(214,36,159,.12);color:#d6249f}
 
 .badge-carrinho{
   position:absolute;top:3px;right:2px;min-width:19px;height:19px;padding:0 5px;
@@ -447,7 +447,8 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
 .faixa-cta .btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.3)}
 
 /* ----------------------------------------------------------- 15. RODAPÉ */
-.rodape{background:var(--bg-alt);border-top:1px solid var(--borda);padding:56px 0 26px;margin-top:0}
+/* O espaço extra embaixo evita que o botão flutuante cubra o texto do rodapé. */
+.rodape{background:var(--bg-alt);border-top:1px solid var(--borda);padding:56px 0 96px;margin-top:0}
 .rodape-grade{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr;gap:38px;margin-bottom:40px}
 @media (max-width:880px){.rodape-grade{grid-template-columns:1fr 1fr;gap:30px}}
 @media (max-width:520px){.rodape-grade{grid-template-columns:1fr}}
@@ -457,18 +458,34 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
 .rodape li a:hover{color:var(--ouro)}
 .rodape .marca-rodape svg{height:52px;width:auto;margin-bottom:14px}
 .rodape .marca-rodape p{font-size:.9rem;color:var(--texto-suave);max-width:290px}
-.sociais{display:flex;gap:10px;margin-top:18px}
+.sociais{display:flex;gap:12px;margin-top:18px}
 .social{
-  width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
-  border:1.5px solid var(--borda-forte);color:var(--texto-suave);transition:all var(--t);
+  width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+  color:#fff;border:none;transition:transform var(--t),box-shadow var(--t),filter var(--t);
 }
-.social:hover{border-color:transparent;background:var(--ouro-grad);color:#12100a;transform:translateY(-3px)}
-.social.ig:hover{background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);color:#fff}
-.social svg{width:19px;height:19px}
+.social svg{width:24px;height:24px}
+/* Cores oficiais de cada marca */
+.social.ig{background:radial-gradient(circle at 28% 108%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285aeb 90%)}
+.social.zap{background:#25d366}
+.social:hover{transform:translateY(-3px);filter:saturate(1.15)}
+.social.ig:hover{box-shadow:0 8px 22px rgba(214,36,159,.4)}
+.social.zap:hover{box-shadow:0 8px 22px rgba(37,211,102,.45)}
 .rodape-base{
   border-top:1px solid var(--borda);padding-top:22px;
-  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  display:flex;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;
   font-size:.8rem;color:var(--texto-fraco);
+}
+.rodape .credito{
+  text-align:center;padding-top:20px;margin-top:18px;
+  border-top:1px solid var(--borda);letter-spacing:.05em;
+}
+.rodape .credito b{
+  font-weight:700;letter-spacing:.13em;
+  background:var(--ouro-grad);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+@media (max-width:720px){
+  .rodape-base{justify-content:center;text-align:center;gap:8px}
 }
 .vendedor-linha{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--texto-suave)}
 .vendedor-linha b{color:var(--texto);font-weight:600}
@@ -486,7 +503,7 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
 .fab.zap{background:var(--zap);color:#fff}
 .fab.topo{background:var(--superficie);border:1.5px solid var(--borda-forte);color:var(--texto-suave);width:46px;height:46px;opacity:0;visibility:hidden}
 .fab.topo.visivel{opacity:1;visibility:visible}
-.fab svg{width:26px;height:26px}
+.fab svg{width:27px;height:27px}
 .fab.topo svg{width:19px;height:19px}
 @media (max-width:720px){.flutuante{right:14px;bottom:14px}.fab{width:50px;height:50px}}
 
