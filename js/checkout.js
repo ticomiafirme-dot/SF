@@ -289,7 +289,7 @@ const Checkout = (() => {
         <span class="avatar">${esc(v.nome.split(' ').map(x => x[0]).slice(0, 2).join(''))}</span>
         <span class="txt">
           <span class="nome">👤 ${esc(v.nome)}</span>
-          <span class="fone"><svg width="14" height="14" aria-hidden="true"><use href="#ic-zap"></use></svg> WhatsApp: ${esc(v.exibicao)}</span>
+          <span class="fone"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><use href="#ic-zap-linha"></use></svg> WhatsApp: ${esc(v.exibicao)}</span>
         </span>
         <span class="seta"><svg aria-hidden="true"><use href="#ic-seta"></use></svg></span>
       </button>`).join('');

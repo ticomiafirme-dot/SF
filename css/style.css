@@ -456,20 +456,28 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
 .rodape li{margin-bottom:10px}
 .rodape li a,.rodape li span{font-size:.9rem;color:var(--texto-suave);transition:color var(--t)}
 .rodape li a:hover{color:var(--ouro)}
-.rodape .marca-rodape svg{height:52px;width:auto;margin-bottom:14px}
+.rodape .marca-rodape > svg{height:52px;width:auto;margin-bottom:14px}
 .rodape .marca-rodape p{font-size:.9rem;color:var(--texto-suave);max-width:290px}
-.sociais{display:flex;gap:12px;margin-top:18px}
+/* Botões sociais: mesmo tile, mesmo raio e mesma proporção de glifo nos dois,
+   para as duas marcas ficarem visualmente pareadas. O glifo ocupa 50% do tile,
+   deixando margem igual em volta — sem a sensação de logo ampliada. */
+.sociais{display:flex;gap:12px;margin-top:20px}
 .social{
-  width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
-  color:#fff;border:none;transition:transform var(--t),box-shadow var(--t),filter var(--t);
+  width:44px;height:44px;border-radius:13px;
+  display:grid;place-items:center;flex-shrink:0;
+  color:#fff;border:none;
+  transition:transform var(--t),box-shadow var(--t);
 }
-.social svg{width:24px;height:24px}
+.social svg{width:22px;height:22px;display:block}
+/* Correção ótica: a bolha do WhatsApp é circular e "pesa" menos que a câmera
+   quadrada do Instagram, então ganha 2px para os dois parecerem do mesmo tamanho. */
+.social.zap svg{width:24px;height:24px}
 /* Cores oficiais de cada marca */
-.social.ig{background:radial-gradient(circle at 28% 108%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285aeb 90%)}
+.social.ig{background:radial-gradient(circle at 28% 106%,#fdf497 0%,#fd5949 42%,#d6249f 62%,#285aeb 96%)}
 .social.zap{background:#25d366}
-.social:hover{transform:translateY(-3px);filter:saturate(1.15)}
-.social.ig:hover{box-shadow:0 8px 22px rgba(214,36,159,.4)}
-.social.zap:hover{box-shadow:0 8px 22px rgba(37,211,102,.45)}
+.social:hover{transform:translateY(-3px)}
+.social.ig:hover{box-shadow:0 8px 20px rgba(214,36,159,.38)}
+.social.zap:hover{box-shadow:0 8px 20px rgba(37,211,102,.42)}
 .rodape-base{
   border-top:1px solid var(--borda);padding-top:22px;
   display:flex;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;
@@ -503,7 +511,7 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
 .fab.zap{background:var(--zap);color:#fff}
 .fab.topo{background:var(--superficie);border:1.5px solid var(--borda-forte);color:var(--texto-suave);width:46px;height:46px;opacity:0;visibility:hidden}
 .fab.topo.visivel{opacity:1;visibility:visible}
-.fab svg{width:27px;height:27px}
+.fab svg{width:28px;height:28px}
 .fab.topo svg{width:19px;height:19px}
 @media (max-width:720px){.flutuante{right:14px;bottom:14px}.fab{width:50px;height:50px}}
 
