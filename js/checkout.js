@@ -236,47 +236,68 @@ const Checkout = (() => {
   }
 
   /* ------------------------------------------ MENSAGEM DE PEDIDO (WHATSAPP) */
+
+  /* Emojis usados quando LOJA.mensagemComEmojis é true.
+     Só codepoints únicos: sem seletor de variação (U+FE0F) e sem sequências ZWJ,
+     que são justamente os que mais falham em aparelhos e fontes antigas. */
+  const EMOJIS = {
+    pedido: '\u{1F6CD} ',  cliente: '\u{1F464} ',  produtos: '\u{1F6D2} ',
+    total:  '\u{1F4B0} ',  pagamento: '\u{1F4B3} ', entrega: '\u{1F69A} ',
+    retirada: '\u{1F3EA} ', atendimento: '\u{1F464} ', final: ' \u{2728}'
+  };
+
+  /** Prefixo de cada seção: emoji se habilitado, nada caso contrário. */
+  function ic(chave) {
+    return LOJA.mensagemComEmojis === true ? (EMOJIS[chave] || '') : '';
+  }
+
+  /* A mensagem usa a formatação nativa do WhatsApp (*negrito*) para a hierarquia
+     e apenas caracteres que qualquer aparelho renderiza. Evita começar linha com
+     "- ", "* " ou "> ", que o WhatsApp converteria em lista ou citação. */
   function montarMensagem(vendedor) {
     const itens = Carrinho.detalhado();
+    const entrega = estado.modalidade === 'entrega';
     const L = [];
 
-    L.push('🛍️ *NOVO PEDIDO — SF PARFUMS*');
+    L.push(`*${ic('pedido')}NOVO PEDIDO — SF PARFUMS*`);
     L.push('');
-    L.push(`👤 *Cliente:* ${estado.nome.trim()}`);
+    L.push(`*${ic('cliente')}Cliente:* ${estado.nome.trim()}`);
     L.push('');
-    L.push('🛒 *PRODUTOS:*');
+
+    L.push(`*${ic('produtos')}PRODUTOS*`);
     itens.forEach(p => {
-      L.push(`• ${p.nome}${p.volume ? ` (${p.volume})` : ''} — Quantidade: ${p.qtd} — ${brl(p.subtotal)}`);
+      L.push(`• ${p.nome}${p.volume ? ` (${p.volume})` : ''}`);
+      L.push(`\u00a0\u00a0Qtd: ${p.qtd} — ${brl(p.subtotal)}`);
     });
     L.push('');
-    L.push(`💰 *TOTAL DOS PRODUTOS:* ${brl(Carrinho.totalValor())}`);
+    L.push(`*${ic('total')}TOTAL DOS PRODUTOS: ${brl(Carrinho.totalValor())}*`);
     L.push('');
-    L.push(`💳 *PAGAMENTO:* ${estado.pagamento}`);
+    L.push(`*${ic('pagamento')}Pagamento:* ${estado.pagamento}`);
     L.push('');
-    L.push(`📍 *CIDADE:* ${cidadeFinal()}`);
 
-    if (estado.modalidade === 'entrega') {
-      L.push(`📮 *CEP:* ${formatarCep(estado.cep)}`);
-      L.push('');
-      L.push(`🏠 *ENDEREÇO:* ${estado.rua.trim()}`);
-      L.push(`🔢 *NÚMERO:* ${estado.numero.trim()}`);
-      L.push(`📌 *BAIRRO:* ${estado.bairro.trim()}`);
-      if (estado.complemento.trim()) L.push(`➕ *COMPLEMENTO:* ${estado.complemento.trim()}`);
-      if (estado.uf.trim())          L.push(`🗺️ *ESTADO:* ${estado.uf.trim().toUpperCase()}`);
-      L.push('');
-      L.push('🚚 *MODALIDADE:* Entrega');
+    if (entrega) {
+      L.push(`*${ic('entrega')}ENTREGA*`);
+      L.push(`Cidade: ${cidadeFinal()}`);
+      L.push(`CEP: ${formatarCep(estado.cep)}`);
+      L.push(`Endereço: ${estado.rua.trim()}, ${estado.numero.trim()}`);
+      L.push(`Bairro: ${estado.bairro.trim()}`);
+      if (estado.complemento.trim()) L.push(`Complemento: ${estado.complemento.trim()}`);
+      if (estado.uf.trim())          L.push(`Estado: ${estado.uf.trim().toUpperCase()}`);
+      L.push('Modalidade: Entrega');
       L.push(estado.cidade === 'Outros'
-        ? '⚠️ *FRETE:* A COMBINAR COM O VENDEDOR'
-        : '✅ *FRETE:* GRÁTIS');
+        ? '*Frete: A COMBINAR COM O VENDEDOR*'
+        : '*Frete: GRÁTIS*');
     } else {
-      L.push('');
-      L.push('🏪 *MODALIDADE:* Retirada');
+      L.push(`*${ic('retirada')}RETIRADA*`);
+      L.push(`Cidade: ${cidadeFinal()}`);
+      L.push('Modalidade: Retirada');
+      L.push('Local e horário a combinar por aqui.');
     }
 
     L.push('');
-    L.push(`👨‍💼 *ATENDIMENTO:* ${vendedor.nome}`);
+    L.push(`*${ic('atendimento')}Atendimento:* ${vendedor.nome}`);
     L.push('');
-    L.push('Obrigado por comprar na SF PARFUMS! ✨');
+    L.push(`Obrigado por comprar na SF PARFUMS!${ic('final')}`);
 
     return L.join('\n');
   }

@@ -102,6 +102,18 @@ Ao confirmar, o site **não abre o WhatsApp direto**: primeiro pergunta com qual
 o cliente quer falar (Brayan Frigo ou Felipe Stagliano) e só então abre a conversa do
 número escolhido, com a mensagem do pedido já montada.
 
+A mensagem usa a formatação nativa do WhatsApp (`*negrito*`) e **apenas caracteres do
+plano básico do Unicode** — nenhum emoji por padrão. Isso porque alguns aparelhos e
+fontes trocam emoji por um losango (`◆`), o que desmontava a mensagem. Para ligar os
+emojis, mude uma linha em `js/produtos.js`:
+
+```js
+mensagemComEmojis: true
+```
+
+Os emojis do conjunto opcional foram escolhidos entre os de **codepoint único**, sem
+seletor de variação (U+FE0F) nem sequências ZWJ — justamente os que mais falham.
+
 **Outros**
 - Modo claro/escuro com transição suave e preferência salva
 - Logos oficiais e vetorizadas do Instagram e do WhatsApp, nas cores originais das marcas

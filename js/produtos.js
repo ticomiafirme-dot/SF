@@ -106,6 +106,12 @@ const LOJA = {
   instagram: 'https://www.instagram.com/sf_parfums',
   instagramHandle: '@sf_parfums',
 
+  /* Emojis na mensagem enviada ao WhatsApp.
+     Deixe false para uma mensagem que aparece igual em qualquer aparelho —
+     alguns celulares e fontes trocam emoji por um losango (◆).
+     Mude para true se no seu WhatsApp os emojis aparecerem corretamente. */
+  mensagemComEmojis: false,
+
   /* Vendedores — o cliente escolhe um antes de abrir o WhatsApp. */
   vendedores: [
     { id:'brayan', nome:'Brayan Frigo',     telefone:'5517997838730', exibicao:'(17) 99783-8730' },
