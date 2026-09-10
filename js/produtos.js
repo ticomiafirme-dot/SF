@@ -73,15 +73,14 @@ const LOJA = {
      A senha não fica guardada aqui: guardamos apenas o hash SHA-256 dela.
      Para trocar a senha, entre no painel → Configurações → Alterar senha.
 
-     Senha inicial: sfparfums2024   (troque no primeiro acesso)
-
      ⚠️  LIMITE IMPORTANTE: esta trava roda no navegador, então protege contra
      acesso casual, mas não contra alguém que saiba ler o código-fonte da
      página. Proteção de verdade exige validação em servidor — veja o README.
   --------------------------------------------------------------------------- */
   admin: {
     usuario: 'admin',
-    /* SHA-256 de "sfparfums2024" */
+    /* Hash SHA-256 da senha. A senha em texto não fica em lugar nenhum:
+       este arquivo é baixado pelo navegador e qualquer visitante pode lê-lo. */
     senhaHash: 'ad151b55b43eb168d93fcb2dce8c1dffe44c20f4b3fd5b222dd2238af895553b',
     minutosSessao: 120
   }

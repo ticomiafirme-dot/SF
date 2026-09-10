@@ -54,7 +54,9 @@
     <form id="formLogin" novalidate>
       <div class="campo">
         <label for="inUsuario">Usuário</label>
-        <input type="text" id="inUsuario" autocomplete="username" placeholder="admin" value="admin" required>
+        <!-- Só existe um usuário, então o campo fica fixo: evita erro de digitação
+             e a dúvida de achar que dá para entrar com outro nome. -->
+        <input type="text" id="inUsuario" autocomplete="username" value="admin" readonly required aria-readonly="true">
       </div>
       <div class="campo">
         <label for="inSenha">Senha</label>
@@ -73,7 +75,6 @@
       </button>
     </form>
 
-    <p class="dica-login">Primeiro acesso? Usuário <b>admin</b> e senha <b>sfparfums2024</b>.<br>Troque a senha em Configurações depois de entrar.</p>
     <a href="index.html" class="voltar-loja">&larr; Voltar para a loja</a>
   </div>
 </section>

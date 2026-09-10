@@ -15,10 +15,15 @@ A loja é gerenciada por um painel próprio, sem mexer em código:
 
 ```
 abra  admin.html  no navegador
-usuário: admin      senha: sfparfums2024
+usuário: admin   (fixo — só existe este)
 ```
 
-**Troque a senha no primeiro acesso** (Configurações → Alterar senha).
+A senha é combinada fora daqui e trocada em Configurações → Alterar senha.
+
+⚠️ **Nunca escreva a senha em texto neste repositório nem em nenhum arquivo do
+site.** `admin.html`, `js/produtos.js` e este README ficam publicamente
+acessíveis na hospedagem — qualquer visitante consegue abri-los. No código só
+fica o hash SHA-256, que não revela a senha.
 
 O que dá para fazer por lá:
 

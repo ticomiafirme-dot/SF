@@ -659,15 +659,35 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
 .campo{margin-bottom:18px}
 .campo > label{display:block;font-size:.76rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--texto-suave);margin-bottom:8px}
 .campo label .obrig{color:var(--erro)}
-.campo > input,.campo > select,.campo > textarea,.campo-cep > input,.campo-duplo .campo > input{
+/* Alcança o campo em qualquer profundidade — alguns ficam dentro de um
+   invólucro, como a senha (botão de olho) e o CEP (botão buscar). Rádios e
+   caixas de seleção ficam de fora porque têm visual próprio; era só por causa
+   deles que este seletor havia sido restringido a filhos diretos, o que
+   deixava os campos aninhados sem estilo e brancos no modo escuro. */
+.campo input:not([type="radio"]):not([type="checkbox"]),
+.campo select,
+.campo textarea{
   width:100%;padding:13px 15px;border-radius:var(--raio-sm);
-  border:1.5px solid var(--borda);background:var(--superficie);
+  border:1.5px solid var(--borda);background:var(--superficie);color:var(--texto);
   font-size:.95rem;transition:border-color var(--t),box-shadow var(--t),background var(--t);
 }
-.campo > input:focus,.campo > select:focus,.campo > textarea:focus,.campo-cep > input:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px var(--ouro-suave)}
-.campo > input::placeholder{color:var(--texto-fraco)}
-.campo > input:disabled,.campo > select:disabled{background:var(--bg-alt);color:var(--texto-fraco);cursor:not-allowed}
-.campo.invalido > input,.campo.invalido > select,.campo.invalido .campo-cep > input{border-color:var(--erro);box-shadow:0 0 0 3px rgba(192,57,43,.12)}
+.campo input:not([type="radio"]):not([type="checkbox"]):focus,
+.campo select:focus,
+.campo textarea:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px var(--ouro-suave)}
+.campo input::placeholder,.campo textarea::placeholder{color:var(--texto-fraco)}
+.campo input:disabled,.campo select:disabled{background:var(--bg-alt);color:var(--texto-fraco);cursor:not-allowed}
+.campo.invalido input:not([type="radio"]):not([type="checkbox"]),
+.campo.invalido select{border-color:var(--erro);box-shadow:0 0 0 3px rgba(192,57,43,.12)}
+
+/* O navegador força fundo claro em campos preenchidos automaticamente, o que
+   quebraria o modo escuro mesmo com o CSS acima. */
+.campo input:-webkit-autofill,
+.campo input:-webkit-autofill:hover,
+.campo input:-webkit-autofill:focus{
+  -webkit-box-shadow:0 0 0 1000px var(--superficie) inset;
+  -webkit-text-fill-color:var(--texto);
+  caret-color:var(--texto);
+}
 .campo .erro-msg{display:none;font-size:.78rem;color:var(--erro);margin-top:6px;font-weight:500}
 .campo.invalido .erro-msg{display:block}
 .campo .dica{font-size:.78rem;color:var(--texto-fraco);margin-top:6px}

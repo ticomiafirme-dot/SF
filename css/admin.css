@@ -24,6 +24,13 @@ body.admin{background:var(--bg-fundo)}
 .caixa-login .sub{font-size:.92rem;color:var(--texto-suave);margin-bottom:26px}
 .caixa-login .campo{text-align:left}
 .caixa-login form .btn{margin-top:6px}
+/* O usuário é fixo: fica com aparência de campo travado, sem parecer defeito. */
+.caixa-login #inUsuario{
+  background:var(--superficie-2);color:var(--texto-suave);
+  cursor:default;border-style:dashed;
+}
+.caixa-login #inUsuario:focus{border-color:var(--borda);box-shadow:none}
+
 .campo-senha{position:relative;display:flex;align-items:center}
 .campo-senha input{width:100%;padding-right:46px}
 .campo-senha button{
