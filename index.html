@@ -88,11 +88,8 @@
 
       <nav class="nav-desktop" aria-label="Navegação principal">
         <a href="#inicio" class="link-secao ativo" data-secao="inicio">Início</a>
-        <a href="#catalogo" class="link-cat" data-cat="arabes">Árabes</a>
-        <a href="#catalogo" class="link-cat" data-cat="brand-collection">Brand Collection</a>
-        <a href="#catalogo" class="link-cat" data-cat="importados">Importados</a>
-        <a href="#catalogo" class="link-cat" data-cat="victorias-secret">Victoria's Secret</a>
-        <a href="#catalogo" class="link-cat" data-cat="todos">Todos os produtos</a>
+        <!-- Categorias entram aqui pelo JS, a partir do que está cadastrado -->
+        <span id="navCategorias" style="display:contents"></span>
       </nav>
 
       <div class="busca-header d-none d-lg-flex">
@@ -138,11 +135,8 @@
       <input type="search" id="buscaDrawer" placeholder="Buscar perfume..." aria-label="Buscar perfume" autocomplete="off">
     </div>
     <a href="#inicio" class="link-nav link-secao" data-bs-dismiss="offcanvas"><span>Início</span><span class="emoji">🏠</span></a>
-    <a href="#catalogo" class="link-nav link-cat" data-cat="arabes" data-bs-dismiss="offcanvas"><span>Árabes</span><span class="emoji">🕌</span></a>
-    <a href="#catalogo" class="link-nav link-cat" data-cat="brand-collection" data-bs-dismiss="offcanvas"><span>Brand Collection</span><span class="emoji">🎯</span></a>
-    <a href="#catalogo" class="link-nav link-cat" data-cat="importados" data-bs-dismiss="offcanvas"><span>Importados</span><span class="emoji">✈️</span></a>
-    <a href="#catalogo" class="link-nav link-cat" data-cat="victorias-secret" data-bs-dismiss="offcanvas"><span>Victoria's Secret</span><span class="emoji">💗</span></a>
-    <a href="#catalogo" class="link-nav link-cat" data-cat="todos" data-bs-dismiss="offcanvas"><span>Todos os produtos</span><span class="emoji">✨</span></a>
+    <!-- Categorias entram aqui pelo JS -->
+    <div id="menuCategorias" style="display:contents"></div>
   </div>
   <div class="drawer-rodape">
     <a href="#" id="linkInstagramMenu" class="btn btn-contorno btn-bloco" target="_blank" rel="noopener">
@@ -161,14 +155,14 @@
   <div class="container">
     <span class="hero-selo">✦ Perfumaria SF PARFUMS ✦</span>
     <h1>O perfume certo<br>deixa uma <em class="texto-ouro">assinatura</em>.</h1>
-    <p class="sub">Árabes, Brand Collection, importados e Victoria's Secret reunidos em um só lugar. Escolha, monte seu pedido e finalize em segundos pelo WhatsApp.</p>
+    <p class="sub" id="heroSub">Escolha, monte seu pedido e finalize em segundos pelo WhatsApp.</p>
     <div class="hero-cta">
       <a href="#catalogo" class="btn btn-ouro btn-lg link-cat" data-cat="todos">Ver todos os produtos</a>
       <a href="#categorias" class="btn btn-contorno btn-lg">Explorar categorias</a>
     </div>
     <div class="hero-provas">
       <div><strong class="texto-ouro" id="statTotal">0</strong><span>Perfumes</span></div>
-      <div><strong class="texto-ouro">4</strong><span>Categorias</span></div>
+      <div><strong class="texto-ouro" id="statCategorias">0</strong><span>Categorias</span></div>
       <div><strong class="texto-ouro">5</strong><span>Cidades c/ frete grátis</span></div>
       <div><strong class="texto-ouro">2</strong><span>Vendedores</span></div>
     </div>
@@ -180,7 +174,7 @@
   <div class="container">
     <div class="secao-topo">
       <span class="secao-etiqueta">Nossas linhas</span>
-      <h2>Quatro coleções, um só padrão</h2>
+      <h2 id="tituloCategorias">Nossas coleções</h2>
       <p>Cada linha foi selecionada para um tipo de cliente. Escolha a sua e explore o catálogo completo.</p>
       <div class="divisor-ouro"></div>
     </div>
@@ -283,13 +277,7 @@
 
       <div>
         <h4>Categorias</h4>
-        <ul>
-          <li><a href="#catalogo" class="link-cat" data-cat="arabes">Árabes</a></li>
-          <li><a href="#catalogo" class="link-cat" data-cat="brand-collection">Brand Collection</a></li>
-          <li><a href="#catalogo" class="link-cat" data-cat="importados">Importados</a></li>
-          <li><a href="#catalogo" class="link-cat" data-cat="victorias-secret">Victoria's Secret</a></li>
-          <li><a href="#catalogo" class="link-cat" data-cat="todos">Todos os produtos</a></li>
-        </ul>
+        <ul id="rodapeCategorias"></ul>
       </div>
 
       <div>
@@ -311,7 +299,10 @@
       <span>Demais cidades: frete a combinar com o vendedor.</span>
     </div>
 
-    <p class="credito">Site desenvolvido pro <b>PRAG</b></p>
+    <p class="credito">
+      Site desenvolvido pro <b>PRAG</b>
+      <a href="admin.html" class="link-admin" title="Área do administrador">Administrar loja</a>
+    </p>
   </div>
 </footer>
 
@@ -575,7 +566,14 @@
 <div class="toasts" id="toasts" aria-live="polite" aria-atomic="true"></div>
 
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Firebase (opcional): só age quando FIREBASE_CONFIG está preenchido em
+     js/produtos.js. Sem configuração, a loja funciona pelo próprio navegador. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 <script src="js/produtos.js"></script>
+<script src="js/dados.js"></script>
 <script src="js/loja.js"></script>
 <script src="js/carrinho.js"></script>
 <script src="js/checkout.js"></script>

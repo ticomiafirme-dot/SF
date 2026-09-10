@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Painel — SF PARFUMS</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='84' font-family='Georgia,serif' fill='%23c9a227'>SF</text></svg>">
+</head>
+<body class="admin">
+
+<!-- ===================================================== ÍCONES -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><linearGradient id="gradOuro" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#f0d489"/><stop offset="35%" stop-color="#c9a227"/>
+    <stop offset="62%" stop-color="#a8801a"/><stop offset="100%" stop-color="#f5dc9c"/>
+  </linearGradient></defs>
+  <symbol id="logoSF" viewBox="0 0 210 96">
+    <text x="105" y="60" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="66" font-weight="700" fill="url(#gradOuro)" letter-spacing="1">SF</text>
+    <text x="105" y="86" text-anchor="middle" font-family="Jost,Helvetica,Arial,sans-serif" font-size="17" fill="currentColor" letter-spacing="7.5">PARFUMS</text>
+  </symbol>
+  <symbol id="monograma" viewBox="0 0 120 70"><text x="60" y="55" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="58" font-weight="700" fill="currentColor">SF</text></symbol>
+  <symbol id="ic-sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M19.1 4.9l-1.7 1.7M6.6 17.4l-1.7 1.7"/></symbol>
+  <symbol id="ic-lua" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="ic-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="ic-fechar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="ic-lixo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol>
+  <symbol id="ic-lapis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l11-11-4-4L4 16v4z"/><path d="M14.5 5.5l4 4"/></symbol>
+  <symbol id="ic-copia" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></symbol>
+  <symbol id="ic-olho" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+  <symbol id="ic-olho-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l16 16"/><path d="M9.7 5.7A9.6 9.6 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17 17 0 0 1-2.6 3.4"/><path d="M6.3 7.9A16.7 16.7 0 0 0 2 12s3.6 6.5 10 6.5c1 0 2-.2 2.8-.4"/><path d="M9.6 9.9a2.8 2.8 0 0 0 3.9 3.9"/></symbol>
+  <symbol id="ic-mais" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="ic-foto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 16l-5.5-5L3 20"/></symbol>
+  <symbol id="ic-sair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l-5-5 5-5"/><path d="M15 12H5"/></symbol>
+  <symbol id="ic-loja" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l2-5h14l2 5"/><path d="M4 9v11h16V9"/><path d="M3 9h18"/><path d="M9 20v-6h6v6"/></symbol>
+  <symbol id="ic-cadeado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="11" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></symbol>
+  <symbol id="ic-busca" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></symbol>
+</svg>
+
+<!-- ============================================================= LOGIN -->
+<section class="tela-login" id="telaLogin">
+  <div class="caixa-login">
+    <svg class="marca" viewBox="0 0 210 96" role="img" aria-label="SF PARFUMS"><use href="#logoSF"></use></svg>
+    <h1>Área do administrador</h1>
+    <p class="sub">Entre para gerenciar os perfumes da loja.</p>
+
+    <form id="formLogin" novalidate>
+      <div class="campo">
+        <label for="inUsuario">Usuário</label>
+        <input type="text" id="inUsuario" autocomplete="username" placeholder="admin" value="admin" required>
+      </div>
+      <div class="campo">
+        <label for="inSenha">Senha</label>
+        <div class="campo-senha">
+          <input type="password" id="inSenha" autocomplete="current-password" placeholder="Digite sua senha" required>
+          <button type="button" id="verSenha" aria-label="Mostrar ou esconder a senha">
+            <svg viewBox="0 0 24 24"><use href="#ic-olho"></use></svg>
+          </button>
+        </div>
+      </div>
+      <div class="alerta-box aviso" id="erroLogin" hidden>
+        <span class="ic">⚠️</span><div id="erroLoginTexto"></div>
+      </div>
+      <button type="submit" class="btn btn-ouro btn-bloco btn-lg">
+        <svg width="17" height="17" viewBox="0 0 24 24"><use href="#ic-cadeado"></use></svg> Entrar no painel
+      </button>
+    </form>
+
+    <p class="dica-login">Primeiro acesso? Usuário <b>admin</b> e senha <b>sfparfums2024</b>.<br>Troque a senha em Configurações depois de entrar.</p>
+    <a href="index.html" class="voltar-loja">&larr; Voltar para a loja</a>
+  </div>
+</section>
+
+<!-- ============================================================= PAINEL -->
+<div class="painel" id="painel" hidden>
+
+  <!-- ------------------------------------------------------ BARRA LATERAL -->
+  <aside class="lateral" id="lateral">
+    <div class="lateral-topo">
+      <svg class="marca" viewBox="0 0 210 96" role="img" aria-label="SF PARFUMS"><use href="#logoSF"></use></svg>
+      <button type="button" class="icone-btn d-lg-none" id="fecharLateral" aria-label="Fechar menu">
+        <svg viewBox="0 0 24 24"><use href="#ic-fechar"></use></svg>
+      </button>
+    </div>
+
+    <nav class="lateral-menu">
+      <span class="grupo-rotulo">Principal</span>
+      <button type="button" class="item-menu ativo" data-tela="dashboard"><span class="ic">📊</span> Dashboard</button>
+      <button type="button" class="item-menu" data-tela="produtos"><span class="ic">🧴</span> Perfumes <span class="conta" id="contaProdutos">0</span></button>
+      <button type="button" class="item-menu" data-tela="estilos"><span class="ic">🏷️</span> Estilos <span class="conta" id="contaEstilos">0</span></button>
+
+      <span class="grupo-rotulo">Cadastrar</span>
+      <button type="button" class="item-menu" data-acao="novo-produto"><span class="ic">➕</span> Adicionar perfume</button>
+      <button type="button" class="item-menu" data-acao="novo-estilo"><span class="ic">✨</span> Novo estilo</button>
+
+      <span class="grupo-rotulo">Edição rápida</span>
+      <button type="button" class="item-menu" data-tela="precos"><span class="ic">💰</span> Gerenciar preços</button>
+      <button type="button" class="item-menu" data-tela="imagens"><span class="ic">🖼️</span> Gerenciar imagens</button>
+      <button type="button" class="item-menu" data-tela="descricoes"><span class="ic">📝</span> Gerenciar descrições</button>
+
+      <span class="grupo-rotulo">Sistema</span>
+      <button type="button" class="item-menu" data-tela="config"><span class="ic">⚙️</span> Configurações</button>
+      <a href="index.html" target="_blank" rel="noopener" class="item-menu"><span class="ic">🛒</span> Visualizar loja</a>
+    </nav>
+
+    <div class="lateral-base">
+      <div class="status-dados" id="statusDados"></div>
+      <button type="button" class="btn btn-neutro btn-bloco btn-sm" id="btnSair">
+        <svg width="15" height="15" viewBox="0 0 24 24"><use href="#ic-sair"></use></svg> Sair do painel
+      </button>
+    </div>
+  </aside>
+  <div class="veu-lateral" id="veuLateral"></div>
+
+  <!-- ---------------------------------------------------------- CONTEÚDO -->
+  <main class="conteudo">
+    <header class="topo-painel">
+      <button type="button" class="icone-btn d-lg-none" id="abrirLateral" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24"><use href="#ic-menu"></use></svg>
+      </button>
+      <div class="titulo-tela">
+        <h1 id="tituloTela">Dashboard</h1>
+        <p id="subtituloTela">Visão geral da sua loja.</p>
+      </div>
+      <div class="acoes-topo">
+        <button type="button" class="icone-btn" id="btnTema" aria-label="Alternar tema" title="Modo claro/escuro">
+          <svg id="iconeTema" viewBox="0 0 24 24"><use href="#ic-lua"></use></svg>
+        </button>
+        <a href="index.html" target="_blank" rel="noopener" class="btn btn-contorno btn-sm d-none d-sm-inline-flex">
+          <svg width="15" height="15" viewBox="0 0 24 24"><use href="#ic-loja"></use></svg> Ver loja
+        </a>
+      </div>
+    </header>
+
+    <div class="corpo-painel">
+
+      <!-- ================================================ DASHBOARD -->
+      <section class="tela ativa" data-tela="dashboard">
+        <div class="cartoes" id="cartoesDashboard"></div>
+
+        <div class="bloco">
+          <div class="bloco-cab">
+            <h2>Começar agora</h2>
+            <p>Os atalhos que você mais vai usar no dia a dia.</p>
+          </div>
+          <div class="atalhos">
+            <button type="button" class="atalho" data-acao="novo-produto">
+              <span class="ic">➕</span>
+              <span class="txt"><b>Adicionar perfume</b><small>Cadastrar um produto novo na loja</small></span>
+            </button>
+            <button type="button" class="atalho" data-acao="novo-estilo">
+              <span class="ic">✨</span>
+              <span class="txt"><b>Novo estilo</b><small>Criar uma categoria, ex.: Importados Plus</small></span>
+            </button>
+            <button type="button" class="atalho" data-tela="precos">
+              <span class="ic">💰</span>
+              <span class="txt"><b>Alterar preços</b><small>Mudar vários preços de uma vez</small></span>
+            </button>
+            <button type="button" class="atalho" data-tela="imagens">
+              <span class="ic">🖼️</span>
+              <span class="txt"><b>Trocar fotos</b><small>Atualizar as imagens dos perfumes</small></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="bloco">
+          <div class="bloco-cab">
+            <h2>Precisam de atenção</h2>
+            <p>Itens que talvez estejam incompletos ou fora do ar.</p>
+          </div>
+          <div id="listaAtencao"></div>
+        </div>
+
+        <div class="bloco">
+          <div class="bloco-cab">
+            <h2>Cadastrados por estilo</h2>
+            <p>Quantos perfumes há em cada categoria da loja.</p>
+          </div>
+          <div id="resumoEstilos"></div>
+        </div>
+      </section>
+
+      <!-- ================================================= PERFUMES -->
+      <section class="tela" data-tela="produtos">
+        <div class="barra-acoes">
+          <div class="busca-admin">
+            <svg viewBox="0 0 24 24"><use href="#ic-busca"></use></svg>
+            <input type="search" id="buscaAdmin" placeholder="Buscar perfume pelo nome..." autocomplete="off">
+          </div>
+          <select id="filtroEstilo" class="sel-admin" aria-label="Filtrar por estilo"></select>
+          <select id="filtroStatus" class="sel-admin" aria-label="Filtrar por situação">
+            <option value="todos">Todas as situações</option>
+            <option value="publicado">Somente publicados</option>
+            <option value="oculto">Somente ocultos</option>
+            <option value="esgotado">Somente esgotados</option>
+          </select>
+          <button type="button" class="btn btn-ouro" data-acao="novo-produto">
+            <svg width="16" height="16" viewBox="0 0 24 24"><use href="#ic-mais"></use></svg> Adicionar perfume
+          </button>
+        </div>
+        <div id="tabelaProdutos"></div>
+      </section>
+
+      <!-- =================================================== ESTILOS -->
+      <section class="tela" data-tela="estilos">
+        <div class="barra-acoes">
+          <p class="explica">Estilos são as categorias da loja. Ao criar um estilo novo, ele aparece automaticamente no menu e na página inicial.</p>
+          <button type="button" class="btn btn-ouro" data-acao="novo-estilo">
+            <svg width="16" height="16" viewBox="0 0 24 24"><use href="#ic-mais"></use></svg> Adicionar novo estilo
+          </button>
+        </div>
+        <div id="listaEstilos"></div>
+      </section>
+
+      <!-- ==================================================== PREÇOS -->
+      <section class="tela" data-tela="precos">
+        <div class="alerta-box info">
+          <span class="ic">💡</span>
+          <div>Altere os valores e clique em <b>Salvar alterações</b>. Deixe o preço promocional em branco quando não houver oferta.</div>
+        </div>
+        <div id="tabelaPrecos"></div>
+      </section>
+
+      <!-- =================================================== IMAGENS -->
+      <section class="tela" data-tela="imagens">
+        <div class="alerta-box info">
+          <span class="ic">💡</span>
+          <div>Clique em <b>Alterar foto</b> para escolher uma imagem do seu aparelho. Ela é ajustada automaticamente e salva na hora.</div>
+        </div>
+        <div id="gradeImagens"></div>
+      </section>
+
+      <!-- ================================================ DESCRIÇÕES -->
+      <section class="tela" data-tela="descricoes">
+        <div class="alerta-box info">
+          <span class="ic">💡</span>
+          <div>Escreva a descrição que o cliente vai ler na página do perfume e clique em <b>Salvar alterações</b>.</div>
+        </div>
+        <div id="tabelaDescricoes"></div>
+      </section>
+
+      <!-- ============================================= CONFIGURAÇÕES -->
+      <section class="tela" data-tela="config">
+        <div class="bloco">
+          <div class="bloco-cab"><h2>Alterar senha do painel</h2>
+            <p>Recomendado no primeiro acesso. A nova senha vale só neste aparelho até você atualizar o arquivo do site.</p></div>
+          <form id="formSenha" class="form-estreito" novalidate>
+            <div class="campo"><label for="senhaAtual">Senha atual</label>
+              <input type="password" id="senhaAtual" autocomplete="current-password"><p class="erro-msg">Senha atual incorreta.</p></div>
+            <div class="campo"><label for="senhaNova">Nova senha</label>
+              <input type="password" id="senhaNova" autocomplete="new-password"><p class="erro-msg">Use ao menos 8 caracteres.</p></div>
+            <div class="campo"><label for="senhaConfirma">Repita a nova senha</label>
+              <input type="password" id="senhaConfirma" autocomplete="new-password"><p class="erro-msg">As senhas não são iguais.</p></div>
+            <button type="submit" class="btn btn-ouro">Salvar nova senha</button>
+          </form>
+          <div id="saidaHash" hidden>
+            <div class="alerta-box ok" style="margin-top:18px">
+              <span class="ic">✅</span>
+              <div><b>Senha alterada neste aparelho.</b><br>
+                Para valer em todos os aparelhos, peça a quem cuida do site para trocar
+                <code>senhaHash</code> em <code>js/produtos.js</code> por este valor:</div>
+            </div>
+            <textarea class="saida-codigo" id="hashNovo" readonly rows="2"></textarea>
+            <button type="button" class="btn btn-contorno btn-sm" id="copiarHash">Copiar código</button>
+          </div>
+        </div>
+
+        <div class="bloco">
+          <div class="bloco-cab"><h2>Backup do catálogo</h2>
+            <p>Guarde uma cópia de segurança dos seus produtos ou restaure de um arquivo salvo.</p></div>
+          <div class="botoes-linha">
+            <button type="button" class="btn btn-contorno" id="btnBaixarBackup">Baixar cópia de segurança</button>
+            <button type="button" class="btn btn-contorno" id="btnRestaurarBackup">Restaurar de um arquivo</button>
+            <input type="file" id="arquivoBackup" accept="application/json,.json" hidden>
+          </div>
+        </div>
+
+        <div class="bloco">
+          <div class="bloco-cab"><h2>Publicação automática</h2>
+            <p>Onde os dados da loja estão sendo guardados.</p></div>
+          <div id="infoArmazenamento"></div>
+        </div>
+
+        <div class="bloco perigo">
+          <div class="bloco-cab"><h2>Recomeçar do zero</h2>
+            <p>Apaga tudo que você cadastrou e volta ao catálogo de exemplo. Não há como desfazer.</p></div>
+          <button type="button" class="btn btn-neutro" id="btnResetar">Apagar tudo e recomeçar</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ================================================= MODAL: PERFUME -->
+<div class="modal fade" id="modalProduto" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="cab-modal">
+        <div>
+          <h2 id="tituloModalProduto">Adicionar perfume</h2>
+          <p id="subModalProduto">Preencha as informações e clique em Publicar.</p>
+        </div>
+        <button type="button" class="icone-btn" data-bs-dismiss="modal" aria-label="Fechar">
+          <svg viewBox="0 0 24 24"><use href="#ic-fechar"></use></svg>
+        </button>
+      </div>
+
+      <div class="modal-body corpo-form">
+        <form id="formProduto" novalidate>
+          <input type="hidden" id="prodId">
+          <div class="form-duas-colunas">
+
+            <!-- coluna de campos -->
+            <div class="col-campos">
+              <fieldset>
+                <legend>Informações principais</legend>
+                <div class="campo">
+                  <label for="prodNome">Nome do perfume <span class="obrig">*</span></label>
+                  <input type="text" id="prodNome" placeholder="Ex.: Lattafa Asad" required>
+                  <p class="erro-msg"></p>
+                </div>
+                <div class="campo-duplo">
+                  <div class="campo">
+                    <label for="prodMarca">Marca</label>
+                    <input type="text" id="prodMarca" placeholder="Ex.: Lattafa">
+                  </div>
+                  <div class="campo">
+                    <label for="prodCategoria">Estilo / categoria <span class="obrig">*</span></label>
+                    <select id="prodCategoria" required></select>
+                    <p class="erro-msg"></p>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Preços</legend>
+                <div class="campo-duplo">
+                  <div class="campo">
+                    <label for="prodPreco">Preço normal <span class="obrig">*</span></label>
+                    <input type="text" id="prodPreco" inputmode="decimal" placeholder="189,90" required>
+                    <p class="erro-msg"></p>
+                  </div>
+                  <div class="campo">
+                    <label for="prodPromo">Preço promocional</label>
+                    <input type="text" id="prodPromo" inputmode="decimal" placeholder="deixe vazio se não houver">
+                    <p class="erro-msg"></p>
+                    <p class="dica">Quando preenchido, o preço normal aparece riscado na loja.</p>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Fotos</legend>
+                <div class="campo">
+                  <label>Foto principal <span class="obrig">*</span></label>
+                  <div class="area-foto" id="areaFotoPrincipal">
+                    <div class="previa-foto" id="previaPrincipal"></div>
+                    <div class="acoes-foto">
+                      <button type="button" class="btn btn-contorno btn-sm" id="btnEscolherFoto">
+                        <svg width="15" height="15" viewBox="0 0 24 24"><use href="#ic-foto"></use></svg>
+                        <span id="rotuloBtnFoto">Escolher foto</span>
+                      </button>
+                      <button type="button" class="btn btn-neutro btn-sm" id="btnRemoverFoto" hidden>Remover</button>
+                      <input type="file" id="arquivoPrincipal" accept="image/*" hidden>
+                      <p class="dica">Do seu computador ou celular. A imagem é ajustada automaticamente.</p>
+                    </div>
+                  </div>
+                  <details class="por-url">
+                    <summary>Ou usar o endereço de uma imagem da internet</summary>
+                    <input type="url" id="prodImagemUrl" placeholder="https://...">
+                    <button type="button" class="btn btn-contorno btn-sm" id="btnUsarUrl">Usar este endereço</button>
+                  </details>
+                  <p class="erro-msg" id="erroFoto"></p>
+                </div>
+
+                <div class="campo">
+                  <label>Fotos adicionais <span class="opcional">(opcional)</span></label>
+                  <div class="tira-extras" id="tiraExtras"></div>
+                  <button type="button" class="btn btn-contorno btn-sm" id="btnAddExtra">
+                    <svg width="15" height="15" viewBox="0 0 24 24"><use href="#ic-mais"></use></svg> Adicionar outra foto
+                  </button>
+                  <input type="file" id="arquivoExtra" accept="image/*" multiple hidden>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Detalhes <span class="opcional">(opcional)</span></legend>
+                <div class="campo">
+                  <label for="prodDescricao">Descrição</label>
+                  <textarea id="prodDescricao" rows="4" placeholder="Conte como é o perfume, para que ocasião serve, quanto tempo fixa..."></textarea>
+                </div>
+                <div class="campo">
+                  <label for="prodNotas">Fragrância / notas</label>
+                  <input type="text" id="prodNotas" placeholder="Ex.: Baunilha, âmbar, madeira de oud">
+                </div>
+                <div class="campo-duplo">
+                  <div class="campo">
+                    <label for="prodGenero">Gênero</label>
+                    <select id="prodGenero">
+                      <option value="">Não informar</option>
+                      <option>Masculino</option><option>Feminino</option><option>Unissex</option>
+                    </select>
+                  </div>
+                  <div class="campo">
+                    <label for="prodVolume">Tamanho / volume</label>
+                    <input type="text" id="prodVolume" placeholder="Ex.: 100ml">
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Disponibilidade</legend>
+                <div class="campo-duplo">
+                  <div class="campo">
+                    <label for="prodEstoque">Está disponível?</label>
+                    <select id="prodEstoque">
+                      <option value="sim">Disponível para venda</option>
+                      <option value="nao">Esgotado</option>
+                    </select>
+                  </div>
+                  <div class="campo">
+                    <label for="prodQuantidade">Quantidade em estoque</label>
+                    <input type="text" id="prodQuantidade" inputmode="numeric" placeholder="deixe vazio se não controla">
+                  </div>
+                </div>
+                <div class="campo">
+                  <label for="prodAtivo">Situação na loja</label>
+                  <select id="prodAtivo">
+                    <option value="sim">Publicado — clientes veem</option>
+                    <option value="nao">Oculto — só você vê</option>
+                  </select>
+                </div>
+                <label class="marca-caixa">
+                  <input type="checkbox" id="prodDestaque">
+                  <span>Mostrar na vitrine <b>Destaques</b> da página inicial</span>
+                </label>
+              </fieldset>
+            </div>
+
+            <!-- coluna de pré-visualização -->
+            <div class="col-previa">
+              <div class="previa-fixa">
+                <span class="previa-rotulo">Pré-visualização</span>
+                <p class="previa-nota">É assim que o cliente vai ver o produto na loja.</p>
+                <div id="previaCard"></div>
+                <div class="alerta-box info" id="avisoPreviaOculto" hidden style="margin-top:14px">
+                  <span class="ic">🙈</span><div>Como está <b>oculto</b>, este card não vai aparecer para os clientes.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <div class="pe-modal">
+        <button type="button" class="btn btn-neutro" data-bs-dismiss="modal">Cancelar</button>
+        <div class="pe-direita">
+          <button type="button" class="btn btn-contorno" id="btnSalvarRascunho">Salvar como oculto</button>
+          <button type="button" class="btn btn-ouro btn-lg" id="btnPublicarProduto">Publicar na loja</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== MODAL: ESTILO -->
+<div class="modal fade" id="modalEstilo" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="cab-modal">
+        <div>
+          <h2 id="tituloModalEstilo">Novo estilo</h2>
+          <p>Crie uma categoria nova para organizar seus perfumes.</p>
+        </div>
+        <button type="button" class="icone-btn" data-bs-dismiss="modal" aria-label="Fechar">
+          <svg viewBox="0 0 24 24"><use href="#ic-fechar"></use></svg>
+        </button>
+      </div>
+
+      <div class="modal-body corpo-form">
+        <form id="formEstilo" novalidate>
+          <input type="hidden" id="estiloSlug">
+          <div class="campo">
+            <label for="estiloNome">Nome do estilo <span class="obrig">*</span></label>
+            <input type="text" id="estiloNome" placeholder="Ex.: Importados Plus" required>
+            <p class="erro-msg"></p>
+            <p class="dica">É o nome que aparece no menu da loja.</p>
+          </div>
+          <div class="campo-duplo">
+            <div class="campo">
+              <label for="estiloIcone">Símbolo</label>
+              <input type="text" id="estiloIcone" maxlength="4" placeholder="✨">
+              <p class="dica">Um emoji que representa o estilo.</p>
+            </div>
+            <div class="campo">
+              <label for="estiloAtivo">Situação</label>
+              <select id="estiloAtivo">
+                <option value="sim">Ativo — aparece na loja</option>
+                <option value="nao">Inativo — escondido</option>
+              </select>
+            </div>
+          </div>
+          <div class="campo">
+            <label for="estiloChamada">Frase curta</label>
+            <input type="text" id="estiloChamada" placeholder="Ex.: Originais das melhores marcas">
+          </div>
+          <div class="campo">
+            <label for="estiloDescricao">Descrição</label>
+            <textarea id="estiloDescricao" rows="3" placeholder="Explique o que o cliente encontra neste estilo."></textarea>
+          </div>
+          <div class="campo">
+            <label>Imagem de capa <span class="opcional">(opcional)</span></label>
+            <div class="area-foto">
+              <div class="previa-foto" id="previaEstilo"></div>
+              <div class="acoes-foto">
+                <button type="button" class="btn btn-contorno btn-sm" id="btnFotoEstilo">
+                  <svg width="15" height="15" viewBox="0 0 24 24"><use href="#ic-foto"></use></svg> Escolher capa
+                </button>
+                <button type="button" class="btn btn-neutro btn-sm" id="btnRemoverCapa" hidden>Remover</button>
+                <input type="file" id="arquivoEstilo" accept="image/*" hidden>
+                <p class="dica">Aparece de fundo no card do estilo, na página inicial.</p>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="pe-modal">
+        <button type="button" class="btn btn-neutro" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-ouro btn-lg" id="btnSalvarEstilo">Salvar estilo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== MODAL: CONFIRMAÇÃO -->
+<div class="modal fade" id="modalConfirma" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="corpo-confirma">
+        <div class="ic-confirma" id="icConfirma">⚠️</div>
+        <h2 id="tituloConfirma">Tem certeza?</h2>
+        <p id="textoConfirma"></p>
+      </div>
+      <div class="pe-modal">
+        <button type="button" class="btn btn-neutro btn-bloco" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-ouro btn-bloco" id="btnConfirmar">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="js/produtos.js"></script>
+<script src="js/dados.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -150,12 +150,14 @@ ul{margin:0;padding:0;list-style:none}
   transition:background var(--t),border-color var(--t),box-shadow var(--t);
 }
 .header.rolou{box-shadow:var(--sombra)}
-.header-linha{display:flex;align-items:center;gap:18px;height:74px}
+/* Com muitos estilos cadastrados o menu quebra em duas linhas; o cabeçalho
+   cresce em vez de comprimir os itens até ficarem ilegíveis. */
+.header-linha{display:flex;align-items:center;gap:18px;min-height:74px;padding-block:9px}
 
 .logo{display:flex;align-items:center;gap:11px;flex-shrink:0}
 .logo svg{height:44px;width:auto;display:block}
 
-.nav-desktop{display:flex;align-items:center;gap:2px;margin-inline:auto}
+.nav-desktop{display:flex;align-items:center;flex-wrap:wrap;justify-content:center;gap:2px 0;margin-inline:auto}
 .nav-desktop a{
   position:relative;padding:9px 14px;border-radius:8px;
   font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
@@ -190,7 +192,9 @@ ul{margin:0;padding:0;list-style:none}
 @keyframes pulsa{0%,100%{transform:scale(1)}45%{transform:scale(1.45)}}
 
 /* Busca no header */
-.busca-header{position:relative;display:flex;align-items:center;max-width:230px;flex:1}
+/* Base fixa e largura mínima: com o menu ocupando mais espaço, a busca
+   encolhia até virar só o ícone. */
+.busca-header{position:relative;display:flex;align-items:center;flex:0 1 220px;min-width:172px}
 .busca-header svg{position:absolute;left:14px;width:17px;height:17px;color:var(--texto-fraco);pointer-events:none}
 .busca-header input{
   width:100%;padding:11px 14px 11px 40px;border-radius:999px;
@@ -205,10 +209,10 @@ ul{margin:0;padding:0;list-style:none}
 @media (max-width:1080px){
   .nav-desktop{display:none}
   .btn-menu{display:grid}
-  .busca-header{max-width:none}
+  .busca-header{flex:1 1 auto;min-width:150px}
 }
 @media (max-width:720px){
-  .header-linha{height:64px;gap:10px}
+  .header-linha{min-height:64px;gap:10px}
   .logo svg{height:36px}
   .busca-header{display:none}
   .acoes{margin-left:auto}
@@ -803,3 +807,51 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
   .card-prod .info{padding:12px 12px 14px}
   .card-prod .preco{font-size:1.22rem}
 }
+
+/* =============================================================================
+   23. ELEMENTOS VINDOS DO PAINEL ADMINISTRATIVO
+   Capa de estilo, galeria de fotos, ficha técnica e acesso ao painel.
+============================================================================= */
+
+/* Capa opcional do estilo, cadastrada no painel */
+.card-cat{position:relative}
+.card-cat .capa-cat{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:.13;z-index:-1;
+}
+[data-tema="escuro"] .card-cat .capa-cat{opacity:.2}
+
+/* Galeria de fotos no detalhe do produto */
+.detalhe-lado{display:flex;flex-direction:column;background:var(--superficie-2)}
+.detalhe-lado .detalhe-img{flex:1}
+.miniaturas{
+  display:flex;gap:8px;padding:10px;overflow-x:auto;
+  border-top:1px solid var(--borda);background:var(--superficie);
+}
+.mini-foto{
+  width:56px;height:56px;flex-shrink:0;padding:0;overflow:hidden;
+  border:2px solid var(--borda);border-radius:var(--raio-sm);
+  transition:border-color var(--t),transform var(--t);
+}
+.mini-foto img{width:100%;height:100%;object-fit:cover}
+.mini-foto:hover{transform:translateY(-2px)}
+.mini-foto.ativa{border-color:var(--ouro)}
+
+/* Ficha técnica: volume, gênero e notas */
+.fichas{display:grid;gap:8px;margin-top:2px}
+.fichas li{
+  display:flex;justify-content:space-between;gap:14px;align-items:baseline;
+  padding-bottom:8px;border-bottom:1px dashed var(--borda);font-size:.88rem;
+}
+.fichas li:last-child{border-bottom:none;padding-bottom:0}
+.fichas li span{color:var(--texto-fraco);flex-shrink:0}
+.fichas li b{font-weight:600;text-align:right}
+
+/* Acesso discreto ao painel, no rodapé */
+.link-admin{
+  display:inline-block;margin-left:14px;padding:3px 12px;border-radius:999px;
+  border:1px solid var(--borda-forte);color:var(--texto-fraco);
+  font-size:.72rem;letter-spacing:.06em;transition:all var(--t);
+}
+.link-admin:hover{border-color:var(--ouro-borda);color:var(--ouro);background:var(--ouro-suave)}
+@media (max-width:520px){.link-admin{display:block;margin:12px auto 0;width:max-content}}

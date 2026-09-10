@@ -1,0 +1,273 @@
+{
+  "versao": 2,
+  "geradoEm": "2026-09-10T00:25:14.008Z",
+  "categorias": [
+    {
+      "slug": "arabes",
+      "nome": "Árabes",
+      "icone": "🕌",
+      "ativo": true,
+      "ordem": 0,
+      "chamada": "Fixação intensa e rastro marcante",
+      "descricao": "Perfumes de inspiração oriental, com alta concentração, projeção poderosa e horas de fixação. Para quem quer ser lembrado."
+    },
+    {
+      "slug": "brand-collection",
+      "nome": "Brand Collection",
+      "icone": "🎯",
+      "ativo": true,
+      "ordem": 1,
+      "chamada": "Inspirações dos grandes clássicos",
+      "descricao": "Fragrâncias inspiradas nos perfumes mais desejados do mundo, com excelente custo-benefício e qualidade comprovada."
+    },
+    {
+      "slug": "importados",
+      "nome": "Importados",
+      "icone": "✈️",
+      "ativo": true,
+      "ordem": 2,
+      "chamada": "Originais das melhores maisons",
+      "descricao": "Perfumes importados originais, lacrados e selecionados. A sofisticação das grandes marcas internacionais."
+    },
+    {
+      "slug": "victorias-secret",
+      "nome": "Victoria's Secret",
+      "icone": "💗",
+      "ativo": true,
+      "ordem": 3,
+      "chamada": "Feminilidade, brilho e sedução",
+      "descricao": "A linha completa Victoria’s Secret: body splash, cremes e fragrâncias que marcaram gerações."
+    }
+  ],
+  "produtos": [
+    {
+      "id": "ar-001",
+      "nome": "[EXEMPLO] Árabe Intenso 01",
+      "categoria": "arabes",
+      "preco": 229.9,
+      "precoPromocional": 189.9,
+      "volume": "100ml",
+      "destaque": true,
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "ar-002",
+      "nome": "[EXEMPLO] Árabe Intenso 02",
+      "categoria": "arabes",
+      "preco": 179.9,
+      "volume": "100ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "ar-003",
+      "nome": "[EXEMPLO] Árabe Intenso 03",
+      "categoria": "arabes",
+      "preco": 219.9,
+      "volume": "100ml",
+      "destaque": true,
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "ar-004",
+      "nome": "[EXEMPLO] Árabe Intenso 04",
+      "categoria": "arabes",
+      "preco": 159.9,
+      "volume": "50ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "ar-005",
+      "nome": "[EXEMPLO] Árabe Intenso 05",
+      "categoria": "arabes",
+      "preco": 299.9,
+      "precoPromocional": 249.9,
+      "volume": "100ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "ar-006",
+      "nome": "[EXEMPLO] Árabe Intenso 06",
+      "categoria": "arabes",
+      "preco": 139.9,
+      "volume": "100ml",
+      "estoque": false,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "bc-001",
+      "nome": "[EXEMPLO] Brand Collection 01",
+      "categoria": "brand-collection",
+      "preco": 89.9,
+      "precoPromocional": 69.9,
+      "volume": "25ml",
+      "destaque": true,
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "bc-002",
+      "nome": "[EXEMPLO] Brand Collection 02",
+      "categoria": "brand-collection",
+      "preco": 69.9,
+      "volume": "25ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "bc-003",
+      "nome": "[EXEMPLO] Brand Collection 03",
+      "categoria": "brand-collection",
+      "preco": 69.9,
+      "volume": "25ml",
+      "destaque": true,
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "bc-004",
+      "nome": "[EXEMPLO] Brand Collection 04",
+      "categoria": "brand-collection",
+      "preco": 79.9,
+      "volume": "25ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "bc-005",
+      "nome": "[EXEMPLO] Brand Collection 05",
+      "categoria": "brand-collection",
+      "preco": 69.9,
+      "volume": "25ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "bc-006",
+      "nome": "[EXEMPLO] Brand Collection 06",
+      "categoria": "brand-collection",
+      "preco": 69.9,
+      "volume": "25ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "im-001",
+      "nome": "[EXEMPLO] Importado 01",
+      "categoria": "importados",
+      "preco": 529.9,
+      "precoPromocional": 449.9,
+      "volume": "100ml",
+      "destaque": true,
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "im-002",
+      "nome": "[EXEMPLO] Importado 02",
+      "categoria": "importados",
+      "preco": 389.9,
+      "volume": "100ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "im-003",
+      "nome": "[EXEMPLO] Importado 03",
+      "categoria": "importados",
+      "preco": 529.9,
+      "volume": "100ml",
+      "destaque": true,
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "im-004",
+      "nome": "[EXEMPLO] Importado 04",
+      "categoria": "importados",
+      "preco": 299.9,
+      "volume": "50ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "im-005",
+      "nome": "[EXEMPLO] Importado 05",
+      "categoria": "importados",
+      "preco": 479.9,
+      "volume": "100ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "im-006",
+      "nome": "[EXEMPLO] Importado 06",
+      "categoria": "importados",
+      "preco": 359.9,
+      "volume": "100ml",
+      "estoque": false,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "vs-001",
+      "nome": "[EXEMPLO] Victoria’s Secret 01",
+      "categoria": "victorias-secret",
+      "preco": 159.9,
+      "precoPromocional": 129.9,
+      "volume": "250ml",
+      "destaque": true,
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "vs-002",
+      "nome": "[EXEMPLO] Victoria’s Secret 02",
+      "categoria": "victorias-secret",
+      "preco": 119.9,
+      "volume": "250ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "vs-003",
+      "nome": "[EXEMPLO] Victoria’s Secret 03",
+      "categoria": "victorias-secret",
+      "preco": 139.9,
+      "volume": "250ml",
+      "destaque": true,
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "vs-004",
+      "nome": "[EXEMPLO] Victoria’s Secret 04",
+      "categoria": "victorias-secret",
+      "preco": 99.9,
+      "volume": "75ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "vs-005",
+      "nome": "[EXEMPLO] Victoria’s Secret 05",
+      "categoria": "victorias-secret",
+      "preco": 149.9,
+      "volume": "250ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    },
+    {
+      "id": "vs-006",
+      "nome": "[EXEMPLO] Victoria’s Secret 06",
+      "categoria": "victorias-secret",
+      "preco": 109.9,
+      "volume": "250ml",
+      "estoque": true,
+      "descricao": "Produto de demonstração. Cadastre os produtos reais pelo painel administrativo."
+    }
+  ]
+}

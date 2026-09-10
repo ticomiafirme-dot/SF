@@ -34,7 +34,7 @@ function normalizar(texto) {
 }
 
 function categoriaPorSlug(slug) {
-  return CATEGORIAS.find(c => c.slug === slug) || null;
+  return DB.categoriaPorSlug(slug);
 }
 
 function nomeCategoria(slug) {
@@ -43,8 +43,12 @@ function nomeCategoria(slug) {
 }
 
 function produtoPorId(id) {
-  return CATALOGO.produtos.find(p => p.id === id) || null;
+  return DB.produtoPorId(id);
 }
+
+/* Atalhos para o catálogo visível ao cliente (só itens ativos). */
+const listaCategorias = () => DB.categorias();
+const listaProdutos   = () => DB.produtos();
 
 /** Imagem do produto ou placeholder com o monograma da marca. */
 function midiaProduto(produto, classe = '') {
@@ -110,13 +114,13 @@ function iniciarTema() {
 
 /* --------------------------------------------------------- CARD DE PRODUTO */
 function cardProduto(p) {
-  const emOferta = p.precoAntigo && p.precoAntigo > p.preco;
+  const riscado = DB.precoRiscado(p);
   const semEstoque = p.estoque === false;
   return `
   <div class="col">
     <article class="card-prod" data-id="${esc(p.id)}">
       <div class="moldura" data-abrir="${esc(p.id)}" role="button" tabindex="0" aria-label="Ver detalhes de ${esc(p.nome)}">
-        ${emOferta ? '<span class="selo oferta">Oferta</span>' : ''}
+        ${riscado ? '<span class="selo oferta">Oferta</span>' : ''}
         ${semEstoque ? '<span class="selo esgotado">Esgotado</span>' : ''}
         ${midiaProduto(p)}
         <span class="olhada">Ver detalhes</span>
@@ -126,8 +130,8 @@ function cardProduto(p) {
         <h3>${esc(p.nome)}</h3>
         ${p.volume ? `<span class="vol">${esc(p.volume)}</span>` : ''}
         <div class="precos">
-          <span class="preco">${brl(p.preco)}</span>
-          ${emOferta ? `<span class="preco-antigo">${brl(p.precoAntigo)}</span>` : ''}
+          <span class="preco">${brl(DB.precoFinal(p))}</span>
+          ${riscado ? `<span class="preco-antigo">${brl(riscado)}</span>` : ''}
         </div>
         <div class="acoes-card">
           <button type="button" class="btn btn-contorno" data-abrir="${esc(p.id)}">Detalhes</button>
@@ -142,17 +146,61 @@ function cardProduto(p) {
   </div>`;
 }
 
+/* -------------------------------------- NAVEGAÇÃO MONTADA PELAS CATEGORIAS */
+/* Menu do topo, menu do celular e lista do rodapé saem todos daqui, então um
+   estilo novo cadastrado no painel aparece na navegação sem tocar no HTML. */
+function renderNavegacao() {
+  const cats = listaCategorias();
+
+  const menuTopo = $('#navCategorias');
+  if (menuTopo) {
+    menuTopo.innerHTML = cats.map(c =>
+      `<a href="#catalogo" class="link-cat" data-cat="${esc(c.slug)}">${esc(c.nome)}</a>`).join('')
+      + '<a href="#catalogo" class="link-cat" data-cat="todos">Todos os produtos</a>';
+  }
+
+  const menuCelular = $('#menuCategorias');
+  if (menuCelular) {
+    menuCelular.innerHTML = cats.map(c =>
+      `<a href="#catalogo" class="link-nav link-cat" data-cat="${esc(c.slug)}" data-bs-dismiss="offcanvas">
+         <span>${esc(c.nome)}</span><span class="emoji">${esc(c.icone)}</span>
+       </a>`).join('')
+      + `<a href="#catalogo" class="link-nav link-cat" data-cat="todos" data-bs-dismiss="offcanvas">
+           <span>Todos os produtos</span><span class="emoji">✨</span>
+         </a>`;
+  }
+
+  const rodape = $('#rodapeCategorias');
+  if (rodape) {
+    rodape.innerHTML = cats.map(c =>
+      `<li><a href="#catalogo" class="link-cat" data-cat="${esc(c.slug)}">${esc(c.nome)}</a></li>`).join('')
+      + '<li><a href="#catalogo" class="link-cat" data-cat="todos">Todos os produtos</a></li>';
+  }
+}
+
 /* ------------------------------------------------------- RENDER CATEGORIAS */
 function renderCategorias() {
   const alvo = $('#gradeCategorias');
   if (!alvo) return;
-  alvo.innerHTML = CATEGORIAS.map(cat => {
-    const qtd = CATALOGO.produtos.filter(p => p.categoria === cat.slug).length;
+  const cats = listaCategorias();
+
+  // O título acompanha a quantidade de estilos cadastrados no painel.
+  const NUMEROS = ['Nenhuma', 'Uma', 'Duas', 'Três', 'Quatro', 'Cinco', 'Seis', 'Sete', 'Oito', 'Nove', 'Dez'];
+  const titulo = $('#tituloCategorias');
+  if (titulo) {
+    titulo.textContent = cats.length >= 2 && cats.length <= 10
+      ? `${NUMEROS[cats.length]} coleções, um só padrão`
+      : 'Nossas coleções';
+  }
+
+  alvo.innerHTML = cats.map(cat => {
+    const qtd = DB.contarProdutos(cat.slug);
     return `
     <div class="col">
       <article class="card-cat">
-        <span class="emoji">${cat.icone}</span>
-        <span class="chamada">${esc(cat.chamada)}</span>
+        ${cat.imagem ? `<img class="capa-cat" src="${esc(cat.imagem)}" alt="${esc(cat.nome)}" loading="lazy">` : ''}
+        <span class="emoji">${esc(cat.icone)}</span>
+        ${cat.chamada ? `<span class="chamada">${esc(cat.chamada)}</span>` : ''}
         <h3>${esc(cat.nome)}</h3>
         <p>${esc(cat.descricao)}</p>
         <span class="qtd">${qtd} ${qtd === 1 ? 'produto disponível' : 'produtos disponíveis'}</span>
@@ -166,8 +214,12 @@ function renderCategorias() {
 function renderDestaques() {
   const alvo = $('#gradeDestaques');
   if (!alvo) return;
-  let destaques = CATALOGO.produtos.filter(p => p.destaque && p.estoque !== false);
-  if (destaques.length === 0) destaques = CATALOGO.produtos.filter(p => p.estoque !== false).slice(0, 8);
+  const visiveis = listaProdutos();
+  // Mais recentes primeiro: um produto recém-marcado como destaque no painel
+  // entra na vitrine na hora, em vez de ficar de fora pelo limite de 8.
+  const porRecencia = (a, b) => String(b.atualizadoEm || '').localeCompare(String(a.atualizadoEm || ''));
+  let destaques = visiveis.filter(p => p.destaque && p.estoque !== false).sort(porRecencia);
+  if (destaques.length === 0) destaques = visiveis.filter(p => p.estoque !== false).slice(0, 8);
   alvo.innerHTML = destaques.slice(0, 8).map(cardProduto).join('');
   const secao = $('#destaques');
   if (secao) secao.hidden = destaques.length === 0;
@@ -177,11 +229,9 @@ function renderDestaques() {
 function renderChips() {
   const alvo = $('#chipsCategorias');
   if (!alvo) return;
-  const itens = [{ slug: 'todos', nome: 'Todos' }, ...CATEGORIAS];
+  const itens = [{ slug: 'todos', nome: 'Todos' }, ...listaCategorias()];
   alvo.innerHTML = itens.map(c => {
-    const qtd = c.slug === 'todos'
-      ? CATALOGO.produtos.length
-      : CATALOGO.produtos.filter(p => p.categoria === c.slug).length;
+    const qtd = DB.contarProdutos(c.slug);
     return `<button type="button" class="chip${c.slug === SF.filtro ? ' ativo' : ''}"
               data-chip="${c.slug}" aria-pressed="${c.slug === SF.filtro}">${esc(c.nome)} (${qtd})</button>`;
   }).join('');
@@ -190,7 +240,7 @@ function renderChips() {
 /* --------------------------------------------- FILTRAR / ORDENAR / RENDER */
 function produtosVisiveis() {
   const termo = normalizar(SF.termo).trim();
-  let lista = CATALOGO.produtos.filter(p => {
+  let lista = listaProdutos().filter(p => {
     const passaCategoria = SF.filtro === 'todos' || p.categoria === SF.filtro;
     if (!passaCategoria) return false;
     if (!termo) return true;
@@ -200,8 +250,8 @@ function produtosVisiveis() {
   });
 
   const ordens = {
-    menor: (a, b) => a.preco - b.preco,
-    maior: (a, b) => b.preco - a.preco,
+    menor: (a, b) => DB.precoFinal(a) - DB.precoFinal(b),
+    maior: (a, b) => DB.precoFinal(b) - DB.precoFinal(a),
     az:    (a, b) => a.nome.localeCompare(b.nome, 'pt-BR'),
     za:    (a, b) => b.nome.localeCompare(a.nome, 'pt-BR')
   };
@@ -289,23 +339,36 @@ function abrirProduto(id) {
   if (!p) return;
   SF.produtoAberto = { id: p.id, qtd: 1 };
 
-  const emOferta = p.precoAntigo && p.precoAntigo > p.preco;
+  const riscado = DB.precoRiscado(p);
+  const valor = DB.precoFinal(p);
   const semEstoque = p.estoque === false;
-  const desconto = emOferta ? Math.round((1 - p.preco / p.precoAntigo) * 100) : 0;
+  const desconto = riscado ? Math.round((1 - valor / riscado) * 100) : 0;
+  const galeria = [p.imagem, ...(p.imagensExtras || [])].filter(Boolean);
 
   $('#modalProdutoCorpo').innerHTML = `
     <div class="detalhe">
-      <div class="detalhe-img">${midiaProduto(p)}</div>
+      <div class="detalhe-lado">
+        <div class="detalhe-img" id="detalheFoto">${midiaProduto(p)}</div>
+        ${galeria.length > 1 ? `<div class="miniaturas">${galeria.map((src, i) =>
+          `<button type="button" class="mini-foto${i === 0 ? ' ativa' : ''}" data-foto="${esc(src)}" aria-label="Foto ${i + 1}">
+             <img src="${esc(src)}" alt="" loading="lazy">
+           </button>`).join('')}</div>` : ''}
+      </div>
       <div class="detalhe-info">
         <span class="cat">${esc(nomeCategoria(p.categoria))}</span>
         <h2>${esc(p.nome)}</h2>
-        ${p.volume ? `<span class="vol">Volume: ${esc(p.volume)}</span>` : ''}
+        ${p.marca ? `<span class="vol">Marca: ${esc(p.marca)}</span>` : ''}
         <div class="detalhe-precos">
-          <span class="preco">${brl(p.preco)}</span>
-          ${emOferta ? `<span class="preco-antigo">${brl(p.precoAntigo)}</span>
+          <span class="preco">${brl(valor)}</span>
+          ${riscado ? `<span class="preco-antigo">${brl(riscado)}</span>
                         <span class="economia">−${desconto}%</span>` : ''}
         </div>
         ${p.descricao ? `<p class="desc">${esc(p.descricao)}</p>` : ''}
+        ${(p.volume || p.genero || p.notas) ? `<ul class="fichas">
+          ${p.volume ? `<li><span>Volume</span><b>${esc(p.volume)}</b></li>` : ''}
+          ${p.genero ? `<li><span>Gênero</span><b>${esc(p.genero)}</b></li>` : ''}
+          ${p.notas  ? `<li><span>Notas</span><b>${esc(p.notas)}</b></li>` : ''}
+        </ul>` : ''}
         <div class="detalhe-sep"></div>
 
         ${semEstoque ? `
@@ -320,7 +383,7 @@ function abrirProduto(id) {
               <input type="number" id="modalQtd" value="1" min="1" max="99" aria-label="Quantidade">
               <button type="button" id="modalMais" aria-label="Aumentar quantidade">+</button>
             </div>
-            <span class="detalhe-total">Total: <b id="modalTotal">${brl(p.preco)}</b></span>
+            <span class="detalhe-total">Total: <b id="modalTotal">${brl(valor)}</b></span>
           </div>`}
 
         <div class="detalhe-acoes">
@@ -344,13 +407,19 @@ function abrirProduto(id) {
       let q = Math.min(99, Math.max(1, parseInt(campo.value, 10) || 1));
       campo.value = q;
       SF.produtoAberto.qtd = q;
-      $('#modalTotal').textContent = brl(p.preco * q);
+      $('#modalTotal').textContent = brl(valor * q);
       $('#modalMenos').disabled = q <= 1;
     };
     $('#modalMenos').addEventListener('click', () => { campo.value = (parseInt(campo.value, 10) || 1) - 1; atualizar(); });
     $('#modalMais').addEventListener('click',  () => { campo.value = (parseInt(campo.value, 10) || 1) + 1; atualizar(); });
     campo.addEventListener('input', atualizar);
     atualizar();
+
+    $$('.mini-foto').forEach(btn => btn.addEventListener('click', () => {
+      $$('.mini-foto').forEach(b => b.classList.remove('ativa'));
+      btn.classList.add('ativa');
+      $('#detalheFoto').innerHTML = `<img src="${btn.dataset.foto}" alt="">`;
+    }));
 
     $('#modalAdicionar').addEventListener('click', () => {
       Carrinho.adicionar(p.id, SF.produtoAberto.qtd);
@@ -396,17 +465,33 @@ function preencherDadosDaLoja() {
       </li>`).join('');
   }
 
+  // Subtítulo do hero cita os estilos realmente cadastrados
+  const heroSub = $('#heroSub');
+  if (heroSub) {
+    const nomes = listaCategorias().map(c => c.nome);
+    const lista = nomes.length > 4
+      ? `${nomes.slice(0, 3).join(', ')} e mais ${nomes.length - 3} linhas`
+      : nomes.length > 1
+        ? `${nomes.slice(0, -1).join(', ')} e ${nomes[nomes.length - 1]}`
+        : nomes[0] || '';
+    heroSub.textContent = lista
+      ? `${lista} reunidos em um só lugar. Escolha, monte seu pedido e finalize em segundos pelo WhatsApp.`
+      : 'Escolha, monte seu pedido e finalize em segundos pelo WhatsApp.';
+  }
+
   // Estatística do hero e ano do rodapé
   const stat = $('#statTotal');
-  if (stat) stat.textContent = CATALOGO.produtos.length;
+  if (stat) stat.textContent = DB.contarProdutos('todos');
+  const statCats = $('#statCategorias');
+  if (statCats) statCats.textContent = listaCategorias().length;
   const ano = $('#ano');
   if (ano) ano.textContent = new Date().getFullYear();
 
-  // Aviso de catálogo em demonstração
-  if (CATALOGO.modoDemonstracao) {
-    const faixa = $('#faixaDemo');
-    if (faixa) faixa.hidden = false;
-  }
+  // Aviso de catálogo em demonstração: some assim que existir produto real.
+  const soExemplos = listaProdutos().length > 0
+    && listaProdutos().every(p => /^\[EXEMPLO\]/.test(p.nome));
+  const faixa = $('#faixaDemo');
+  if (faixa) faixa.hidden = !soExemplos;
 }
 
 /* ----------------------------------------------------------------- EVENTOS */
@@ -474,21 +559,44 @@ function ligarEventos() {
   }));
 }
 
+/* --------------------------------------------------------------- REDESENHO */
+/* Chamado no início e a cada mudança vinda do painel. */
+function redesenhar() {
+  // Se o estilo filtrado foi desativado ou removido, volta para "Todos".
+  if (SF.filtro !== 'todos' && !categoriaPorSlug(SF.filtro)) SF.filtro = 'todos';
+  preencherDadosDaLoja();
+  renderNavegacao();
+  renderCategorias();
+  renderDestaques();
+  renderChips();
+  renderCatalogo();
+}
+
 /* ------------------------------------------------------------------- INÍCIO */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   SF.modais.produto  = new bootstrap.Modal($('#modalProduto'));
   SF.modais.checkout = new bootstrap.Modal($('#modalCheckout'));
   SF.modais.vendedor = new bootstrap.Modal($('#modalVendedor'));
   SF.drawerCarrinho  = new bootstrap.Offcanvas($('#carrinhoDrawer'));
 
   iniciarTema();
-  preencherDadosDaLoja();
-  renderCategorias();
-  renderDestaques();
-  renderChips();
-  renderCatalogo();
   ligarEventos();
+
+  // Catálogo vem da camada de dados (painel administrativo / Firebase).
+  try {
+    await DB.iniciar();
+  } catch (e) {
+    console.error('[SF] Falha ao carregar o catálogo:', e);
+  }
+  redesenhar();
+
+  // Publicou algo no painel? A loja se atualiza sozinha, sem recarregar.
+  DB.aoMudar(() => {
+    redesenhar();
+    Carrinho.render();
+  });
 
   Carrinho.iniciar();
   Checkout.iniciar();
+  document.body.classList.add('carregado');
 });

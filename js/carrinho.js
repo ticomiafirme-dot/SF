@@ -32,14 +32,14 @@ const Carrinho = (() => {
 
   const totalValor = () => itens.reduce((s, i) => {
     const p = produtoPorId(i.id);
-    return p ? s + p.preco * i.qtd : s;
+    return p ? s + DB.precoFinal(p) * i.qtd : s;
   }, 0);
 
   /** Itens do carrinho já combinados com os dados do produto. */
   const detalhado = () => itens
     .map(i => {
       const p = produtoPorId(i.id);
-      return p ? { ...p, qtd: i.qtd, subtotal: p.preco * i.qtd } : null;
+      return p ? { ...p, qtd: i.qtd, preco: DB.precoFinal(p), subtotal: DB.precoFinal(p) * i.qtd } : null;
     })
     .filter(Boolean);
 
