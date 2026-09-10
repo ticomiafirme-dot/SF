@@ -31,12 +31,12 @@
      5. Copie os valores do objeto firebaseConfig que aparece e cole abaixo.
 ============================================================================= */
 const FIREBASE_CONFIG = {
-  apiKey:            '',
-  authDomain:        '',
-  projectId:         '',   // ← enquanto este campo estiver vazio, usa só o navegador
-  storageBucket:     '',
-  messagingSenderId: '',
-  appId:             ''
+  apiKey:            'AIzaSyCc2kWtxSNImWafgUaVFWfmJqTLKJIzZuM',
+  authDomain:        'sf-parfums.firebaseapp.com',
+  projectId:         'sf-parfums',
+  storageBucket:     'sf-parfums.firebasestorage.app',
+  messagingSenderId: '131308581632',
+  appId:             '1:131308581632:web:f343e1ff7f1db5d1e4f9e5'
 };
 
 /* =============================================================================

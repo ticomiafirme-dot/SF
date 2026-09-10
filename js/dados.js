@@ -241,6 +241,13 @@ const DB = (() => {
     if (!firebase.apps || !firebase.apps.length) firebase.initializeApp(cfg);
     fs = firebase.firestore();
 
+    // Detecta sozinho quando a rede do visitante (proxy corporativo, escolar,
+    // certas redes móveis) bloqueia o canal de streaming padrão do Firestore,
+    // e alterna para long-polling automaticamente. Recomendação oficial do
+    // Firebase para essa situação — não força long-polling para todos, só
+    // ativa quando a conexão normal falha.
+    fs.settings({ experimentalAutoDetectLongPolling: true });
+
     // Emulador local — só para testar o projeto na própria máquina.
     if (cfg.emulador) {
       const [host, porta] = String(cfg.emulador).split(':');
@@ -303,6 +310,7 @@ const DB = (() => {
     const app = firebase.initializeApp(cfg, nome);
     try {
       const banco = app.firestore();
+      banco.settings({ experimentalAutoDetectLongPolling: true });
       if (cfg.emulador) {
         const [h, p] = String(cfg.emulador).split(':');
         banco.useEmulator(h || '127.0.0.1', Number(p) || 8080);
