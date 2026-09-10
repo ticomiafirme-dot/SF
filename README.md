@@ -41,6 +41,9 @@ O menu do topo é enxuto de propósito — apenas **Início** e **Catálogo** �
 cabeçalho não crescer a cada estilo novo. A navegação por estilo acontece nos
 filtros do catálogo e no menu do celular.
 
+Tudo que o painel salva vai para o servidor e aparece em **qualquer aparelho** —
+veja *Onde os dados ficam guardados*.
+
 O catálogo que vem de fábrica é de **demonstração** (itens marcados `[EXEMPLO]`),
 com uma faixa de aviso no topo do site que desaparece assim que você cadastra
 produtos reais. Os quatro sites de referência originais não puderam ser lidos:
@@ -57,57 +60,76 @@ usar o endereço de uma imagem da internet.
 
 ---
 
-## Publicação automática (Firebase)
+## Onde os dados ficam guardados
 
-Enquanto o Firebase não estiver configurado, o painel salva **apenas no navegador
-de quem administra**. As alterações funcionam e ficam guardadas, mas os clientes
-não as veem. O painel avisa isso de forma clara em Configurações.
+O catálogo **não fica no navegador**. Ele fica no Firestore (banco do Firebase),
+e é de lá que a loja lê. É isso que faz um produto cadastrado no computador
+aparecer no celular de qualquer cliente.
 
-Para publicar para todos os clientes, de qualquer aparelho, configure o Firestore
-(gratuito para este volume). Abra `js/produtos.js` e preencha `FIREBASE_CONFIG`.
+```
+Painel administrativo  →  Firestore  →  Loja pública (qualquer aparelho)
+```
 
-**Passo a passo:**
+Três garantias no código:
 
-1. Em [console.firebase.google.com](https://console.firebase.google.com), clique em
-   *Adicionar projeto*.
-2. No projeto, vá em **Firestore Database → Criar banco de dados**, escolha
-   *Iniciar no modo de produção* e selecione a região.
-3. Na aba **Regras**, cole as regras abaixo e publique.
-4. Clique na engrenagem → **Configurações do projeto** → em *Seus aplicativos*,
-   escolha o ícone da web (`</>`) e registre o app.
-5. Copie os valores do `firebaseConfig` que aparece para `FIREBASE_CONFIG` em
-   `js/produtos.js`.
+- **O servidor é a fonte de verdade.** Uma alteração só aparece na tela depois
+  que o Firestore confirmou a gravação. Se a gravação falhar, o painel mostra o
+  erro em vez de dizer "salvo com sucesso".
+- **O `localStorage` é apenas cache de tela.** Serve para a loja abrir instantânea
+  com o último catálogo conhecido, e é sempre substituído pelo que vem do
+  servidor. Ele nunca é a origem dos dados quando há conexão.
+- **A loja pública nunca grava.** Só o painel pode criar a carga inicial do banco;
+  sem isso, qualquer visitante estaria escrevendo no banco da loja.
 
-**Regras do Firestore** — qualquer visitante lê o catálogo, mas ninguém escreve
-sem estar autenticado:
+As alterações chegam por escuta em tempo real: publicar um produto no painel faz
+ele aparecer nas lojas abertas **sem recarregar a página**.
+
+---
+
+## Conectar ao servidor
+
+Não é preciso editar código. Entre no painel e ele mesmo conduz:
+
+1. Painel → aparece a tela **Conecte a loja ao servidor** (ou Configurações →
+   *Configurar servidor*)
+2. Siga os 5 passos na tela para criar o projeto gratuito no Firebase
+3. O botão **Ver as regras** entrega as regras do Firestore prontas para copiar
+4. Cole a configuração que o Firebase mostrou e clique em **Testar e conectar**
+
+O painel testa a conexão de verdade — faz uma leitura e uma gravação — e só
+confirma se as duas funcionarem. Se as regras estiverem bloqueando, ele diz isso
+com todas as letras em vez de falhar em silêncio.
+
+### O passo que falta para valer em todos os aparelhos
+
+Ao conectar, a configuração fica salva **naquele navegador**, para você testar na
+hora. Para que todos os aparelhos usem o mesmo banco, ela precisa estar no arquivo
+do site: o painel entrega o bloco `FIREBASE_CONFIG` pronto, com botão de copiar.
+Cole em `js/produtos.js`, publique o site de novo e pronto.
+
+Enquanto isso não for feito, o painel mostra um aviso permanente em faixa laranja:
+**MODO DE TESTE — os clientes não veem nada disto.** É possível seguir sem
+conectar para experimentar, mas o aviso não sai da tela.
+
+### Regras do Firestore
 
 ```
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{colecao}/{doc} {
-      allow read: if colecao in ['categorias', 'produtos'];
-      allow write: if request.auth != null;
-    }
+    match /categorias/{doc} { allow read: if true; allow write: if true; }
+    match /produtos/{doc}   { allow read: if true; allow write: if true; }
+    match /_teste_conexao/{doc} { allow read, write: if true; }
   }
 }
 ```
 
-⚠️ Com estas regras, a escrita exige login do Firebase Authentication, que **não
-está integrado ao painel** — o login do painel é local (veja Segurança). Para o
-painel escrever, use uma destas opções:
-
-- **Recomendado:** ativar *Authentication → Anônimo* no Firebase e trocar
-  `allow write: if request.auth != null` por uma verificação de UID específico,
-  autorizando só o aparelho do administrador.
-- **Mais simples, menos seguro:** `allow write: if true` — funciona de imediato,
-  mas qualquer pessoa que descubra o endereço do projeto pode gravar. Só use para
-  testar.
-
-**Não pude testar o caminho do Firebase daqui**: o domínio `gstatic.com`, que serve
-o SDK, é bloqueado pela política de rede deste ambiente. Todo o restante foi
-testado por completo no modo navegador. Quando o SDK não carrega, o sistema cai
-no modo local automaticamente, sem erro — comportamento verificado.
+⚠️ Estas regras deixam **qualquer pessoa gravar** no banco. Elas funcionam de
+imediato e são adequadas para começar, mas quem descobrir o endereço do projeto
+pode alterar o catálogo. Para fechar isso, ative **Authentication → Anônimo** no
+Firebase e troque `allow write: if true` por uma verificação do UID do
+administrador. Isso exige integrar o Firebase Authentication ao painel, que hoje
+usa login local — veja Segurança.
 
 ---
 

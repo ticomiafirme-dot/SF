@@ -577,9 +577,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   iniciarTema();
   ligarEventos();
 
-  // Catálogo vem da camada de dados (painel administrativo / Firebase).
+  // Catálogo vem da camada de dados. A loja nunca grava no banco:
+  // semear é tarefa exclusiva do painel administrativo.
   try {
-    await DB.iniciar();
+    await DB.iniciar({ permitirSemear: false });
   } catch (e) {
     console.error('[SF] Falha ao carregar o catálogo:', e);
   }

@@ -419,3 +419,72 @@ fieldset legend{
 .barra-estilo .cima span{color:var(--texto-fraco);font-size:.82rem}
 .barra-estilo .trilha{height:7px;border-radius:4px;background:var(--borda);overflow:hidden}
 .barra-estilo .preenche{height:100%;background:var(--ouro-grad);border-radius:4px;transition:width .5s ease}
+
+/* =============================================================================
+   12. CONEXÃO COM O SERVIDOR
+   Sem servidor, o painel salva só neste aparelho. O aviso precisa ser
+   impossível de ignorar: foi essa falta que fez o administrador acreditar
+   que estava publicando quando nada saía do computador dele.
+============================================================================= */
+.faixa-desconectado{
+  position:sticky;top:0;z-index:45;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 20px;
+  background:repeating-linear-gradient(45deg,#b0721a,#b0721a 14px,#9a6216 14px,#9a6216 28px);
+  color:#fff;
+}
+.faixa-desconectado .ic{font-size:1.3rem;flex-shrink:0}
+.faixa-desconectado .txt{flex:1;min-width:200px;line-height:1.45}
+.faixa-desconectado .txt b{display:block;font-size:.9rem;letter-spacing:.02em}
+.faixa-desconectado .txt span{font-size:.83rem;opacity:.92}
+.faixa-desconectado .btn{flex-shrink:0;background:#fff;color:#8a5712;box-shadow:none}
+.faixa-desconectado .btn:hover{background:#fff;transform:translateY(-1px)}
+@media (max-width:575.98px){
+  .faixa-desconectado{padding:11px 15px;gap:10px}
+  .faixa-desconectado .btn{width:100%}
+}
+
+.tela-conexao{
+  min-height:100vh;min-height:100dvh;display:grid;place-items:start center;
+  padding:34px 20px 60px;
+  background:
+    radial-gradient(900px 480px at 82% -8%,var(--ouro-suave),transparent 60%),
+    var(--bg-alt);
+}
+.caixa-conexao{
+  width:100%;max-width:620px;
+  background:var(--superficie);border:1px solid var(--borda);
+  border-radius:var(--raio-lg);padding:clamp(24px,4vw,38px);box-shadow:var(--sombra-alta);
+}
+.caixa-conexao .marca{height:52px;width:auto;margin:0 auto 20px;display:block}
+.caixa-conexao h1{font-size:1.55rem;text-align:center;margin-bottom:8px}
+.caixa-conexao .sub{font-size:.94rem;color:var(--texto-suave);text-align:center;margin-bottom:26px;line-height:1.6}
+
+.passos-conexao{counter-reset:passo;display:grid;gap:11px;margin:0 0 18px;padding:0;list-style:none}
+.passos-conexao li{
+  counter-increment:passo;position:relative;padding:11px 14px 11px 46px;
+  border:1px solid var(--borda);border-radius:var(--raio-sm);
+  background:var(--superficie-2);font-size:.9rem;line-height:1.55;
+}
+.passos-conexao li::before{
+  content:counter(passo);position:absolute;left:13px;top:11px;
+  width:23px;height:23px;border-radius:50%;display:grid;place-items:center;
+  background:var(--ouro-grad);color:#12100a;font-size:.76rem;font-weight:700;
+}
+.passos-conexao a{color:var(--ouro);text-decoration:underline}
+.passos-conexao code,.caixa-conexao code,.alerta-box code{
+  background:var(--ouro-suave);color:var(--ouro);
+  padding:1px 6px;border-radius:5px;font-size:.86em;
+}
+
+#caixaRegras{margin-top:12px}
+.link-pular{
+  display:block;width:100%;margin-top:20px;padding-top:16px;
+  border-top:1px solid var(--borda);
+  font-size:.84rem;color:var(--texto-fraco);text-align:center;
+}
+.link-pular:hover{color:var(--ouro);text-decoration:underline}
+
+/* Indicador de conexão na barra lateral */
+.status-dados .bolinha.on{box-shadow:0 0 0 3px rgba(31,138,81,.2)}
+.status-dados .bolinha.off{box-shadow:0 0 0 3px rgba(176,114,26,.2)}

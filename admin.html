@@ -78,7 +78,75 @@
   </div>
 </section>
 
+<!-- ======================================================= CONEXÃO -->
+<section class="tela-conexao" id="telaConexao" hidden>
+  <div class="caixa-conexao">
+    <svg class="marca" viewBox="0 0 210 96" role="img" aria-label="SF PARFUMS"><use href="#logoSF"></use></svg>
+    <h1>Conecte a loja ao servidor</h1>
+    <p class="sub">Sem esta etapa, os produtos que você cadastrar ficam <b>só neste aparelho</b> — nenhum cliente vai vê-los.</p>
+
+    <ol class="passos-conexao">
+      <li><b>Crie um projeto</b> gratuito em <a href="https://console.firebase.google.com" target="_blank" rel="noopener">console.firebase.google.com</a></li>
+      <li>Abra <b>Firestore Database</b> → <b>Criar banco de dados</b> → modo de produção</li>
+      <li>Na aba <b>Regras</b>, cole o texto que aparece no botão abaixo e publique</li>
+      <li>Engrenagem → <b>Configurações do projeto</b> → ícone <b>&lt;/&gt;</b> → registre o app</li>
+      <li>Copie o bloco <code>firebaseConfig</code> que aparece e cole aqui embaixo</li>
+    </ol>
+
+    <button type="button" class="btn btn-contorno btn-sm" id="verRegras">Ver as regras do passo 3</button>
+    <div id="caixaRegras" hidden>
+      <textarea class="saida-codigo" id="textoRegras" readonly rows="9"></textarea>
+      <button type="button" class="btn btn-contorno btn-sm" id="copiarRegras">Copiar regras</button>
+    </div>
+
+    <div class="campo" style="margin-top:22px">
+      <label for="colarConfig">Cole aqui a configuração do Firebase</label>
+      <textarea class="saida-codigo" id="colarConfig" rows="9" placeholder='const firebaseConfig = {
+  apiKey: "AIza...",
+  authDomain: "sua-loja.firebaseapp.com",
+  projectId: "sua-loja",
+  storageBucket: "sua-loja.appspot.com",
+  messagingSenderId: "000000000000",
+  appId: "1:000000000000:web:abc123"
+};'></textarea>
+      <p class="erro-msg" id="erroConfig"></p>
+    </div>
+
+    <button type="button" class="btn btn-ouro btn-bloco btn-lg" id="btnTestarConexao">Testar e conectar</button>
+
+    <div id="resultadoConexao" hidden>
+      <div class="alerta-box ok" style="margin-top:18px">
+        <span class="ic">✅</span>
+        <div><b>Conectado!</b> Este aparelho já está publicando no servidor.</div>
+      </div>
+      <div class="alerta-box aviso" style="margin-top:12px">
+        <span class="ic">📌</span>
+        <div><b>Falta um passo para valer em todos os aparelhos.</b><br>
+          Abra o arquivo <code>js/produtos.js</code> do seu site, troque o bloco
+          <code>FIREBASE_CONFIG</code> pelo texto abaixo e publique o site de novo.</div>
+      </div>
+      <textarea class="saida-codigo" id="trechoConfig" readonly rows="10"></textarea>
+      <div class="botoes-linha" style="margin-top:10px">
+        <button type="button" class="btn btn-contorno btn-sm" id="copiarTrecho">Copiar código</button>
+        <button type="button" class="btn btn-ouro" id="entrarAposConectar">Entrar no painel</button>
+      </div>
+    </div>
+
+    <button type="button" class="link-pular" id="pularConexao">Continuar sem conectar (só para testar neste aparelho)</button>
+  </div>
+</section>
+
 <!-- ============================================================= PAINEL -->
+<!-- Aviso permanente: sem servidor, nada do que for feito aqui chega aos clientes -->
+<div class="faixa-desconectado" id="faixaDesconectado" hidden>
+  <span class="ic">⚠️</span>
+  <div class="txt">
+    <b>MODO DE TESTE — os clientes não veem nada disto.</b>
+    <span>As alterações ficam só neste aparelho. Conecte um servidor para publicar de verdade.</span>
+  </div>
+  <button type="button" class="btn btn-ouro btn-sm" data-tela="config">Conectar agora</button>
+</div>
+
 <div class="painel" id="painel" hidden>
 
   <!-- ------------------------------------------------------ BARRA LATERAL -->
@@ -286,6 +354,10 @@
           <div class="bloco-cab"><h2>Publicação automática</h2>
             <p>Onde os dados da loja estão sendo guardados.</p></div>
           <div id="infoArmazenamento"></div>
+          <div class="botoes-linha" style="margin-top:16px">
+            <button type="button" class="btn btn-ouro" id="abrirConexao">Configurar servidor</button>
+            <button type="button" class="btn btn-neutro btn-sm" id="desconectar" hidden>Desconectar deste aparelho</button>
+          </div>
         </div>
 
         <div class="bloco perigo">

@@ -57,6 +57,24 @@ function toast(msg, tipo = '', icone = '') {
   }, 3000);
 }
 
+/** Traduz a falha de gravação para algo que o lojista entenda e possa agir. */
+function mensagemDeFalha(e, acao) {
+  const msg = String(e?.message || e);
+  if (/permission|PERMISSION|insufficient/i.test(msg)) {
+    return `Sem permissão para ${acao}. Confira as regras do Firestore em Configurações.`;
+  }
+  if (/quota|exceeded|resource-exhausted/i.test(msg)) {
+    return `Limite do servidor atingido ao ${acao}. Tente de novo mais tarde.`;
+  }
+  if (/unavailable|network|offline|failed to fetch/i.test(msg)) {
+    return `Sem conexão com o servidor. Nada foi ${acao === 'salvar o perfume' ? 'salvo' : 'gravado'} — verifique a internet e tente de novo.`;
+  }
+  if (/quota.*exceeded|QuotaExceeded/i.test(msg)) {
+    return 'Espaço do navegador cheio. Use fotos menores.';
+  }
+  return `Não foi possível ${acao}. ${msg}`;
+}
+
 function marcarErro(seletor, mensagem) {
   const campo = $(seletor)?.closest('.campo');
   if (!campo) return;
@@ -170,11 +188,145 @@ async function tentarLogin(ev) {
 
 async function entrarNoPainel() {
   $('#telaLogin').hidden = true;
+  const conexao = await DB.iniciar({ permitirSemear: true });
+
+  // Primeiro acesso sem servidor: a tela de conexão vem antes do painel, para
+  // o administrador não cadastrar um catálogo inteiro que ninguém verá.
+  let jaAvisado = false;
+  try { jaAvisado = sessionStorage.getItem('sf_pulou_conexao') === '1'; } catch (e) { /* ignora */ }
+
+  if (!DB.conectado && !jaAvisado) {
+    abrirTelaConexao();
+    if (conexao.erro) {
+      $('#erroConfig').textContent =
+        `A configuração existe, mas a conexão falhou: ${conexao.erro.message || conexao.erro}`;
+    }
+    return;
+  }
+
+  $('#telaConexao').hidden = true;
   $('#painel').hidden = false;
-  await DB.iniciar();
   DB.aoMudar(() => renderTudo());
   renderTudo();
-  toast('Bem-vindo ao painel!', 'sucesso', '👋');
+  refletirConexao();
+
+  if (conexao.erro) {
+    toast('Servidor configurado, mas a conexão falhou. Veja Configurações.', 'erro', '⚠️');
+  } else {
+    toast(DB.conectado ? 'Conectado ao servidor.' : 'Bem-vindo ao painel!', 'sucesso',
+          DB.conectado ? '🔗' : '👋');
+  }
+}
+
+
+/* ===========================================================================
+   CONEXÃO COM O SERVIDOR
+   Sem servidor, o painel grava só neste aparelho — e foi exatamente por isso
+   que os produtos cadastrados não apareciam em outro celular ou navegador.
+=========================================================================== */
+const REGRAS_FIRESTORE = `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Qualquer visitante lê o catálogo da loja
+    match /categorias/{doc} { allow read: if true; allow write: if true; }
+    match /produtos/{doc}   { allow read: if true; allow write: if true; }
+
+    // Usado só para testar a conexão pelo painel
+    match /_teste_conexao/{doc} { allow read, write: if true; }
+  }
+}`;
+
+/** Aceita o bloco copiado do console do Firebase em qualquer formato:
+    o objeto inteiro, com "const firebaseConfig =" na frente, ou JSON puro. */
+function lerConfigColada(texto) {
+  const bruto = String(texto || '').trim();
+  if (!bruto) throw new Error('Cole a configuração que o Firebase mostrou.');
+
+  const inicio = bruto.indexOf('{');
+  const fim = bruto.lastIndexOf('}');
+  if (inicio < 0 || fim < inicio) throw new Error('Não encontrei a configuração. Copie o bloco inteiro, das chaves { até }.');
+
+  const corpo = bruto.slice(inicio, fim + 1);
+  let cfg;
+  try {
+    // eslint-disable-next-line no-new-func
+    cfg = Function(`"use strict"; return (${corpo});`)();
+  } catch (e) {
+    throw new Error('A configuração colada está incompleta ou com erro de digitação.');
+  }
+  if (!cfg || typeof cfg !== 'object') throw new Error('A configuração colada não é válida.');
+
+  const faltando = ['apiKey', 'projectId', 'appId'].filter(k => !String(cfg[k] || '').trim());
+  if (faltando.length) throw new Error(`Faltou ${faltando.join(', ')} na configuração colada.`);
+  return cfg;
+}
+
+/** Monta o trecho pronto para colar em js/produtos.js. */
+function trechoParaOArquivo(cfg) {
+  const campo = (k) => `  ${k}:${' '.repeat(Math.max(1, 18 - k.length))}'${String(cfg[k] || '')}',`;
+  return 'const FIREBASE_CONFIG = {\n'
+    + ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId']
+        .map(campo).join('\n')
+    + '\n};';
+}
+
+async function testarEConectar() {
+  const btn = $('#btnTestarConexao');
+  const erro = $('#erroConfig');
+  erro.textContent = '';
+  $('#colarConfig').closest('.campo').classList.remove('invalido');
+
+  let cfg;
+  try {
+    cfg = lerConfigColada($('#colarConfig').value);
+  } catch (e) {
+    erro.textContent = e.message;
+    $('#colarConfig').closest('.campo').classList.add('invalido');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Testando a conexão...';
+  try {
+    await DB.testarConexao(cfg);
+    DB.salvarConfigLocal(cfg);
+    $('#trechoConfig').value = trechoParaOArquivo(cfg);
+    $('#resultadoConexao').hidden = false;
+    $('#resultadoConexao').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    toast('Conectado ao servidor!', 'sucesso', '✅');
+  } catch (e) {
+    const msg = String(e?.message || e);
+    erro.textContent = /permission|PERMISSION|insufficient/i.test(msg)
+      ? 'Conectou, mas as regras do Firestore estão bloqueando. Publique as regras do passo 3 e tente de novo.'
+      : `Não foi possível conectar: ${msg}`;
+    $('#colarConfig').closest('.campo').classList.add('invalido');
+    toast('Falha na conexão. Veja a mensagem abaixo do campo.', 'erro', '⚠️');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Testar e conectar';
+  }
+}
+
+/** Mostra ou esconde os avisos de "não conectado" em todo o painel. */
+function refletirConexao() {
+  const conectado = DB.conectado;
+  $('#faixaDesconectado').hidden = conectado;
+  $('#desconectar').hidden = !DB.configFirebase() || DB.configNoArquivo();
+  $('#statusDados').innerHTML = conectado
+    ? `<span class="bolinha on"></span><b>Conectado ao servidor</b><br>O que você publica aparece em todos os aparelhos.`
+    : `<span class="bolinha off"></span><b>Modo de teste</b><br>Nada daqui chega aos clientes.`;
+}
+
+function abrirTelaConexao() {
+  $('#telaLogin').hidden = true;
+  $('#painel').hidden = true;
+  $('#faixaDesconectado').hidden = true;
+  $('#telaConexao').hidden = false;
+  $('#textoRegras').value = REGRAS_FIRESTORE;
+  const cfg = DB.configFirebase();
+  if (cfg && !$('#colarConfig').value) $('#colarConfig').value = JSON.stringify(cfg, null, 2);
+  window.scrollTo({ top: 0 });
 }
 
 /* ===========================================================================
@@ -462,19 +614,32 @@ const vazioSemProdutos = () => `<div class="nada">
    CONFIGURAÇÕES
 =========================================================================== */
 function renderConfig() {
-  const firebase = DB.modo === 'firebase';
-  $('#infoArmazenamento').innerHTML = firebase
-    ? `<div class="alerta-box ok"><span class="ic">✅</span><div>
-         <b>Publicação automática ativa.</b><br>
-         Os dados estão no servidor (Firebase). Tudo que você publica aparece na hora
-         para todos os clientes, em qualquer aparelho.
-       </div></div>`
-    : `<div class="alerta-box aviso"><span class="ic">⚠️</span><div>
-         <b>Salvando apenas neste aparelho.</b><br>
-         As alterações funcionam e ficam guardadas aqui, mas <b>os clientes ainda não
-         as veem</b>. Para publicar para todos, preencha a configuração do Firebase em
-         <code>js/produtos.js</code> — o passo a passo está no README.
-       </div></div>`;
+  const conectado = DB.conectado;
+  const noArquivo = DB.configNoArquivo();
+
+  let html;
+  if (conectado && noArquivo) {
+    html = `<div class="alerta-box ok"><span class="ic">✅</span><div>
+        <b>Tudo certo.</b><br>
+        Os dados ficam no servidor e a configuração está no arquivo do site, então
+        <b>qualquer aparelho</b> que abrir a loja vê o mesmo catálogo.
+      </div></div>`;
+  } else if (conectado) {
+    html = `<div class="alerta-box aviso"><span class="ic">📌</span><div>
+        <b>Conectado, mas só neste aparelho.</b><br>
+        A configuração foi salva aqui no navegador para você testar. Para valer em
+        todos os aparelhos, ela precisa ir para <code>js/produtos.js</code> e o site
+        ser publicado de novo. Clique em <b>Configurar servidor</b> para pegar o código.
+      </div></div>`;
+  } else {
+    html = `<div class="alerta-box aviso"><span class="ic">⚠️</span><div>
+        <b>Nenhum servidor conectado.</b><br>
+        O que você cadastrar fica <b>só neste aparelho</b> e os clientes não veem nada.
+        Clique em <b>Configurar servidor</b> para resolver — leva alguns minutos e é gratuito.
+      </div></div>`;
+  }
+  $('#infoArmazenamento').innerHTML = html;
+  refletirConexao();
 }
 
 /* ===========================================================================
@@ -654,7 +819,7 @@ async function salvarProduto(publicar) {
     renderTudo();
   } catch (e) {
     console.error(e);
-    toast('Não foi possível salvar. Se o aviso continuar, use fotos menores.', 'erro', '⚠️');
+    toast(mensagemDeFalha(e, 'salvar o perfume'), 'erro', '⚠️');
   }
 }
 
@@ -721,7 +886,7 @@ async function salvarEstilo() {
     renderTudo();
   } catch (e) {
     console.error(e);
-    toast('Não foi possível salvar o estilo.', 'erro', '⚠️');
+    toast(mensagemDeFalha(e, 'salvar o estilo'), 'erro', '⚠️');
   }
 }
 
@@ -764,10 +929,7 @@ function renderTela(tela) {
 function renderTudo() {
   $('#contaProdutos').textContent = DB.todosProdutos().length;
   $('#contaEstilos').textContent = DB.todasCategorias().length;
-  const firebase = DB.modo === 'firebase';
-  $('#statusDados').innerHTML = firebase
-    ? `<span class="bolinha on"></span><b>Publicação automática</b><br>Alterações vão para todos os clientes.`
-    : `<span class="bolinha off"></span><b>Somente neste aparelho</b><br>Configure o Firebase para publicar a todos.`;
+  refletirConexao();
   preencherSelectEstilos();
   renderTela(ADM.tela);
 }
@@ -816,10 +978,12 @@ function ligarEventos() {
         titulo: 'Duplicar perfume?', icone: '📋', rotulo: 'Duplicar',
         texto: `Vamos criar uma cópia de <b>${esc(p?.nome || '')}</b>. Ela nasce <b>oculta</b>, para você ajustar antes de publicar.`
       }, async () => {
-        const novo = await DB.duplicarProduto(dup.dataset.duplicar);
-        toast('Cópia criada. Ela está oculta até você publicar.', 'sucesso', '📋');
-        renderTudo();
-        if (novo) abrirFormProduto(novo.id);
+        try {
+          const novo = await DB.duplicarProduto(dup.dataset.duplicar);
+          toast('Cópia criada. Ela está oculta até você publicar.', 'sucesso', '📋');
+          renderTudo();
+          if (novo) abrirFormProduto(novo.id);
+        } catch (err) { toast(mensagemDeFalha(err, 'duplicar o perfume'), 'erro', '⚠️'); }
       });
       return;
     }
@@ -831,7 +995,7 @@ function ligarEventos() {
       DB.alternarAtivo(p.id).then(() => {
         toast(p.ativo ? 'Perfume ocultado — clientes não veem mais.' : 'Perfume publicado na loja!', 'sucesso', p.ativo ? '🙈' : '✅');
         renderTudo();
-      });
+      }).catch(err => toast(mensagemDeFalha(err, 'alterar a situação'), 'erro', '⚠️'));
       return;
     }
 
@@ -842,9 +1006,11 @@ function ligarEventos() {
         titulo: 'Excluir este perfume?', icone: '🗑️', rotulo: 'Sim, excluir', perigo: true,
         texto: `<b>${esc(p?.nome || '')}</b> será apagado definitivamente da loja.<br><br>Se você só quer tirá-lo do ar por um tempo, use <b>Ocultar</b> em vez de excluir.`
       }, async () => {
-        await DB.excluirProduto(exc.dataset.excluir);
-        toast('Perfume excluído.', 'sucesso', '🗑️');
-        renderTudo();
+        try {
+          await DB.excluirProduto(exc.dataset.excluir);
+          toast('Perfume excluído.', 'sucesso', '🗑️');
+          renderTudo();
+        } catch (err) { toast(mensagemDeFalha(err, 'excluir o perfume'), 'erro', '⚠️'); }
       });
       return;
     }
@@ -872,9 +1038,11 @@ function ligarEventos() {
         titulo: 'Excluir este estilo?', icone: '🗑️', rotulo: 'Sim, excluir', perigo: true,
         texto: `<b>${esc(c?.nome || '')}</b> será removido da loja e do menu.`
       }, async () => {
-        await DB.excluirCategoria(slug);
-        toast('Estilo excluído.', 'sucesso', '🗑️');
-        renderTudo();
+        try {
+          await DB.excluirCategoria(slug);
+          toast('Estilo excluído.', 'sucesso', '🗑️');
+          renderTudo();
+        } catch (err) { toast(mensagemDeFalha(err, 'excluir o estilo'), 'erro', '⚠️'); }
       });
       return;
     }
@@ -899,9 +1067,11 @@ function ligarEventos() {
       input.onchange = () => escolherImagem(input, async dataUrl => {
         const p = DB.produtoPorId(id);
         if (!p) return;
-        await DB.salvarProduto({ ...p, imagem: dataUrl });
-        toast('Foto atualizada — já está na loja!', 'sucesso', '🖼️');
-        renderTudo();
+        try {
+          await DB.salvarProduto({ ...p, imagem: dataUrl });
+          toast('Foto atualizada — já está na loja!', 'sucesso', '🖼️');
+          renderTudo();
+        } catch (err) { toast(mensagemDeFalha(err, 'trocar a foto'), 'erro', '⚠️'); }
       });
       input.click();
       return;
@@ -986,6 +1156,32 @@ function ligarEventos() {
     catch (e) { $('#hashNovo').select(); toast('Selecione o texto e copie com Ctrl+C.', '', '📋'); }
   });
 
+  // ---- conexão com o servidor
+  $('#btnTestarConexao').addEventListener('click', testarEConectar);
+  $('#verRegras').addEventListener('click', () => {
+    const c = $('#caixaRegras');
+    c.hidden = !c.hidden;
+    $('#verRegras').textContent = c.hidden ? 'Ver as regras do passo 3' : 'Esconder as regras';
+  });
+  const copiar = async (sel, msg) => {
+    try { await navigator.clipboard.writeText($(sel).value); toast(msg, 'sucesso', '📋'); }
+    catch (e) { $(sel).select(); toast('Selecione o texto e copie com Ctrl+C.', '', '📋'); }
+  };
+  $('#copiarRegras').addEventListener('click', () => copiar('#textoRegras', 'Regras copiadas.'));
+  $('#copiarTrecho').addEventListener('click', () => copiar('#trechoConfig', 'Código copiado. Cole em js/produtos.js.'));
+
+  $('#entrarAposConectar').addEventListener('click', () => location.reload());
+  $('#pularConexao').addEventListener('click', () => {
+    try { sessionStorage.setItem('sf_pulou_conexao', '1'); } catch (e) { /* ignora */ }
+    $('#telaConexao').hidden = true;
+    entrarNoPainel();
+  });
+  $('#abrirConexao').addEventListener('click', abrirTelaConexao);
+  $('#desconectar').addEventListener('click', () => confirmar({
+    titulo: 'Desconectar deste aparelho?', icone: '🔌', rotulo: 'Desconectar', perigo: true,
+    texto: 'O painel volta ao modo de teste neste navegador. Os dados que já estão no servidor não são apagados.'
+  }, () => { DB.limparConfigLocal(); location.reload(); }));
+
   // ---- backup
   $('#btnBaixarBackup').addEventListener('click', () => {
     const url = URL.createObjectURL(new Blob([DB.exportar()], { type: 'application/json' }));
@@ -1011,7 +1207,9 @@ function ligarEventos() {
         toast('Catálogo restaurado com sucesso!', 'sucesso', '✅');
         renderTudo();
       } catch (err) {
-        toast('Arquivo inválido. Escolha uma cópia baixada por este painel.', 'erro', '⚠️');
+        toast(/JSON|formato/i.test(String(err?.message))
+          ? 'Arquivo inválido. Escolha uma cópia baixada por este painel.'
+          : mensagemDeFalha(err, 'restaurar o catálogo'), 'erro', '⚠️');
       }
     });
   });
@@ -1020,9 +1218,11 @@ function ligarEventos() {
     titulo: 'Apagar tudo e recomeçar?', icone: '🗑️', rotulo: 'Sim, apagar tudo', perigo: true,
     texto: 'Todos os perfumes e estilos que você cadastrou serão apagados e o catálogo de exemplo volta.<br><br><b>Não há como desfazer.</b> Baixe uma cópia de segurança antes, se quiser.'
   }, async () => {
-    await DB.restaurarPadrao();
-    toast('Catálogo restaurado ao exemplo inicial.', 'sucesso', '↩️');
-    renderTudo();
+    try {
+      await DB.restaurarPadrao();
+      toast('Catálogo restaurado ao exemplo inicial.', 'sucesso', '↩️');
+      renderTudo();
+    } catch (e) { toast(mensagemDeFalha(e, 'restaurar o catálogo'), 'erro', '⚠️'); }
   }));
 }
 
@@ -1046,8 +1246,14 @@ async function salvarPrecosEmLote() {
     if (ruim) { invalidos++; continue; }
 
     if (normal !== p.preco || promo !== p.precoPromocional) {
-      await DB.salvarProduto({ ...p, preco: normal, precoPromocional: promo });
-      alterados++;
+      try {
+        await DB.salvarProduto({ ...p, preco: normal, precoPromocional: promo });
+        alterados++;
+      } catch (e) {
+        toast(mensagemDeFalha(e, 'salvar os preços'), 'erro', '⚠️');
+        renderTudo();
+        return;
+      }
     }
   }
 
@@ -1063,7 +1269,16 @@ async function salvarDescricoesEmLote() {
     const p = DB.produtoPorId(tr.dataset.id);
     if (!p) continue;
     const texto = $('[data-campo="descricao"]', tr).value.trim();
-    if (texto !== p.descricao) { await DB.salvarProduto({ ...p, descricao: texto }); alterados++; }
+    if (texto !== p.descricao) {
+      try {
+        await DB.salvarProduto({ ...p, descricao: texto });
+        alterados++;
+      } catch (e) {
+        toast(mensagemDeFalha(e, 'salvar as descrições'), 'erro', '⚠️');
+        renderTudo();
+        return;
+      }
+    }
   }
   if (alterados) { toast(`${alterados} descrição(ões) atualizada(s) na loja!`, 'sucesso', '✅'); renderTudo(); }
   else toast('Nenhuma alteração para salvar.', '', 'ℹ️');
