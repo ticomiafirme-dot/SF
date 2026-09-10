@@ -147,17 +147,11 @@ function cardProduto(p) {
 }
 
 /* -------------------------------------- NAVEGAÇÃO MONTADA PELAS CATEGORIAS */
-/* Menu do topo, menu do celular e lista do rodapé saem todos daqui, então um
-   estilo novo cadastrado no painel aparece na navegação sem tocar no HTML. */
+/* O menu do topo é fixo (Início e Catálogo). Menu do celular e lista do rodapé
+   saem daqui, então um estilo novo cadastrado no painel aparece na navegação
+   sem tocar no HTML. */
 function renderNavegacao() {
   const cats = listaCategorias();
-
-  const menuTopo = $('#navCategorias');
-  if (menuTopo) {
-    menuTopo.innerHTML = cats.map(c =>
-      `<a href="#catalogo" class="link-cat" data-cat="${esc(c.slug)}">${esc(c.nome)}</a>`).join('')
-      + '<a href="#catalogo" class="link-cat" data-cat="todos">Todos os produtos</a>';
-  }
 
   const menuCelular = $('#menuCategorias');
   if (menuCelular) {
@@ -328,7 +322,8 @@ function selecionarCategoria(slug, rolar = true) {
   SF.filtro = slug;
   renderChips();
   renderCatalogo();
-  $$('.nav-desktop .link-cat').forEach(a => a.classList.toggle('ativo', a.dataset.cat === slug));
+  // "Catálogo" fica marcado em qualquer estilo escolhido, não só em "Todos".
+  $('.nav-desktop .link-cat')?.classList.add('ativo');
   $('.nav-desktop .link-secao')?.classList.remove('ativo');
   if (rolar) irParaCatalogo();
 }

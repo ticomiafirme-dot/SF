@@ -233,9 +233,14 @@ const DB = (() => {
     }, e => console.warn('[SF] Falha ao escutar produtos:', e));
   }
 
-  /** Envia o catálogo inicial (js/produtos.js) para o Firestore. */
+  /** Primeira conexão com o Firestore: sobe o catálogo que já existe.
+      Se o administrador já cadastrou produtos no navegador antes de configurar
+      o Firebase, é esse trabalho que sobe — não o catálogo de exemplo. */
   async function semear() {
-    estado = normalizarTudo({ categorias: SEED_CATEGORIAS, produtos: SEED_PRODUTOS });
+    const jaCadastrado = estado.produtos.length > 0 || estado.categorias.length > 0;
+    if (!jaCadastrado) {
+      estado = normalizarTudo({ categorias: SEED_CATEGORIAS, produtos: SEED_PRODUTOS });
+    }
     const lote = fs.batch();
     estado.categorias.forEach(c => {
       const { slug, ...resto } = c;

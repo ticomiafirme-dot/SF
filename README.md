@@ -34,8 +34,12 @@ O que dá para fazer por lá:
 | Configurações | Senha, cópia de segurança, armazenamento |
 
 Nada de produto ou categoria fica fixo no HTML. Ao criar um estilo, ele aparece
-sozinho no menu do topo, no menu do celular, nos filtros, na página inicial e no
+sozinho nos filtros do catálogo, na página inicial, no menu do celular e no
 rodapé. Ao publicar um perfume, ele entra na categoria certa na mesma hora.
+
+O menu do topo é enxuto de propósito — apenas **Início** e **Catálogo** — para o
+cabeçalho não crescer a cada estilo novo. A navegação por estilo acontece nos
+filtros do catálogo e no menu do celular.
 
 O catálogo que vem de fábrica é de **demonstração** (itens marcados `[EXEMPLO]`),
 com uma faixa de aviso no topo do site que desaparece assim que você cadastra
@@ -104,6 +108,57 @@ painel escrever, use uma destas opções:
 o SDK, é bloqueado pela política de rede deste ambiente. Todo o restante foi
 testado por completo no modo navegador. Quando o SDK não carrega, o sistema cai
 no modo local automaticamente, sem erro — comportamento verificado.
+
+---
+
+## Hospedar o site na internet
+
+O site é estático (HTML, CSS e JS), então **a hospedagem é gratuita** em qualquer
+um destes serviços: Netlify, Vercel, Cloudflare Pages ou GitHub Pages. Basta
+enviar a pasta do projeto. O único custo opcional é o domínio próprio
+(um `.com.br` sai por volta de R$ 40 por ano).
+
+### O que acontece com os dados já cadastrados
+
+| Situação | O que acontece |
+|----------|----------------|
+| Visitante novo, primeira vez | Carrega `data/catalogo.json`, o catálogo que veio no projeto |
+| Administrador que já cadastrou no navegador | Ao configurar o Firebase, **esse trabalho sobe automaticamente** na primeira conexão — o catálogo de exemplo não sobrescreve nada |
+| Precisa levar os dados para outro computador | Configurações → *Baixar cópia de segurança*, e no outro aparelho *Restaurar de um arquivo* |
+
+### Custo de cadastrar e editar produtos
+
+Com o Firebase configurado, o plano gratuito (Spark) cobre folgadamente uma loja
+deste porte. Os limites relevantes são: **1 GiB** de dados guardados,
+**50 mil leituras** e **20 mil gravações** por dia, e **10 GiB de tráfego por mês**.
+
+Cadastrar ou editar um produto custa **1 gravação**. Mesmo mexendo no catálogo o
+dia inteiro, é impossível chegar perto de 20 mil.
+
+O ponto que merece atenção é outro: **as fotos são guardadas dentro do próprio
+registro do produto**, e o tráfego mensal é o limite que aperta primeiro. Cada
+visitante novo baixa o catálogo uma vez (depois fica em cache no navegador dele):
+
+| Tamanho do catálogo | Espaço usado | Por visitante novo | Cabe no plano gratuito |
+|---------------------|--------------|--------------------|------------------------|
+| 50 produtos | ~6 MB | ~6 MB | ~1.700 visitas/mês |
+| 100 produtos | ~12 MB | ~12 MB | ~850 visitas/mês |
+| 200 produtos | ~24 MB | ~24 MB | ~425 visitas/mês |
+
+Para uma loja de bairro começando, isso é confortável. Passar do limite não
+derruba nada: no plano Blaze o excedente é cobrado por uso e sai por poucos reais
+por mês. Ainda assim, se o catálogo passar de ~100 produtos ou o movimento
+crescer, o certo é **guardar as fotos no Firebase Storage** (também gratuito até
+5 GB) e deixar no Firestore apenas o endereço da imagem. Aí cada registro cai
+para cerca de 1 KB, o tráfego vira praticamente nada e as fotos passam a ser
+servidas por CDN, carregando mais rápido. Essa mudança mexe só em `js/dados.js`.
+
+### Sem o Firebase
+
+Se você publicar o site sem configurar o Firebase, ele funciona normalmente para
+os clientes — mas com o catálogo de `data/catalogo.json`. O que o administrador
+cadastrar pelo painel fica **só no navegador dele**, e os clientes não veem. O
+painel avisa isso na barra lateral e em Configurações.
 
 ---
 
