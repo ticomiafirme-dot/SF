@@ -209,10 +209,10 @@ function renderDestaques() {
   const alvo = $('#gradeDestaques');
   if (!alvo) return;
   const visiveis = listaProdutos();
-  // Mais recentes primeiro: um produto recém-marcado como destaque no painel
-  // entra na vitrine na hora, em vez de ficar de fora pelo limite de 8.
-  const porRecencia = (a, b) => String(b.atualizadoEm || '').localeCompare(String(a.atualizadoEm || ''));
-  let destaques = visiveis.filter(p => p.destaque && p.estoque !== false).sort(porRecencia);
+  // A ordem é a definida na tela Vitrine do painel, não a de edição.
+  const porVitrine = (a, b) =>
+    (a.ordemVitrine - b.ordemVitrine) || a.nome.localeCompare(b.nome, 'pt-BR');
+  let destaques = visiveis.filter(p => p.destaque && p.estoque !== false).sort(porVitrine);
   if (destaques.length === 0) destaques = visiveis.filter(p => p.estoque !== false).slice(0, 8);
   alvo.innerHTML = destaques.slice(0, 8).map(cardProduto).join('');
   const secao = $('#destaques');

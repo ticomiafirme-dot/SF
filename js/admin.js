@@ -17,6 +17,7 @@ const ADM = {
   busca: '',
   filtroEstilo: 'todos',
   filtroStatus: 'todos',
+  buscaVitrine: '',
   fotoPrincipal: '',
   fotosExtras: [],
   capaEstilo: '',
@@ -336,6 +337,7 @@ const TITULOS = {
   dashboard:  ['Dashboard', 'Visão geral da sua loja.'],
   produtos:   ['Perfumes', 'Todos os perfumes cadastrados.'],
   estilos:    ['Estilos', 'As categorias que organizam a loja.'],
+  vitrine:    ['Vitrine', 'Quem aparece em Destaques na página inicial.'],
   precos:     ['Gerenciar preços', 'Altere vários preços de uma vez.'],
   imagens:    ['Gerenciar imagens', 'Troque as fotos dos perfumes.'],
   descricoes: ['Gerenciar descrições', 'Escreva os textos que o cliente lê.'],
@@ -530,6 +532,94 @@ function renderEstilos() {
 }
 
 /* ===========================================================================
+   VITRINE
+   Controla a faixa "Destaques da semana" da página inicial.
+=========================================================================== */
+function renderVitrine() {
+  const naVitrine = DB.naVitrine();
+  const limite = DB.LIMITE_VITRINE;
+
+  // Quantos realmente aparecem: publicados, com estoque e dentro do limite.
+  const aparecem = naVitrine.filter(p => p.ativo && p.estoque !== false).slice(0, limite);
+
+  const cheia = naVitrine.length >= limite;
+  const resumo = $('#resumoVitrine');
+  if (resumo) {
+    resumo.textContent = `${naVitrine.length} de ${limite}`;
+    resumo.className = 'resumo-vitrine' + (cheia ? ' cheio' : '');
+  }
+
+  // ---- lista de quem está na vitrine
+  const alvo = $('#listaVitrine');
+  if (naVitrine.length === 0) {
+    alvo.innerHTML = `<div class="nada">
+      <span class="ic">⭐</span><h3>Vitrine vazia</h3>
+      <p>Sem nenhum perfume escolhido, a página inicial preenche a faixa sozinha
+         com os primeiros disponíveis.</p>
+    </div>`;
+  } else {
+    let posicaoVisivel = 0;
+    alvo.innerHTML = naVitrine.map((p, i) => {
+      const oculto = !p.ativo;
+      const esgotado = p.estoque === false;
+      // Passar do limite só acontece com dados antigos; a partir de agora é bloqueado.
+      const excedente = i >= limite;
+      const some = oculto || esgotado || excedente;
+      if (!some) posicaoVisivel++;
+
+      const avisos = [];
+      if (oculto)   avisos.push('<span class="etiqueta oculto">Oculto — não aparece</span>');
+      if (esgotado) avisos.push('<span class="etiqueta esgotado">Esgotado — não aparece</span>');
+      if (excedente && !oculto && !esgotado)
+        avisos.push(`<span class="etiqueta esgotado">Passou de ${limite} — tire este</span>`);
+
+      return `<div class="item-vitrine ${some ? 'fila' : ''}" data-vit="${esc(p.id)}">
+        <span class="posicao-vitrine">${some ? '—' : posicaoVisivel}</span>
+        <div class="mini-thumb">${p.imagem ? `<img src="${esc(p.imagem)}" alt="">` : placeholderThumb()}</div>
+        <div class="dados">
+          <div class="nm">${esc(p.nome)}</div>
+          <div class="meta">${esc(DB.categoriaPorSlug(p.categoria)?.nome || '—')} · ${brl(DB.precoFinal(p))}</div>
+          ${avisos.length ? `<div class="avisos">${avisos.join('')}</div>` : ''}
+        </div>
+        <div class="setas-vitrine">
+          <button type="button" class="seta-vitrine" data-subir="${esc(p.id)}"
+                  ${i === 0 ? 'disabled' : ''} title="Subir" aria-label="Subir ${esc(p.nome)}">↑</button>
+          <button type="button" class="seta-vitrine" data-descer="${esc(p.id)}"
+                  ${i === naVitrine.length - 1 ? 'disabled' : ''} title="Descer" aria-label="Descer ${esc(p.nome)}">↓</button>
+        </div>
+        <button type="button" class="btn btn-neutro btn-sm" data-tirar-vitrine="${esc(p.id)}">Tirar</button>
+      </div>`;
+    }).join('');
+  }
+
+  // ---- lista de quem pode entrar
+  const termo = ADM.buscaVitrine.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+  const fora = DB.todosProdutos()
+    .filter(p => !p.destaque && p.ativo)
+    .filter(p => !termo || `${p.nome} ${p.marca}`.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(termo));
+
+  const alvoFora = $('#listaForaVitrine');
+  const avisoCheia = $('#avisoVitrineCheia');
+  if (avisoCheia) avisoCheia.hidden = !cheia;
+
+  alvoFora.innerHTML = fora.length === 0
+    ? `<p class="motivo" style="color:var(--texto-fraco);font-size:.9rem">${
+        termo ? 'Nenhum perfume encontrado com esse nome.'
+              : 'Todos os perfumes publicados já estão na vitrine.'}</p>`
+    : fora.map(p => `<div class="item-vitrine${cheia ? ' fila' : ''}">
+        <div class="mini-thumb">${p.imagem ? `<img src="${esc(p.imagem)}" alt="">` : placeholderThumb()}</div>
+        <div class="dados">
+          <div class="nm">${esc(p.nome)}</div>
+          <div class="meta">${esc(DB.categoriaPorSlug(p.categoria)?.nome || '—')} · ${brl(DB.precoFinal(p))}
+            ${p.estoque === false ? ' · <span style="color:var(--alerta)">esgotado</span>' : ''}</div>
+        </div>
+        <button type="button" class="btn btn-contorno btn-sm" data-por-vitrine="${esc(p.id)}"
+                ${cheia ? 'disabled title="A vitrine já está cheia"' : ''}>+ Colocar</button>
+      </div>`).join('');
+}
+
+/* ===========================================================================
    EDIÇÃO RÁPIDA: PREÇOS
 =========================================================================== */
 function renderPrecos() {
@@ -689,6 +779,14 @@ function abrirFormProduto(id = null, categoriaSugerida = '') {
   $('#prodEstoque').value = p && p.estoque === false ? 'nao' : 'sim';
   $('#prodAtivo').value = p && p.ativo === false ? 'nao' : 'sim';
   $('#prodDestaque').checked = !!p?.destaque;
+  // Sem vaga na vitrine, a caixinha fica travada com o motivo à vista.
+  const semVaga = DB.vitrineCheia() && !p?.destaque;
+  $('#prodDestaque').disabled = semVaga;
+  const rotuloDestaque = $('#prodDestaque').closest('.marca-caixa');
+  if (rotuloDestaque) rotuloDestaque.style.opacity = semVaga ? '.55' : '';
+  // O motivo fica à vista, não só no tooltip — que é fácil de não perceber.
+  const avisoCheio = $('#avisoDestaqueCheio');
+  if (avisoCheio) avisoCheio.hidden = !semVaga;
   $('#prodImagemUrl').value = '';
   $('#erroFoto').textContent = '';
 
@@ -794,6 +892,14 @@ function validarProduto(d) {
   }
   if (!d.imagem) { $('#erroFoto').textContent = 'Escolha a foto principal do perfume.'; ok = false; }
   else { $('#erroFoto').textContent = ''; }
+
+  // O formulário é o outro caminho para marcar um destaque: o limite vale aqui também.
+  const jaEraDestaque = d.id ? DB.produtoPorId(d.id)?.destaque : false;
+  if (d.destaque && !jaEraDestaque && DB.vitrineCheia()) {
+    toast(`A vitrine já tem ${DB.LIMITE_VITRINE} perfumes. Tire um na tela Vitrine antes.`, 'erro', '🔒');
+    $('#prodDestaque').checked = false;
+    ok = false;
+  }
 
   if (d.nome.length >= 2 && d.categoria && DB.nomeDuplicado(d.nome, d.categoria, d.id)) {
     marcarErro('#prodNome', 'Já existe um perfume com este nome neste estilo.'); ok = false;
@@ -919,6 +1025,7 @@ function renderTela(tela) {
     dashboard: renderDashboard,
     produtos: renderProdutos,
     estilos: renderEstilos,
+    vitrine: renderVitrine,
     precos: renderPrecos,
     imagens: renderImagens,
     descricoes: renderDescricoes,
@@ -929,6 +1036,7 @@ function renderTela(tela) {
 function renderTudo() {
   $('#contaProdutos').textContent = DB.todosProdutos().length;
   $('#contaEstilos').textContent = DB.todasCategorias().length;
+  $('#contaVitrine').textContent = DB.naVitrine().length;
   refletirConexao();
   preencherSelectEstilos();
   renderTela(ADM.tela);
@@ -1055,6 +1163,35 @@ function ligarEventos() {
       return;
     }
 
+    // ---- vitrine
+    const porVit = ev.target.closest('[data-por-vitrine]');
+    if (porVit) {
+      const p = DB.produtoPorId(porVit.dataset.porVitrine);
+      DB.alternarVitrine(porVit.dataset.porVitrine)
+        .then(() => { toast(`${p?.nome} está na vitrine!`, 'sucesso', '⭐'); renderTudo(); })
+        .catch(err => toast(err.message, 'erro', '⚠️'));
+      return;
+    }
+
+    const tirarVit = ev.target.closest('[data-tirar-vitrine]');
+    if (tirarVit) {
+      const p = DB.produtoPorId(tirarVit.dataset.tirarVitrine);
+      DB.alternarVitrine(tirarVit.dataset.tirarVitrine)
+        .then(() => { toast(`${p?.nome} saiu da vitrine.`, 'sucesso', '✅'); renderTudo(); })
+        .catch(err => toast(mensagemDeFalha(err, 'tirar da vitrine'), 'erro', '⚠️'));
+      return;
+    }
+
+    const subir = ev.target.closest('[data-subir]');
+    const descer = ev.target.closest('[data-descer]');
+    if (subir || descer) {
+      const id = (subir || descer).dataset[subir ? 'subir' : 'descer'];
+      DB.moverNaVitrine(id, subir ? 'cima' : 'baixo')
+        .then(() => renderTudo())
+        .catch(err => toast(mensagemDeFalha(err, 'mudar a ordem'), 'erro', '⚠️'));
+      return;
+    }
+
     // ---- salvar preços
     if (ev.target.closest('#salvarPrecos')) { salvarPrecosEmLote(); return; }
     if (ev.target.closest('#salvarDescricoes')) { salvarDescricoesEmLote(); return; }
@@ -1090,6 +1227,7 @@ function ligarEventos() {
   $('#buscaAdmin').addEventListener('input', e => { ADM.busca = e.target.value; renderProdutos(); });
   $('#filtroEstilo').addEventListener('change', e => { ADM.filtroEstilo = e.target.value; renderProdutos(); });
   $('#filtroStatus').addEventListener('change', e => { ADM.filtroStatus = e.target.value; renderProdutos(); });
+  $('#buscaVitrine')?.addEventListener('input', e => { ADM.buscaVitrine = e.target.value; renderVitrine(); });
 
   // ---- formulário de perfume: pré-visualização ao vivo
   ['#prodNome', '#prodMarca', '#prodCategoria', '#prodPreco', '#prodPromo',

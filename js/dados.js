@@ -93,6 +93,9 @@ const DB = (() => {
       quantidade:        p.quantidade === '' || p.quantidade == null ? null : Number(p.quantidade),
       ativo:             p.ativo !== false,            // false = oculto da loja
       ordem:             Number.isFinite(p.ordem) ? p.ordem : indice,
+      /* Posição na vitrine da página inicial. Sem ela, a ordem dependeria de
+         quem foi editado por último — opaco para quem administra. */
+      ordemVitrine:      Number.isFinite(p.ordemVitrine) ? p.ordemVitrine : 999,
       criadoEm:          p.criadoEm || new Date().toISOString(),
       atualizadoEm:      p.atualizadoEm || new Date().toISOString()
     };
@@ -507,6 +510,59 @@ const DB = (() => {
     return salvarProduto({ ...p, ativo: !p.ativo });
   }
 
+  /* -------------------------------------------------------------- VITRINE */
+
+  /** Produtos marcados para a vitrine, já na ordem em que serão exibidos. */
+  function naVitrine() {
+    return estado.produtos
+      .filter(p => p.destaque)
+      .sort((a, b) => (a.ordemVitrine - b.ordemVitrine) || a.nome.localeCompare(b.nome, 'pt-BR'))
+      .map(p => ({ ...p }));
+  }
+
+  /** Quantos aparecem de fato para o cliente (ativos, com estoque, dentro do limite). */
+  const LIMITE_VITRINE = 8;
+
+  /** Sobrou espaço na vitrine? */
+  const vitrineCheia = () => naVitrine().length >= LIMITE_VITRINE;
+
+  /** Põe ou tira um produto da vitrine. Entra sempre no fim.
+      Recusa quando a vitrine está cheia: o limite vale para qualquer caminho
+      que tente marcar um destaque, não só para a tela da Vitrine. */
+  async function alternarVitrine(id) {
+    const p = produtoPorId(id);
+    if (!p) return null;
+
+    if (!p.destaque && vitrineCheia()) {
+      throw new Error(`A vitrine já tem ${LIMITE_VITRINE} perfumes. Tire um antes de colocar outro.`);
+    }
+
+    const ultima = naVitrine().reduce((m, x) => Math.max(m, x.ordemVitrine), -1);
+    return salvarProduto({
+      ...p,
+      destaque: !p.destaque,
+      ordemVitrine: p.destaque ? 999 : ultima + 1
+    });
+  }
+
+  /** Move um produto uma posição para cima ou para baixo na vitrine. */
+  async function moverNaVitrine(id, direcao) {
+    const lista = naVitrine();
+    const i = lista.findIndex(p => p.id === id);
+    const j = i + (direcao === 'cima' ? -1 : 1);
+    if (i < 0 || j < 0 || j >= lista.length) return false;
+
+    // Reescreve a ordem inteira: barato e evita empates herdados de dados antigos.
+    const [movido] = lista.splice(i, 1);
+    lista.splice(j, 0, movido);
+    for (let k = 0; k < lista.length; k++) {
+      if (lista[k].ordemVitrine !== k) {
+        await salvarProduto({ ...produtoPorId(lista[k].id), ordemVitrine: k });
+      }
+    }
+    return true;
+  }
+
   /** Existe outro produto com este nome na mesma categoria? Evita duplicidade. */
   function nomeDuplicado(nome, categoria, idAtual = null) {
     const alvo = gerarSlug(nome);
@@ -589,6 +645,7 @@ const DB = (() => {
     // escrita
     salvarCategoria, excluirCategoria,
     salvarProduto, excluirProduto, duplicarProduto, alternarAtivo,
+    naVitrine, alternarVitrine, moverNaVitrine, vitrineCheia, LIMITE_VITRINE,
 
     // apoio
     precoFinal, precoRiscado, emPromocao, gerarSlug, gerarId,

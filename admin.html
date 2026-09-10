@@ -164,6 +164,7 @@
       <button type="button" class="item-menu ativo" data-tela="dashboard"><span class="ic">📊</span> Dashboard</button>
       <button type="button" class="item-menu" data-tela="produtos"><span class="ic">🧴</span> Perfumes <span class="conta" id="contaProdutos">0</span></button>
       <button type="button" class="item-menu" data-tela="estilos"><span class="ic">🏷️</span> Estilos <span class="conta" id="contaEstilos">0</span></button>
+      <button type="button" class="item-menu" data-tela="vitrine"><span class="ic">⭐</span> Vitrine <span class="conta" id="contaVitrine">0</span></button>
 
       <span class="grupo-rotulo">Cadastrar</span>
       <button type="button" class="item-menu" data-acao="novo-produto"><span class="ic">➕</span> Adicionar perfume</button>
@@ -286,6 +287,41 @@
           </button>
         </div>
         <div id="listaEstilos"></div>
+      </section>
+
+      <!-- =================================================== VITRINE -->
+      <section class="tela" data-tela="vitrine">
+        <div class="alerta-box info">
+          <span class="ic">⭐</span>
+          <div>A vitrine é a faixa <b>"Destaques da semana"</b> da página inicial.
+            Cabem <b>8 perfumes</b>, no máximo. Com a vitrine cheia, tire um antes de
+            colocar outro.</div>
+        </div>
+
+        <div class="bloco">
+          <div class="bloco-cab">
+            <h2>Na vitrine <span id="resumoVitrine" class="resumo-vitrine"></span></h2>
+            <p>Use as setas para mudar a ordem — é a mesma em que aparecem na página inicial.</p>
+          </div>
+          <div id="listaVitrine"></div>
+        </div>
+
+        <div class="bloco">
+          <div class="bloco-cab">
+            <h2>Adicionar à vitrine</h2>
+            <p>Perfumes publicados que ainda não estão na vitrine.</p>
+          </div>
+          <div class="alerta-box aviso" id="avisoVitrineCheia" hidden>
+            <span class="ic">🔒</span>
+            <div><b>Vitrine cheia.</b> Para colocar outro perfume, tire um dos que estão
+              na lista acima usando o botão <b>Tirar</b>.</div>
+          </div>
+          <div class="busca-admin" style="margin-bottom:16px">
+            <svg viewBox="0 0 24 24"><use href="#ic-busca"></use></svg>
+            <input type="search" id="buscaVitrine" placeholder="Buscar perfume pelo nome..." autocomplete="off">
+          </div>
+          <div id="listaForaVitrine"></div>
+        </div>
       </section>
 
       <!-- ==================================================== PREÇOS -->
@@ -513,8 +549,15 @@
                 </div>
                 <label class="marca-caixa">
                   <input type="checkbox" id="prodDestaque">
-                  <span>Mostrar na vitrine <b>Destaques</b> da página inicial</span>
+                  <span>Mostrar na vitrine <b>Destaques</b> da página inicial
+                    <small style="display:block;color:var(--texto-fraco);font-size:.78rem;margin-top:2px">
+                      A ordem e quem aparece são controlados na tela <b>Vitrine</b>.</small></span>
                 </label>
+                <div class="alerta-box aviso" id="avisoDestaqueCheio" hidden style="margin-top:10px">
+                  <span class="ic">🔒</span>
+                  <div>A vitrine já está com <b>8 perfumes</b>, o máximo. Para colocar este,
+                    tire outro na tela <b>Vitrine</b> primeiro.</div>
+                </div>
               </fieldset>
             </div>
 
