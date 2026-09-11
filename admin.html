@@ -477,9 +477,14 @@
                         <svg width="15" height="15" viewBox="0 0 24 24"><use href="#ic-foto"></use></svg>
                         <span id="rotuloBtnFoto">Escolher foto</span>
                       </button>
+                      <button type="button" class="btn btn-contorno btn-sm" id="btnAjustarFoto" hidden>
+                        <svg width="15" height="15" viewBox="0 0 24 24"><use href="#ic-lapis"></use></svg>
+                        Enquadrar
+                      </button>
                       <button type="button" class="btn btn-neutro btn-sm" id="btnRemoverFoto" hidden>Remover</button>
                       <input type="file" id="arquivoPrincipal" accept="image/*" hidden>
-                      <p class="dica">Do seu computador ou celular. A imagem é ajustada automaticamente.</p>
+                      <p class="dica">Do seu computador ou celular. Ao escolher, abre o editor para você
+                        posicionar o frasco exatamente como quer que apareça no card.</p>
                     </div>
                   </div>
                   <details class="por-url">
@@ -658,6 +663,83 @@
   </div>
 </div>
 
+<!-- ================================================ MODAL: EDITOR DE FOTO -->
+<div class="modal fade" id="modalEditorFoto" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="cab-modal">
+        <div>
+          <h2 id="tituloEditorFoto">Ajustar a foto</h2>
+          <p>Arraste a imagem e use o zoom até o perfume ficar do jeito que você quer.</p>
+        </div>
+        <button type="button" class="icone-btn" data-bs-dismiss="modal" aria-label="Fechar">
+          <svg viewBox="0 0 24 24"><use href="#ic-fechar"></use></svg>
+        </button>
+      </div>
+
+      <div class="modal-body corpo-editor">
+        <div class="editor-grade">
+          <div class="editor-palco-area">
+            <div class="editor-palco" id="editorPalco" tabindex="0"
+                 role="application" aria-label="Área de ajuste da foto: arraste para mover, use as setas do teclado ou o zoom">
+              <img id="editorFoto" alt="" draggable="false">
+              <div class="editor-quadro" id="editorQuadro" aria-hidden="true"></div>
+              <div class="editor-estado" id="editorCarregando" hidden>Carregando a foto...</div>
+              <div class="editor-estado erro" id="editorFalha" hidden>
+                Não foi possível abrir esta imagem.<br>Feche e tente outra foto.
+              </div>
+            </div>
+          </div>
+
+          <div class="editor-lado">
+            <span class="previa-rotulo">Como vai ficar</span>
+            <div class="editor-previa" id="editorPrevia">
+              <img id="editorPreviaImg" alt="Pré-visualização do enquadramento">
+            </div>
+            <p class="editor-nota">Este é o quadro exato do card na loja.</p>
+            <div class="alerta-box aviso editor-alerta" id="editorAviso" hidden>
+              <span class="ic">⚠️</span>
+              <div>Zoom alto demais para o tamanho desta foto. Na loja ela pode sair borrada.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-controles">
+          <div class="editor-zoom">
+            <button type="button" class="editor-zoom-btn" id="editorMenos" aria-label="Diminuir o zoom">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M5 12h14"/></svg>
+            </button>
+            <input type="range" id="editorRange" min="100" max="400" step="1" value="100" aria-label="Nível de zoom">
+            <button type="button" class="editor-zoom-btn" id="editorMais" aria-label="Aumentar o zoom">
+              <svg viewBox="0 0 24 24"><use href="#ic-mais"></use></svg>
+            </button>
+            <span class="editor-valor" id="editorValor">100%</span>
+          </div>
+          <div class="editor-atalhos">
+            <button type="button" class="btn btn-contorno btn-sm" id="editorCentralizar">Centralizar</button>
+            <button type="button" class="btn btn-neutro btn-sm" id="editorRedefinir">Redefinir</button>
+          </div>
+        </div>
+
+        <p class="editor-dica">
+          <b>Computador:</b> clique e arraste, role o mouse para aproximar.
+          <b>Celular:</b> arraste com o dedo, use dois dedos para aproximar.
+        </p>
+      </div>
+
+      <div class="pe-modal">
+        <button type="button" class="btn btn-neutro" data-bs-dismiss="modal">Cancelar</button>
+        <div class="pe-direita">
+          <button type="button" class="btn btn-ouro btn-lg" id="editorConfirmar">
+            <svg width="16" height="16" viewBox="0 0 24 24"><use href="#ic-check"></use></svg>
+            Confirmar imagem
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ============================================== MODAL: CONFIRMAÇÃO -->
 <div class="modal fade" id="modalConfirma" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -682,6 +764,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="js/produtos.js"></script>
 <script src="js/dados.js"></script>
+<script src="js/editorfoto.js"></script>
 <script src="js/admin.js"></script>
 </body>
 </html>

@@ -885,6 +885,8 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
   border-top:1px solid var(--borda);background:var(--superficie);
 }
 .mini-foto{
+  /* relative: a foto enquadrada é posicionada em absoluto dentro dela */
+  position:relative;
   width:56px;height:56px;flex-shrink:0;padding:0;overflow:hidden;
   border:2px solid var(--borda);border-radius:var(--raio-sm);
   transition:border-color var(--t),transform var(--t);

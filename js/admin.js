@@ -19,7 +19,8 @@ const ADM = {
   filtroStatus: 'todos',
   buscaVitrine: '',
   fotoPrincipal: '',
-  fotosExtras: [],
+  enqPrincipal: null,          // enquadramento escolhido no editor
+  fotosExtras: [],             // [{ src, enquadramento }]
   capaEstilo: '',
   modais: {},
   aoConfirmar: null
@@ -102,6 +103,17 @@ function confirmar({ titulo, texto, icone = '⚠️', rotulo = 'Confirmar', peri
 function placeholderThumb() {
   return `<svg viewBox="0 0 120 70" aria-hidden="true"><use href="#monograma"></use></svg>`;
 }
+
+/** <img> de uma foto já com o enquadramento que o administrador escolheu.
+    Sem enquadramento devolve a tag simples e o object-fit:cover do CSS vale. */
+function fotoEnquadrada(src, enq, alt = '') {
+  const estilo = DB.estiloEnquadramento(enq);
+  return `<img src="${esc(src)}" alt="${esc(alt)}"${estilo ? ` style="${estilo}"` : ''}>`;
+}
+
+/** Miniatura quadrada do perfume nas listas do painel. */
+const miniProduto = p => `<div class="mini-thumb">${
+  p.imagem ? fotoEnquadrada(p.imagem, p.enquadramento) : placeholderThumb()}</div>`;
 
 /* ===========================================================================
    TEMA
@@ -462,7 +474,7 @@ function renderProdutos() {
       return `<tr class="${p.ativo ? '' : 'oculta'}">
         <td>
           <div class="cel-produto">
-            <div class="mini-thumb">${p.imagem ? `<img src="${esc(p.imagem)}" alt="">` : placeholderThumb()}</div>
+            ${miniProduto(p)}
             <div class="txt">
               <div class="nm">${esc(p.nome || 'Sem nome')}</div>
               ${p.marca || p.volume ? `<div class="mc">${esc([p.marca, p.volume].filter(Boolean).join(' · '))}</div>` : ''}
@@ -575,7 +587,7 @@ function renderVitrine() {
 
       return `<div class="item-vitrine ${some ? 'fila' : ''}" data-vit="${esc(p.id)}">
         <span class="posicao-vitrine">${some ? '—' : posicaoVisivel}</span>
-        <div class="mini-thumb">${p.imagem ? `<img src="${esc(p.imagem)}" alt="">` : placeholderThumb()}</div>
+        ${miniProduto(p)}
         <div class="dados">
           <div class="nm">${esc(p.nome)}</div>
           <div class="meta">${esc(DB.categoriaPorSlug(p.categoria)?.nome || '—')} · ${brl(DB.precoFinal(p))}</div>
@@ -608,7 +620,7 @@ function renderVitrine() {
         termo ? 'Nenhum perfume encontrado com esse nome.'
               : 'Todos os perfumes publicados já estão na vitrine.'}</p>`
     : fora.map(p => `<div class="item-vitrine${cheia ? ' fila' : ''}">
-        <div class="mini-thumb">${p.imagem ? `<img src="${esc(p.imagem)}" alt="">` : placeholderThumb()}</div>
+        ${miniProduto(p)}
         <div class="dados">
           <div class="nm">${esc(p.nome)}</div>
           <div class="meta">${esc(DB.categoriaPorSlug(p.categoria)?.nome || '—')} · ${brl(DB.precoFinal(p))}
@@ -631,7 +643,7 @@ function renderPrecos() {
     <thead><tr><th>Perfume</th><th>Preço normal</th><th>Preço promocional</th><th>Cliente paga</th></tr></thead>
     <tbody>${lista.map(p => `
       <tr data-id="${esc(p.id)}">
-        <td><div class="cel-produto"><div class="mini-thumb">${p.imagem ? `<img src="${esc(p.imagem)}" alt="">` : placeholderThumb()}</div>
+        <td><div class="cel-produto">${miniProduto(p)}
           <div class="txt"><div class="nm">${esc(p.nome)}</div><div class="mc">${esc(DB.categoriaPorSlug(p.categoria)?.nome || '—')}</div></div></div></td>
         <td data-rot="Preço normal"><input type="text" class="entrada-linha" data-campo="preco" inputmode="decimal"
                value="${p.preco ? String(p.preco.toFixed(2)).replace('.', ',') : ''}" placeholder="0,00"></td>
@@ -658,7 +670,7 @@ function renderDescricoes() {
     <thead><tr><th style="width:230px">Perfume</th><th>Descrição que o cliente lê</th></tr></thead>
     <tbody>${lista.map(p => `
       <tr data-id="${esc(p.id)}">
-        <td><div class="cel-produto"><div class="mini-thumb">${p.imagem ? `<img src="${esc(p.imagem)}" alt="">` : placeholderThumb()}</div>
+        <td><div class="cel-produto">${miniProduto(p)}
           <div class="txt"><div class="nm">${esc(p.nome)}</div></div></div></td>
         <td data-rot="Descrição"><textarea class="entrada-linha" data-campo="descricao" rows="3"
               placeholder="Conte como é o perfume...">${esc(p.descricao)}</textarea></td>
@@ -680,15 +692,20 @@ function renderImagens() {
 
   alvo.innerHTML = `<div class="grade-fotos">${lista.map(p => `
     <div class="cartao-foto">
-      <div class="quadro">${p.imagem ? `<img src="${esc(p.imagem)}" alt="${esc(p.nome)}">` : placeholderThumb()}</div>
+      <div class="quadro">${p.imagem ? fotoEnquadrada(p.imagem, p.enquadramento, p.nome) : placeholderThumb()}</div>
       <div class="baixo">
         <span class="nm">${esc(p.nome)}</span>
         <span class="peso">${p.imagem
           ? (p.imagem.startsWith('data:') ? `${DB.pesoImagemKB(p.imagem)} KB` : 'endereço da internet')
           : 'sem foto'}</span>
-        <button type="button" class="btn btn-contorno btn-sm" data-trocar-foto="${esc(p.id)}">
-          ${p.imagem ? 'Alterar foto' : 'Adicionar foto'}
-        </button>
+        <div class="acoes-cartao-foto">
+          <button type="button" class="btn btn-contorno btn-sm" data-trocar-foto="${esc(p.id)}">
+            ${p.imagem ? 'Trocar foto' : 'Adicionar foto'}
+          </button>
+          ${p.imagem ? `<button type="button" class="btn btn-neutro btn-sm" data-ajustar-foto="${esc(p.id)}">
+            <svg width="14" height="14" viewBox="0 0 24 24"><use href="#ic-lapis"></use></svg> Enquadrar
+          </button>` : ''}
+        </div>
       </div>
     </div>`).join('')}</div>
   <input type="file" id="arquivoTroca" accept="image/*" hidden>`;
@@ -791,7 +808,8 @@ function abrirFormProduto(id = null, categoriaSugerida = '') {
   $('#erroFoto').textContent = '';
 
   ADM.fotoPrincipal = p?.imagem || '';
-  ADM.fotosExtras = [...(p?.imagensExtras || [])];
+  ADM.enqPrincipal = p?.enquadramento || null;
+  ADM.fotosExtras = (p?.imagensExtras || []).map(f => ({ ...f }));
   renderPreviaFoto();
   renderExtras();
   atualizarPrevia();
@@ -800,23 +818,24 @@ function abrirFormProduto(id = null, categoriaSugerida = '') {
 
 function renderPreviaFoto() {
   const box = $('#previaPrincipal');
-  if (ADM.fotoPrincipal) {
-    box.classList.add('tem');
-    box.innerHTML = `<img src="${esc(ADM.fotoPrincipal)}" alt="Pré-visualização da foto">`;
-    $('#rotuloBtnFoto').textContent = 'Alterar foto';
-    $('#btnRemoverFoto').hidden = false;
-  } else {
-    box.classList.remove('tem');
-    box.innerHTML = 'Nenhuma foto escolhida';
-    $('#rotuloBtnFoto').textContent = 'Escolher foto';
-    $('#btnRemoverFoto').hidden = true;
-  }
+  const tem = !!ADM.fotoPrincipal;
+  box.classList.toggle('tem', tem);
+  box.innerHTML = tem
+    ? fotoEnquadrada(ADM.fotoPrincipal, ADM.enqPrincipal, 'Pré-visualização da foto')
+    : 'Nenhuma foto escolhida';
+  $('#rotuloBtnFoto').textContent = tem ? 'Trocar foto' : 'Escolher foto';
+  $('#btnRemoverFoto').hidden = !tem;
+  $('#btnAjustarFoto').hidden = !tem;
 }
 
 function renderExtras() {
-  $('#tiraExtras').innerHTML = ADM.fotosExtras.map((src, i) => `
+  $('#tiraExtras').innerHTML = ADM.fotosExtras.map((f, i) => `
     <div class="extra-item">
-      <img src="${esc(src)}" alt="Foto adicional ${i + 1}">
+      ${fotoEnquadrada(f.src, f.enquadramento, `Foto adicional ${i + 1}`)}
+      <button type="button" class="ajustar-extra" data-ajustar-extra="${i}"
+              title="Ajustar o enquadramento" aria-label="Ajustar o enquadramento da foto adicional ${i + 1}">
+        <svg viewBox="0 0 24 24"><use href="#ic-lapis"></use></svg>
+      </button>
       <button type="button" data-remover-extra="${i}" aria-label="Remover foto adicional ${i + 1}">&times;</button>
     </div>`).join('');
 }
@@ -835,7 +854,8 @@ function lerFormProduto() {
     notas: $('#prodNotas').value.trim(),
     descricao: $('#prodDescricao').value.trim(),
     imagem: ADM.fotoPrincipal,
-    imagensExtras: [...ADM.fotosExtras],
+    enquadramento: ADM.enqPrincipal,
+    imagensExtras: ADM.fotosExtras.map(f => ({ ...f })),
     quantidade: $('#prodQuantidade').value.trim() === '' ? null : Number($('#prodQuantidade').value),
     estoque: $('#prodEstoque').value === 'sim',
     ativo: $('#prodAtivo').value === 'sim',
@@ -856,7 +876,7 @@ function atualizarPrevia() {
         ${promo ? '<span class="selo oferta">Oferta</span>' : ''}
         ${!d.estoque ? '<span class="selo esgotado">Esgotado</span>' : ''}
         ${d.imagem
-          ? `<img src="${esc(d.imagem)}" alt="">`
+          ? fotoEnquadrada(d.imagem, d.enquadramento)
           : `<span class="placeholder-marca"><svg viewBox="0 0 120 70"><use href="#monograma"></use></svg><span>SF Parfums</span></span>`}
       </div>
       <div class="info">
@@ -997,23 +1017,54 @@ async function salvarEstilo() {
 }
 
 /* ===========================================================================
-   IMAGENS: escolher arquivo e comprimir
+   IMAGENS: escolher arquivo, enquadrar e só então usar
+   ===========================================================================
+   Nenhuma foto entra no produto sem passar pelo editor. É ele que faz fotos
+   em pé, deitadas e quadradas caírem todas no mesmo quadro do card, sem
+   deformar nenhuma e sem o site escolher o recorte no lugar do administrador.
 =========================================================================== */
-async function escolherImagem(input, aoPronto) {
+
+/** Abre o editor de enquadramento.
+    @returns {Promise<{src,enquadramento}|null>} null quando cancelam. */
+function enquadrar(src, enquadramento = null, opcoes = {}) {
+  if (typeof EditorFoto === 'undefined' || !EditorFoto.disponivel) {
+    // Sem o editor na página o cadastro continua funcionando como antes.
+    return Promise.resolve({ src, enquadramento });
+  }
+  return EditorFoto.abrir({ src, enquadramento, ...opcoes });
+}
+
+/** Grava foto + enquadramento em um perfume já cadastrado. */
+async function gravarFoto(id, foto) {
+  const p = DB.produtoPorId(id);
+  if (!p) return;
+  try {
+    await DB.salvarProduto({ ...p, imagem: foto.src, enquadramento: foto.enquadramento });
+    toast('Foto atualizada — já está na loja!', 'sucesso', '🖼️');
+    renderTudo();
+  } catch (err) { toast(mensagemDeFalha(err, 'trocar a foto'), 'erro', '⚠️'); }
+}
+
+/** Comprime o arquivo escolhido e devolve a foto já enquadrada. */
+async function prepararArquivo(arquivo, opcoes = {}) {
+  const dataUrl = await DB.comprimirImagem(arquivo);
+  const kb = DB.pesoImagemKB(dataUrl);
+  if (kb > 800) {
+    toast(`A imagem ficou grande (${kb} KB). Prefira fotos mais leves.`, 'erro', '⚠️');
+  }
+  return enquadrar(dataUrl, null, opcoes);
+}
+
+async function escolherImagem(input, aoPronto, opcoes = {}) {
   const arquivo = input.files?.[0];
+  input.value = '';                    // libera antes do editor, que demora
   if (!arquivo) return;
   try {
     toast('Preparando a imagem...', '', '⏳');
-    const dataUrl = await DB.comprimirImagem(arquivo);
-    const kb = DB.pesoImagemKB(dataUrl);
-    if (kb > 800) {
-      toast(`A imagem ficou grande (${kb} KB). Prefira fotos mais leves.`, 'erro', '⚠️');
-    }
-    aoPronto(dataUrl);
+    const pronta = await prepararArquivo(arquivo, opcoes);
+    if (pronta) aoPronto(pronta);       // null = cancelou no editor
   } catch (e) {
     toast(e.message || 'Não foi possível usar esta imagem.', 'erro', '⚠️');
-  } finally {
-    input.value = '';
   }
 }
 
@@ -1201,16 +1252,19 @@ function ligarEventos() {
     if (troca) {
       const id = troca.dataset.trocarFoto;
       const input = $('#arquivoTroca');
-      input.onchange = () => escolherImagem(input, async dataUrl => {
-        const p = DB.produtoPorId(id);
-        if (!p) return;
-        try {
-          await DB.salvarProduto({ ...p, imagem: dataUrl });
-          toast('Foto atualizada — já está na loja!', 'sucesso', '🖼️');
-          renderTudo();
-        } catch (err) { toast(mensagemDeFalha(err, 'trocar a foto'), 'erro', '⚠️'); }
-      });
+      input.onchange = () => escolherImagem(input, foto => gravarFoto(id, foto),
+        { titulo: 'Enquadrar a foto nova' });
       input.click();
+      return;
+    }
+
+    // ---- reenquadrar a foto que o perfume já tem, sem enviar outra
+    const ajuste = ev.target.closest('[data-ajustar-foto]');
+    if (ajuste) {
+      const p = DB.produtoPorId(ajuste.dataset.ajustarFoto);
+      if (!p?.imagem) return;
+      enquadrar(p.imagem, p.enquadramento, { titulo: `Enquadrar ${p.nome}` })
+        .then(foto => { if (foto) gravarFoto(p.id, foto); });
       return;
     }
   });
@@ -1243,35 +1297,66 @@ function ligarEventos() {
   $('#formProduto').addEventListener('submit', e => { e.preventDefault(); salvarProduto(true); });
 
   // ---- fotos do perfume
-  $('#btnEscolherFoto').addEventListener('click', () => $('#arquivoPrincipal').click());
-  $('#arquivoPrincipal').addEventListener('change', e => escolherImagem(e.target, url => {
-    ADM.fotoPrincipal = url; $('#erroFoto').textContent = '';
+  const aplicarFotoPrincipal = foto => {
+    ADM.fotoPrincipal = foto.src;
+    ADM.enqPrincipal = foto.enquadramento;
+    $('#erroFoto').textContent = '';
     renderPreviaFoto(); atualizarPrevia();
-    toast('Foto carregada. Confira a pré-visualização.', 'sucesso', '🖼️');
-  }));
-  $('#btnRemoverFoto').addEventListener('click', () => {
-    ADM.fotoPrincipal = ''; renderPreviaFoto(); atualizarPrevia();
+  };
+
+  $('#btnEscolherFoto').addEventListener('click', () => $('#arquivoPrincipal').click());
+  $('#arquivoPrincipal').addEventListener('change', e => escolherImagem(e.target, foto => {
+    aplicarFotoPrincipal(foto);
+    toast('Foto enquadrada. Confira a pré-visualização ao lado.', 'sucesso', '🖼️');
+  }, { titulo: 'Enquadrar a foto do perfume' }));
+
+  // Reabre o editor com o último ajuste: nada de reenviar a mesma foto.
+  $('#btnAjustarFoto').addEventListener('click', async () => {
+    if (!ADM.fotoPrincipal) return;
+    const foto = await enquadrar(ADM.fotoPrincipal, ADM.enqPrincipal,
+      { titulo: 'Ajustar o enquadramento' });
+    if (foto) { aplicarFotoPrincipal(foto); toast('Enquadramento atualizado.', 'sucesso', '✂️'); }
   });
-  $('#btnUsarUrl').addEventListener('click', () => {
+
+  $('#btnRemoverFoto').addEventListener('click', () => {
+    ADM.fotoPrincipal = ''; ADM.enqPrincipal = null;
+    renderPreviaFoto(); atualizarPrevia();
+  });
+  $('#btnUsarUrl').addEventListener('click', async () => {
     const url = $('#prodImagemUrl').value.trim();
     if (!/^https?:\/\/.+/i.test(url)) { toast('Informe um endereço que comece com http.', 'erro', '⚠️'); return; }
-    ADM.fotoPrincipal = url; $('#erroFoto').textContent = '';
-    renderPreviaFoto(); atualizarPrevia();
+    const foto = await enquadrar(url, null, { titulo: 'Enquadrar a foto do endereço' });
+    if (!foto) return;
+    aplicarFotoPrincipal(foto);
     toast('Endereço aplicado à foto principal.', 'sucesso', '🔗');
   });
 
   $('#btnAddExtra').addEventListener('click', () => $('#arquivoExtra').click());
   $('#arquivoExtra').addEventListener('change', async e => {
-    const arquivos = Array.from(e.target.files || []);
-    for (const arq of arquivos.slice(0, 5)) {
-      try { ADM.fotosExtras.push(await DB.comprimirImagem(arq)); }
-      catch (err) { toast(err.message, 'erro', '⚠️'); }
-    }
+    const arquivos = Array.from(e.target.files || []).slice(0, 5);
     e.target.value = '';
+    // Uma de cada vez: cada foto abre o editor e espera o enquadramento.
+    for (let i = 0; i < arquivos.length; i++) {
+      try {
+        const foto = await prepararArquivo(arquivos[i], {
+          titulo: `Enquadrar a foto adicional ${i + 1} de ${arquivos.length}`
+        });
+        if (foto) { ADM.fotosExtras.push(foto); renderExtras(); }
+      } catch (err) { toast(err.message, 'erro', '⚠️'); }
+    }
     renderExtras();
-    toast('Fotos adicionais atualizadas.', 'sucesso', '🖼️');
   });
-  $('#tiraExtras').addEventListener('click', ev => {
+  $('#tiraExtras').addEventListener('click', async ev => {
+    const ajustar = ev.target.closest('[data-ajustar-extra]');
+    if (ajustar) {
+      const i = Number(ajustar.dataset.ajustarExtra);
+      const atual = ADM.fotosExtras[i];
+      if (!atual) return;
+      const foto = await enquadrar(atual.src, atual.enquadramento,
+        { titulo: `Ajustar a foto adicional ${i + 1}` });
+      if (foto) { ADM.fotosExtras[i] = foto; renderExtras(); }
+      return;
+    }
     const btn = ev.target.closest('[data-remover-extra]');
     if (!btn) return;
     ADM.fotosExtras.splice(Number(btn.dataset.removerExtra), 1);

@@ -60,6 +60,68 @@ const DB = (() => {
   const emPromocao = p => precoRiscado(p) !== null;
 
   /* ===================================================================
+     ENQUADRAMENTO DAS FOTOS
+     ===================================================================
+     O administrador escolhe no editor como a foto aparece dentro do quadro
+     do card. O recorte NÃO é aplicado ao arquivo: guardamos só as medidas e
+     a imagem original fica intacta, para poder ser reajustada depois sem
+     precisar enviar tudo de novo.
+
+     Tudo em fração da imagem original, de 0 a 1:
+       x, y              centro do recorte
+       largura, altura   tamanho do recorte
+       zoom              aproximação escolhida (1 = a foto inteira preenchendo)
+       proporcao         largura ÷ altura do quadro para o qual foi ajustada
+  =================================================================== */
+  const PROPORCAO_CARD = 1;        // os cards da loja são quadrados
+  const ZOOM_MAXIMO = 4;
+
+  function normalizarEnquadramento(bruto) {
+    if (!bruto || typeof bruto !== 'object') return null;
+    const num = (v, padrao) => (Number.isFinite(Number(v)) ? Number(v) : padrao);
+    const entre = (v, min, max) => Math.min(max, Math.max(min, v));
+    return {
+      x:         entre(num(bruto.x, 0.5), 0, 1),
+      y:         entre(num(bruto.y, 0.5), 0, 1),
+      largura:   entre(num(bruto.largura, 1), 0.02, 1),
+      altura:    entre(num(bruto.altura, 1), 0.02, 1),
+      zoom:      entre(num(bruto.zoom, 1), 1, ZOOM_MAXIMO),
+      proporcao: Math.max(0.1, num(bruto.proporcao, PROPORCAO_CARD))
+    };
+  }
+
+  /* Foto do produto. Aceita o formato antigo (só o endereço, em texto) e o
+     novo (endereço + enquadramento), para o catálogo já publicado continuar
+     valendo sem nenhuma conversão. */
+  function normalizarFoto(bruto) {
+    if (typeof bruto === 'string') {
+      return bruto ? { src: bruto, enquadramento: null } : null;
+    }
+    const src = String(bruto?.src || '');
+    return src ? { src, enquadramento: normalizarEnquadramento(bruto.enquadramento) } : null;
+  }
+
+  const normalizarFotos = lista =>
+    (Array.isArray(lista) ? lista : []).map(normalizarFoto).filter(Boolean);
+
+  /** Estilo em linha que reproduz o enquadramento salvo.
+      Vale para qualquer quadro `position:relative; overflow:hidden` que tenha
+      a MESMA proporção usada no editor — por construção largura e altura
+      devolvem a proporção real da foto, então ela nunca sai deformada.
+      Sem enquadramento devolve '' e o CSS de sempre (object-fit:cover) vale. */
+  function estiloEnquadramento(enq) {
+    const e = normalizarEnquadramento(enq);
+    if (!e) return '';
+    const n = v => Math.round(v * 1000) / 1000;
+    return 'position:absolute;max-width:none;object-fit:fill;'
+         + `width:${n(100 / e.largura)}%;height:${n(100 / e.altura)}%;`
+         + `left:${n(-(e.x - e.largura / 2) / e.largura * 100)}%;`
+         + `top:${n(-(e.y - e.altura / 2) / e.altura * 100)}%;`
+         // para a aproximação do card no hover girar em torno do que está à vista
+         + `transform-origin:${n(e.x * 100)}% ${n(e.y * 100)}%;`;
+  }
+
+  /* ===================================================================
      NORMALIZAÇÃO E MIGRAÇÃO
      Aceita registros antigos (que usavam precoAntigo) e completa os
      campos que passaram a existir, para nada quebrar ao atualizar.
@@ -87,7 +149,8 @@ const DB = (() => {
       notas:             String(p.notas || '').trim(),
       descricao:         String(p.descricao || '').trim(),
       imagem:            String(p.imagem || ''),
-      imagensExtras:     Array.isArray(p.imagensExtras) ? p.imagensExtras.filter(Boolean) : [],
+      enquadramento:     normalizarEnquadramento(p.enquadramento),
+      imagensExtras:     normalizarFotos(p.imagensExtras),
       destaque:          p.destaque === true,
       estoque:           p.estoque !== false,          // false = esgotado
       quantidade:        p.quantidade === '' || p.quantidade == null ? null : Number(p.quantidade),
@@ -650,6 +713,7 @@ const DB = (() => {
     // apoio
     precoFinal, precoRiscado, emPromocao, gerarSlug, gerarId,
     comprimirImagem, pesoImagemKB, nomeDuplicado,
+    estiloEnquadramento, normalizarEnquadramento, PROPORCAO_CARD, ZOOM_MAXIMO,
 
     // backup
     exportar, importar, restaurarPadrao,

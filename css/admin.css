@@ -212,6 +212,7 @@ table.adm tr.oculta td{opacity:.55}
 
 .cel-produto{display:flex;align-items:center;gap:12px;min-width:0}
 .mini-thumb{
+  position:relative;
   width:48px;height:48px;flex-shrink:0;border-radius:var(--raio-sm);overflow:hidden;
   background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));
   display:grid;place-items:center;color:var(--ouro);
@@ -304,7 +305,7 @@ textarea.entrada-linha{width:100%;min-width:250px;resize:vertical;font-family:in
   overflow:hidden;display:flex;flex-direction:column;
 }
 .cartao-foto .quadro{
-  aspect-ratio:1/1;background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));
+  position:relative;aspect-ratio:1/1;background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));
   display:grid;place-items:center;color:var(--ouro);overflow:hidden;
 }
 .cartao-foto .quadro img{width:100%;height:100%;object-fit:cover}
@@ -349,13 +350,25 @@ fieldset legend{
 
 .area-foto{display:flex;gap:15px;align-items:flex-start;flex-wrap:wrap}
 .previa-foto{
+  position:relative;
   width:126px;height:126px;flex-shrink:0;border-radius:var(--raio);overflow:hidden;
   border:2px dashed var(--borda-forte);background:var(--superficie-2);
   display:grid;place-items:center;color:var(--texto-fraco);font-size:.74rem;text-align:center;padding:8px;
 }
 .previa-foto.tem{border-style:solid;border-color:var(--ouro-borda);padding:0}
 .previa-foto img{width:100%;height:100%;object-fit:cover}
-.acoes-foto{flex:1;min-width:170px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.acoes-foto{flex:1;min-width:170px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}
+.acoes-foto .dica{flex:1 1 100%}
+
+/* Lapisinho no canto da foto adicional: reabre o editor naquela foto. */
+.extra-item .ajustar-extra{
+  left:3px;right:auto;background:rgba(0,0,0,.66);color:#fff;
+}
+.extra-item .ajustar-extra svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2}
+.extra-item .ajustar-extra:hover{background:var(--ouro);color:#12100a}
+
+.acoes-cartao-foto{display:flex;gap:7px;flex-wrap:wrap}
+.acoes-cartao-foto .btn{flex:1;min-width:96px}
 .por-url{margin-top:12px;font-size:.85rem}
 .por-url summary{cursor:pointer;color:var(--texto-suave);padding:6px 0}
 .por-url summary:hover{color:var(--ouro)}
@@ -372,7 +385,7 @@ fieldset legend{
 }
 .extra-item img{width:100%;height:100%;object-fit:cover}
 .extra-item button{
-  position:absolute;top:3px;right:3px;width:21px;height:21px;border-radius:50%;
+  position:absolute;top:3px;right:3px;z-index:2;width:21px;height:21px;border-radius:50%;
   background:rgba(0,0,0,.66);color:#fff;font-size:.8rem;line-height:1;display:grid;place-items:center;
 }
 .extra-item button:hover{background:var(--erro)}
@@ -544,3 +557,156 @@ fieldset legend{
   .setas-vitrine{order:1;margin-left:auto}
   .item-vitrine .btn{order:3;width:100%}
 }
+
+/* ------------------------------------------------- 13. EDITOR DE FOTO */
+/* Enquadramento no estilo "foto de perfil": a foto inteira aparece no palco
+   e o quadro claro no meio mostra o pedaço que vai para o card da loja. */
+.corpo-editor{padding:20px 24px 22px;display:flex;flex-direction:column;gap:16px}
+
+.editor-grade{display:grid;grid-template-columns:1fr 210px;gap:20px;align-items:start}
+
+.editor-palco{
+  position:relative;overflow:hidden;
+  height:min(52vh,392px);
+  border-radius:var(--raio);border:1px solid var(--borda);
+  background:
+    radial-gradient(120% 90% at 50% 0%,#2a2a2e,#111113 72%);
+  touch-action:none;cursor:grab;user-select:none;
+}
+.editor-palco:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+.editor-palco.arrastando{cursor:grabbing}
+#editorFoto{position:absolute;left:0;top:0;max-width:none;display:block;-webkit-user-drag:none}
+
+/* O escurecido de fora sai de uma sombra gigante: assim o "buraco" acompanha
+   o quadro sem precisar de uma segunda camada por cima da foto. */
+.editor-quadro{
+  position:absolute;pointer-events:none;
+  box-shadow:0 0 0 9999px rgba(6,6,8,.66);
+  outline:2px solid rgba(255,255,255,.92);
+  border-radius:2px;
+}
+.editor-quadro::before,
+.editor-quadro::after{
+  content:"";position:absolute;inset:0;opacity:.42;
+  background-repeat:no-repeat;
+}
+.editor-quadro::before{
+  background-image:linear-gradient(rgba(255,255,255,.75) 1px,transparent 1px),
+                   linear-gradient(rgba(255,255,255,.75) 1px,transparent 1px);
+  background-size:100% 1px,100% 1px;
+  background-position:0 33.33%,0 66.66%;
+}
+.editor-quadro::after{
+  background-image:linear-gradient(90deg,rgba(255,255,255,.75) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.75) 1px,transparent 1px);
+  background-size:1px 100%,1px 100%;
+  background-position:33.33% 0,66.66% 0;
+}
+
+.editor-estado{
+  position:absolute;inset:0;display:grid;place-items:center;text-align:center;
+  padding:20px;background:rgba(10,10,12,.82);color:#f2f2f4;
+  font-size:.88rem;line-height:1.6;z-index:3;
+}
+.editor-estado.erro{color:#ffc9c9}
+
+.editor-dica{
+  font-size:.78rem;color:var(--texto-fraco);line-height:1.65;
+}
+.editor-dica b{color:var(--texto-suave);font-weight:600}
+
+.editor-lado{display:flex;flex-direction:column;gap:9px}
+.editor-previa{
+  position:relative;overflow:hidden;width:100%;aspect-ratio:1/1;
+  border-radius:var(--raio);border:1px solid var(--ouro-borda);
+  background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));
+}
+#editorPreviaImg{width:100%;height:100%;object-fit:cover;display:block}
+.editor-nota{font-size:.76rem;color:var(--texto-fraco);line-height:1.55}
+.editor-alerta{margin-top:2px;font-size:.8rem}
+
+.editor-controles{
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  padding:14px 16px;border-radius:var(--raio);
+  background:var(--superficie-2);border:1px solid var(--borda);
+}
+.editor-zoom{display:flex;align-items:center;gap:11px;flex:1;min-width:230px}
+.editor-zoom-btn{
+  width:38px;height:38px;flex-shrink:0;border-radius:50%;
+  display:grid;place-items:center;
+  border:1.5px solid var(--borda);color:var(--texto-suave);
+  background:var(--superficie);transition:all var(--t);
+}
+.editor-zoom-btn svg{width:17px;height:17px}
+.editor-zoom-btn:hover{border-color:var(--ouro);color:var(--ouro);background:var(--ouro-suave)}
+.editor-valor{
+  min-width:52px;text-align:right;font-size:.82rem;font-weight:600;
+  color:var(--texto-suave);font-variant-numeric:tabular-nums;
+}
+
+#editorRange{
+  flex:1;min-width:90px;height:26px;padding:0;border:0;background:transparent;
+  -webkit-appearance:none;appearance:none;cursor:pointer;
+}
+#editorRange::-webkit-slider-runnable-track{
+  height:6px;border-radius:999px;background:var(--borda);
+}
+#editorRange::-moz-range-track{height:6px;border-radius:999px;background:var(--borda)}
+#editorRange::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;margin-top:-7px;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--ouro-grad);border:2px solid var(--superficie);
+  box-shadow:0 1px 5px rgba(0,0,0,.28);
+}
+#editorRange::-moz-range-thumb{
+  width:20px;height:20px;border-radius:50%;border:2px solid var(--superficie);
+  background:#c9a227;box-shadow:0 1px 5px rgba(0,0,0,.28);
+}
+#editorRange:focus-visible{outline:2px solid var(--ouro);outline-offset:3px;border-radius:999px}
+
+.editor-atalhos{display:flex;gap:9px;flex-wrap:wrap}
+
+/* No celular tudo vira uma coluna só e a ORDEM muda: logo abaixo do palco
+   vêm os controles de zoom. Antes a prévia ficava no meio e empurrava o zoom
+   para fora da tela, obrigando a rolar para achar o controle mais usado.
+   `display:contents` desmonta a grade sem precisar de outro HTML. */
+@media (max-width:767.98px){
+  .corpo-editor{padding:14px 14px 16px;gap:12px}
+  .editor-grade{display:contents}
+  .editor-palco-area{order:1}
+  .editor-controles{order:2}
+  .editor-lado{order:3}
+  .editor-dica{order:4}
+  #modalEditorFoto .cab-modal{padding:15px 16px}
+  #modalEditorFoto .cab-modal h2{font-size:1.12rem}
+  #modalEditorFoto .cab-modal p{font-size:.8rem}
+  .editor-palco{height:min(40vh,300px)}
+  .editor-lado{
+    flex-direction:row;align-items:center;gap:12px;
+    padding:11px;border-radius:var(--raio);
+    background:var(--superficie-2);border:1px solid var(--borda);flex-wrap:wrap;
+  }
+  .editor-previa{width:86px;flex-shrink:0;order:1}
+  .editor-lado .previa-rotulo{order:2}
+  .editor-nota{order:3;flex:1;min-width:120px}
+  .editor-alerta{order:4;flex:1 1 100%}
+  .editor-controles{gap:12px;padding:12px}
+  .editor-zoom{min-width:100%}
+  .editor-atalhos{width:100%}
+  .editor-atalhos .btn{flex:1;font-size:.84rem}
+}
+
+/* Alvos de toque folgados em QUALQUER aparelho sem mouse — um tablet de 768px
+   de largura escapa da faixa de celular acima, mas o dedo é o mesmo. */
+@media (hover:none),(max-width:767.98px){
+  .editor-atalhos .btn{min-height:44px}
+  .editor-zoom-btn{width:44px;height:44px}
+  #editorConfirmar{min-height:48px}
+  #editorRange{height:34px}
+  #editorRange::-webkit-slider-thumb{width:26px;height:26px;margin-top:-10px}
+  #editorRange::-moz-range-thumb{width:26px;height:26px}
+}
+
+/* O editor abre por cima do cadastro: ele e o fundo escuro dele sobem juntos. */
+#modalEditorFoto{z-index:1085}
+.modal-backdrop.fundo-editor{z-index:1080}

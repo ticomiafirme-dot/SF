@@ -58,12 +58,15 @@ function fotoDetalhe(src, alt) {
           <img src="${esc(src)}" alt="${esc(alt)}">`;
 }
 
-/** Imagem do produto ou placeholder com o monograma da marca. */
+/** Imagem do produto ou placeholder com o monograma da marca.
+    Quando o administrador ajustou o enquadramento no painel, o estilo em linha
+    reproduz exatamente aquele recorte — sem ele vale o object-fit:cover do CSS. */
 function midiaProduto(produto, classe = '') {
   if (produto.imagem) {
+    const enq = DB.estiloEnquadramento(produto.enquadramento);
     // Se a URL da foto falhar, o card cai no monograma da marca sem quebrar o layout.
     return `<img src="${esc(produto.imagem)}" alt="${esc(produto.nome)}" class="${classe}" loading="lazy"
-             onerror="SF.trocarPorPlaceholder(this)">`;
+             ${enq ? `style="${enq}"` : ''} onerror="SF.trocarPorPlaceholder(this)">`;
   }
   return placeholderMarca();
 }
@@ -346,16 +349,17 @@ function abrirProduto(id) {
   const valor = DB.precoFinal(p);
   const semEstoque = p.estoque === false;
   const desconto = riscado ? Math.round((1 - valor / riscado) * 100) : 0;
-  const galeria = [p.imagem, ...(p.imagensExtras || [])].filter(Boolean);
+  const galeria = [{ src: p.imagem, enquadramento: p.enquadramento },
+                   ...(p.imagensExtras || [])].filter(f => f && f.src);
 
   $('#modalProdutoCorpo').innerHTML = `
     <div class="detalhe">
       <div class="detalhe-lado">
         <div class="detalhe-img" id="detalheFoto" role="button" tabindex="0"
              aria-label="Ampliar foto de ${esc(p.nome)}">${fotoDetalhe(p.imagem, p.nome)}</div>
-        ${galeria.length > 1 ? `<div class="miniaturas">${galeria.map((src, i) =>
-          `<button type="button" class="mini-foto${i === 0 ? ' ativa' : ''}" data-foto="${esc(src)}" aria-label="Foto ${i + 1}">
-             <img src="${esc(src)}" alt="" loading="lazy">
+        ${galeria.length > 1 ? `<div class="miniaturas">${galeria.map((f, i) =>
+          `<button type="button" class="mini-foto${i === 0 ? ' ativa' : ''}" data-foto="${esc(f.src)}" aria-label="Foto ${i + 1}">
+             <img src="${esc(f.src)}" alt="" loading="lazy" style="${DB.estiloEnquadramento(f.enquadramento)}">
            </button>`).join('')}</div>` : ''}
       </div>
       <div class="detalhe-info">

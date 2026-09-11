@@ -34,7 +34,7 @@ O que dá para fazer por lá:
 | Estilos | Criar categorias novas (Importados Plus, Nacionais, Nicho...) |
 | Adicionar perfume | Cadastro completo, com pré-visualização antes de publicar |
 | Gerenciar preços | Alterar vários preços de uma vez |
-| Gerenciar imagens | Trocar as fotos, uma a uma |
+| Gerenciar imagens | Trocar as fotos e reenquadrar as que já existem |
 | Gerenciar descrições | Escrever os textos que o cliente lê |
 | Configurações | Senha, cópia de segurança, armazenamento |
 
@@ -57,11 +57,55 @@ este projeto foi construído. Nenhum produto, preço ou imagem foi inventado.
 
 ### Fotos
 
-As imagens são escolhidas direto do computador ou do celular, com prévia antes
-de salvar. Cada foto é redimensionada para no máximo 900px e comprimida em JPEG
-no próprio navegador — sem isso, uma foto de celular de 5MB estouraria tanto o
-limite do navegador quanto o de 1MB por documento do Firestore. Também é possível
-usar o endereço de uma imagem da internet.
+As imagens são escolhidas direto do computador ou do celular. Cada foto é
+redimensionada para no máximo 900px e comprimida em JPEG no próprio navegador —
+sem isso, uma foto de celular de 5MB estouraria tanto o limite do navegador
+quanto o de 1MB por documento do Firestore. Também é possível usar o endereço de
+uma imagem da internet.
+
+#### Editor de enquadramento
+
+Nenhuma foto entra no produto sem passar pelo editor. Assim que o arquivo é
+escolhido, abre uma janela onde a foto aparece dentro do quadro do card e o
+administrador **arrasta e aproxima até ela ficar do jeito que quer** — do mesmo
+jeito que se escolhe uma foto de perfil.
+
+O editor tem zoom no botão `+`/`−`, no controle deslizante, na roda do mouse e
+na pinça de dois dedos; arrasto com o mouse, com o dedo e com as setas do
+teclado; e os botões **Centralizar** e **Redefinir**. Ao lado fica uma prévia no
+mesmo quadro quadrado do card — ela usa o mesmo renderizador da loja, então o
+que aparece ali é literalmente o que o cliente vai ver.
+
+Isso existe porque fotos chegam em todo formato — em pé, deitadas, quadradas,
+16:9 — e antes o site escolhia o recorte sozinho, cortando justamente o frasco.
+A proporção da foto **nunca** é distorcida para caber: o que muda é qual pedaço
+dela fica à vista.
+
+**O arquivo não é recortado.** O que fica guardado no produto é só a medida do
+enquadramento:
+
+```js
+enquadramento: {
+  x: 0.42, y: 0.31,        // centro do recorte, em fração da imagem
+  largura: 0.48,           // tamanho do recorte, em fração da imagem
+  altura: 0.32,
+  zoom: 2.1,               // aproximação escolhida
+  proporcao: 1             // quadro para o qual foi ajustado (o card é 1:1)
+}
+```
+
+A loja monta a cena a partir desses números (`DB.estiloEnquadramento`), o que
+traz duas vantagens: a imagem original continua inteira e o botão **Enquadrar**
+reabre o editor no último ajuste, sem precisar enviar a foto de novo.
+
+As fotos adicionais passam pelo mesmo editor, cada uma com o seu enquadramento.
+Produtos antigos, salvos antes do editor existir, ficam com `enquadramento: null`
+e continuam aparecendo como sempre (`object-fit: cover`).
+
+O enquadramento vale para os quadros quadrados — o card do catálogo, as
+miniaturas da galeria e as listas do painel. Na tela de detalhes a foto grande
+continua sendo mostrada **inteira** (`contain`), porque ali o cliente quer ver o
+frasco completo, e é justamente por guardar o original que isso é possível.
 
 ---
 
