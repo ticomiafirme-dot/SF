@@ -50,6 +50,14 @@ function produtoPorId(id) {
 const listaCategorias = () => DB.categorias();
 const listaProdutos   = () => DB.produtos();
 
+/** Foto grande do detalhe: a imagem inteira, com uma cópia desfocada ao fundo
+    preenchendo as sobras quando a proporção da foto não bate com a do quadro. */
+function fotoDetalhe(src, alt) {
+  if (!src) return placeholderMarca();
+  return `<img class="fundo-borrado" src="${esc(src)}" alt="" aria-hidden="true">
+          <img src="${esc(src)}" alt="${esc(alt)}">`;
+}
+
 /** Imagem do produto ou placeholder com o monograma da marca. */
 function midiaProduto(produto, classe = '') {
   if (produto.imagem) {
@@ -343,7 +351,8 @@ function abrirProduto(id) {
   $('#modalProdutoCorpo').innerHTML = `
     <div class="detalhe">
       <div class="detalhe-lado">
-        <div class="detalhe-img" id="detalheFoto">${midiaProduto(p)}</div>
+        <div class="detalhe-img" id="detalheFoto" role="button" tabindex="0"
+             aria-label="Ampliar foto de ${esc(p.nome)}">${fotoDetalhe(p.imagem, p.nome)}</div>
         ${galeria.length > 1 ? `<div class="miniaturas">${galeria.map((src, i) =>
           `<button type="button" class="mini-foto${i === 0 ? ' ativa' : ''}" data-foto="${esc(src)}" aria-label="Foto ${i + 1}">
              <img src="${esc(src)}" alt="" loading="lazy">
@@ -410,12 +419,6 @@ function abrirProduto(id) {
     campo.addEventListener('input', atualizar);
     atualizar();
 
-    $$('.mini-foto').forEach(btn => btn.addEventListener('click', () => {
-      $$('.mini-foto').forEach(b => b.classList.remove('ativa'));
-      btn.classList.add('ativa');
-      $('#detalheFoto').innerHTML = `<img src="${btn.dataset.foto}" alt="">`;
-    }));
-
     $('#modalAdicionar').addEventListener('click', () => {
       Carrinho.adicionar(p.id, SF.produtoAberto.qtd);
       SF.modais.produto.hide();
@@ -427,7 +430,45 @@ function abrirProduto(id) {
     });
   }
 
+  // Galeria e ampliação valem para qualquer produto, inclusive esgotado —
+  // antes ficavam presas ao bloco de quem tinha estoque e não respondiam.
+  let fotoAtual = p.imagem;
+
+  $$('.mini-foto').forEach(btn => btn.addEventListener('click', () => {
+    $$('.mini-foto').forEach(b => b.classList.remove('ativa'));
+    btn.classList.add('ativa');
+    fotoAtual = btn.dataset.foto;
+    $('#detalheFoto').innerHTML = fotoDetalhe(fotoAtual, p.nome);
+  }));
+
+  const ampliar = () => { if (fotoAtual) abrirLupa(fotoAtual, p.nome); };
+  $('#detalheFoto').addEventListener('click', ampliar);
+  $('#detalheFoto').addEventListener('keydown', ev => {
+    if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ampliar(); }
+  });
+
   SF.modais.produto.show();
+}
+
+/* ------------------------------------------------------------------- LUPA */
+/* Foto em tela cheia: no celular o quadro do modal é pequeno demais para
+   avaliar um frasco, que é o que decide a compra. */
+function abrirLupa(src, alt) {
+  const lupa = $('#lupaFoto');
+  if (!lupa) return;
+  $('#lupaImagem').src = src;
+  $('#lupaImagem').alt = alt || '';
+  lupa.hidden = false;
+  document.body.classList.add('trava-scroll');
+  $('#lupaFechar').focus();
+}
+
+function fecharLupa() {
+  const lupa = $('#lupaFoto');
+  if (!lupa || lupa.hidden) return;
+  lupa.hidden = true;
+  $('#lupaImagem').src = '';
+  document.body.classList.remove('trava-scroll');
 }
 
 /* ------------------------------------------------- CONTEÚDO DINÂMICO GERAL */
@@ -509,6 +550,15 @@ function ligarEventos() {
       bootstrap.Offcanvas.getInstance($('#menuDrawer'))?.hide();
       return;
     }
+  });
+
+  // Lupa: fecha no X, clicando fora da foto ou com Esc
+  $('#lupaFechar')?.addEventListener('click', fecharLupa);
+  $('#lupaFoto')?.addEventListener('click', ev => {
+    if (ev.target.id !== 'lupaImagem') fecharLupa();
+  });
+  document.addEventListener('keydown', ev => {
+    if (ev.key === 'Escape') fecharLupa();
   });
 
   // Enter/Espaço abre o produto pela moldura (acessibilidade de teclado)

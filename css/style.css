@@ -555,11 +555,34 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
 .detalhe{display:grid;grid-template-columns:1fr 1fr}
 @media (max-width:767.98px){.detalhe{grid-template-columns:1fr}}
 .detalhe-img{
-  aspect-ratio:1/1;background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));
-  display:grid;place-items:center;overflow:hidden;
+  position:relative;aspect-ratio:1/1;
+  background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));
+  display:grid;place-items:center;overflow:hidden;cursor:zoom-in;
 }
-.detalhe-img img{width:100%;height:100%;object-fit:cover}
-@media (max-width:767.98px){.detalhe-img{aspect-ratio:16/10}}
+/* "contain", não "cover": aqui o cliente quer ver o frasco inteiro. Cortar a
+   foto faz sentido na grade de produtos, onde os cards precisam ter a mesma
+   altura, mas na tela de detalhes escondia justamente o que ele quer olhar. */
+.detalhe-img img{
+  width:100%;height:100%;object-fit:contain;
+  padding:14px;position:relative;z-index:1;
+}
+/* A mesma foto desfocada ao fundo preenche as sobras laterais, em vez de
+   deixar duas faixas vazias quando a proporção não bate. */
+.detalhe-img .fundo-borrado{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;filter:blur(26px) saturate(1.2);
+  transform:scale(1.15);opacity:.32;padding:0;z-index:0;
+}
+[data-tema="escuro"] .detalhe-img .fundo-borrado{opacity:.24}
+
+/* No celular a foto ganha o quadrado inteiro: a proporção 16/10 anterior era
+   deitada e cortava a maior parte de fotos de frasco, que são em pé. */
+@media (max-width:767.98px){
+  /* 4/5 em vez de quadrado: foto de frasco é em pé, e no quadrado ela ficava
+     pequena com muito espaço vazio dos lados. Assim ela cresce cerca de 30%. */
+  .detalhe-img{aspect-ratio:4/5}
+  .detalhe-img img{padding:8px}
+}
 .detalhe-info{padding:clamp(22px,4vw,38px);display:flex;flex-direction:column;gap:14px}
 .detalhe-info .cat{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ouro);font-weight:700}
 .detalhe-info h2{font-size:clamp(1.45rem,3.4vw,2rem);line-height:1.14}
@@ -888,3 +911,55 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
 }
 .link-admin:hover{border-color:var(--ouro-borda);color:var(--ouro);background:var(--ouro-suave)}
 @media (max-width:520px){.link-admin{display:block;margin:12px auto 0;width:max-content}}
+
+/* =============================================================================
+   24. LUPA — foto do produto em tela cheia
+   No celular o quadro do modal é pequeno para avaliar um frasco, que é
+   justamente o que decide a compra.
+============================================================================= */
+.lupa{
+  position:fixed;inset:0;z-index:1090;
+  display:grid;place-items:center;padding:20px;
+  /* Praticamente opaco: com fundo translúcido dava para ler o conteúdo do
+     modal por trás, competindo com a foto que o cliente quer avaliar. */
+  background:#08080a;
+  animation:lupaEntra .2s ease both;
+}
+.lupa[hidden]{display:none!important}
+@keyframes lupaEntra{from{opacity:0}to{opacity:1}}
+
+.lupa img{
+  max-width:100%;max-height:88vh;
+  object-fit:contain;border-radius:var(--raio);
+  animation:lupaZoom .24s cubic-bezier(.2,.8,.3,1.05) both;
+}
+@keyframes lupaZoom{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+
+.lupa-fechar{
+  position:absolute;top:16px;right:16px;z-index:2;
+  width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,.12);color:#fff;
+  backdrop-filter:blur(6px);transition:background var(--t),transform var(--t);
+}
+.lupa-fechar:hover{background:rgba(255,255,255,.22);transform:rotate(90deg)}
+.lupa-fechar svg{width:20px;height:20px}
+
+.lupa-dica{
+  position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+  font-size:.78rem;letter-spacing:.06em;color:rgba(255,255,255,.62);
+  text-align:center;padding-inline:20px;
+}
+
+/* No celular a margem da lupa encolhe: cada pixel conta numa tela estreita. */
+@media (max-width:575.98px){
+  .lupa{padding:8px}
+  .lupa img{max-height:82vh;border-radius:var(--raio-sm)}
+  .lupa-fechar{top:10px;right:10px;width:42px;height:42px}
+  .lupa-dica{bottom:14px;font-size:.74rem}
+}
+
+/* Miniaturas maiores no celular: alvo de toque confortável. */
+@media (max-width:767.98px){
+  .miniaturas{padding:11px 12px;gap:10px}
+  .mini-foto{width:62px;height:62px}
+}
