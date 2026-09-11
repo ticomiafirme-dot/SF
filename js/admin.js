@@ -107,8 +107,7 @@ function placeholderThumb() {
 /** <img> de uma foto já com o enquadramento que o administrador escolheu.
     Sem enquadramento devolve a tag simples e o object-fit:cover do CSS vale. */
 function fotoEnquadrada(src, enq, alt = '') {
-  const estilo = DB.estiloEnquadramento(enq);
-  return `<img src="${esc(src)}" alt="${esc(alt)}"${estilo ? ` style="${estilo}"` : ''}>`;
+  return `<img src="${esc(src)}" alt="${esc(alt)}"${DB.atribEnquadramento(enq)}>`;
 }
 
 /** Miniatura quadrada do perfume nas listas do painel. */
@@ -932,21 +931,65 @@ function validarProduto(d) {
   return ok;
 }
 
+/** Fecha um modal do painel mesmo se ele ainda estiver abrindo.
+    O Bootstrap ignora hide() durante a animação de entrada: quem salva logo
+    depois de abrir o formulário via a gravação dar certo e o modal ficar preso
+    na tela, como se nada tivesse acontecido. */
+function fecharModal(nome, seletor) {
+  const modal = ADM.modais[nome];
+  const el = $(seletor);
+  if (!modal || !el) return;
+  modal.hide();
+  if (el.classList.contains('show')) {
+    el.addEventListener('shown.bs.modal', () => modal.hide(), { once: true });
+  }
+}
+
+/* Gravar no servidor demora — numa internet de celular, segundos. Sem trava,
+   um segundo toque em "Publicar" entrava de novo com o id ainda vazio e criava
+   um SEGUNDO perfume igual. Por isso os botões travam durante a gravação e o
+   id que o servidor devolveu volta para o formulário: se algo salvar outra
+   vez, atualiza aquele mesmo registro em vez de duplicar. */
+let salvandoProduto = false;
+
 async function salvarProduto(publicar) {
+  if (salvandoProduto) return;
   const d = lerFormProduto();
   if (!publicar) d.ativo = false;
   if (!validarProduto(d)) return;
 
   const novo = !d.id;
+  salvandoProduto = true;
+  travarBotoesProduto(true);
   try {
-    await DB.salvarProduto(d);
+    const salvo = await DB.salvarProduto(d);
+    if (salvo?.id) $('#prodId').value = salvo.id;
     toast(novo ? 'Perfume cadastrado com sucesso!' : 'Alterações salvas com sucesso!', 'sucesso', '✅');
-    ADM.modais.produto.hide();
+    fecharModal('produto', '#modalProduto');
     renderTudo();
   } catch (e) {
     console.error(e);
     toast(mensagemDeFalha(e, 'salvar o perfume'), 'erro', '⚠️');
+  } finally {
+    salvandoProduto = false;
+    travarBotoesProduto(false);
   }
+}
+
+/** Botões de gravação do formulário de perfume, travados durante o envio. */
+function travarBotoesProduto(travar) {
+  ['#btnPublicarProduto', '#btnSalvarRascunho'].forEach(sel => {
+    const b = $(sel);
+    if (!b) return;
+    b.disabled = travar;
+    if (travar) {
+      b.dataset.rotulo = b.textContent;
+      b.textContent = 'Salvando...';
+    } else if (b.dataset.rotulo) {
+      b.textContent = b.dataset.rotulo;
+      delete b.dataset.rotulo;
+    }
+  });
 }
 
 /* ===========================================================================
@@ -980,7 +1023,10 @@ function renderPreviaCapa() {
   }
 }
 
+let salvandoEstilo = false;
+
 async function salvarEstilo() {
+  if (salvandoEstilo) return;
   limparErros($('#formEstilo'));
   const nome = $('#estiloNome').value.trim();
   const slugAtual = $('#estiloSlug').value;
@@ -997,6 +1043,9 @@ async function salvarEstilo() {
     return;
   }
 
+  salvandoEstilo = true;
+  const botao = $('#btnSalvarEstilo');
+  if (botao) botao.disabled = true;
   try {
     await DB.salvarCategoria({
       slug,
@@ -1007,12 +1056,17 @@ async function salvarEstilo() {
       imagem: ADM.capaEstilo,
       ativo: $('#estiloAtivo').value === 'sim'
     });
+    // o slug fixa o registro: um segundo envio atualiza, não cria outro
+    $('#estiloSlug').value = slug;
     toast(slugAtual ? 'Estilo atualizado com sucesso!' : `Estilo "${nome}" criado e já está na loja!`, 'sucesso', '✅');
-    ADM.modais.estilo.hide();
+    fecharModal('estilo', '#modalEstilo');
     renderTudo();
   } catch (e) {
     console.error(e);
     toast(mensagemDeFalha(e, 'salvar o estilo'), 'erro', '⚠️');
+  } finally {
+    salvandoEstilo = false;
+    if (botao) botao.disabled = false;
   }
 }
 

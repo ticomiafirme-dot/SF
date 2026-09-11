@@ -63,10 +63,9 @@ function fotoDetalhe(src, alt) {
     reproduz exatamente aquele recorte — sem ele vale o object-fit:cover do CSS. */
 function midiaProduto(produto, classe = '') {
   if (produto.imagem) {
-    const enq = DB.estiloEnquadramento(produto.enquadramento);
     // Se a URL da foto falhar, o card cai no monograma da marca sem quebrar o layout.
-    return `<img src="${esc(produto.imagem)}" alt="${esc(produto.nome)}" class="${classe}" loading="lazy"
-             ${enq ? `style="${enq}"` : ''} onerror="SF.trocarPorPlaceholder(this)">`;
+    return `<img src="${esc(produto.imagem)}" alt="${esc(produto.nome)}" loading="lazy"
+             ${DB.atribEnquadramento(produto.enquadramento, classe)} onerror="SF.trocarPorPlaceholder(this)">`;
   }
   return placeholderMarca();
 }
@@ -359,7 +358,7 @@ function abrirProduto(id) {
              aria-label="Ampliar foto de ${esc(p.nome)}">${fotoDetalhe(p.imagem, p.nome)}</div>
         ${galeria.length > 1 ? `<div class="miniaturas">${galeria.map((f, i) =>
           `<button type="button" class="mini-foto${i === 0 ? ' ativa' : ''}" data-foto="${esc(f.src)}" aria-label="Foto ${i + 1}">
-             <img src="${esc(f.src)}" alt="" loading="lazy" style="${DB.estiloEnquadramento(f.enquadramento)}">
+             <img src="${esc(f.src)}" alt="" loading="lazy"${DB.atribEnquadramento(f.enquadramento)}>
            </button>`).join('')}</div>` : ''}
       </div>
       <div class="detalhe-info">

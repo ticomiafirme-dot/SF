@@ -385,13 +385,23 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
 @keyframes surge{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .card-prod:hover{transform:translateY(-5px);box-shadow:var(--sombra-alta);border-color:var(--ouro-borda)}
 
+/* Foto com o enquadramento escolhido no painel. Serve em qualquer quadro que
+   tenha tamanho definido — não precisa ser contexto de posicionamento, então
+   nenhum lugar novo corre o risco de deixar a foto escapar. */
+.foto-enq{width:100%;height:100%;object-fit:cover;transform:var(--enq,none)}
+
 .card-prod .moldura{
   position:relative;aspect-ratio:1/1;overflow:hidden;
   background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));
-  cursor:pointer;display:grid;place-items:center;
+  cursor:pointer;display:grid;place-items:center;grid-template:100%/100%;
 }
-.card-prod .moldura img{width:100%;height:100%;object-fit:cover;transition:transform 520ms cubic-bezier(.4,0,.2,1)}
-.card-prod:hover .moldura img{transform:scale(1.07)}
+/* --enq vazio vira scale(1) para o hover poder somar a aproximação dele. */
+.card-prod .moldura img{
+  --enq:scale(1);
+  width:100%;height:100%;object-fit:cover;transform:var(--enq);
+  transition:transform 520ms cubic-bezier(.4,0,.2,1);
+}
+.card-prod:hover .moldura img{transform:var(--enq) scale(1.07)}
 .placeholder-marca{display:grid;place-items:center;gap:6px;width:100%;height:100%;color:var(--ouro);opacity:.42}
 .placeholder-marca svg{width:46%;max-width:104px;height:auto}
 .placeholder-marca span{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--texto-fraco)}
@@ -629,7 +639,8 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
 .item-carrinho:last-child{border-bottom:none;padding-bottom:0}
 .item-carrinho .mini{
   width:74px;height:74px;border-radius:var(--raio-sm);overflow:hidden;flex-shrink:0;
-  background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));display:grid;place-items:center;
+  background:linear-gradient(160deg,var(--bg-alt),var(--superficie-2));
+  display:grid;place-items:center;grid-template:100%/100%;
 }
 .item-carrinho .mini img{width:100%;height:100%;object-fit:cover}
 .item-carrinho .mini .placeholder-marca svg{width:56%}
@@ -885,8 +896,6 @@ select.ordenar:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 0 3px 
   border-top:1px solid var(--borda);background:var(--superficie);
 }
 .mini-foto{
-  /* relative: a foto enquadrada é posicionada em absoluto dentro dela */
-  position:relative;
   width:56px;height:56px;flex-shrink:0;padding:0;overflow:hidden;
   border:2px solid var(--borda);border-radius:var(--raio-sm);
   transition:border-color var(--t),transform var(--t);

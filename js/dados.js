@@ -104,21 +104,43 @@ const DB = (() => {
   const normalizarFotos = lista =>
     (Array.isArray(lista) ? lista : []).map(normalizarFoto).filter(Boolean);
 
-  /** Estilo em linha que reproduz o enquadramento salvo.
-      Vale para qualquer quadro `position:relative; overflow:hidden` que tenha
-      a MESMA proporção usada no editor — por construção largura e altura
-      devolvem a proporção real da foto, então ela nunca sai deformada.
-      Sem enquadramento devolve '' e o CSS de sempre (object-fit:cover) vale. */
+  /** Estilo em linha que reproduz o enquadramento salvo, para usar junto com a
+      classe `foto-enq` (ver css/style.css).
+
+      Tudo acontece no `transform` sobre um `object-fit: cover`. Posicionar a
+      foto em absoluto seria mais direto, mas exigiria que TODO quadro em volta
+      fosse `position:relative` — e bastou um esquecido, a miniatura do
+      carrinho, para a foto escapar e cobrir a tela inteira. Com `transform` o
+      pior caso é a foto transbordar de um quadro sem `overflow:hidden`; o
+      layout nunca estoura.
+
+      O `cover` também garante de graça o que não pode faltar: a foto nunca
+      sai deformada, aconteça o que acontecer com o CSS em volta.
+
+      Sem enquadramento devolve '' e vale o comportamento de sempre. */
   function estiloEnquadramento(enq) {
     const e = normalizarEnquadramento(enq);
     if (!e) return '';
     const n = v => Math.round(v * 1000) / 1000;
-    return 'position:absolute;max-width:none;object-fit:fill;'
-         + `width:${n(100 / e.largura)}%;height:${n(100 / e.altura)}%;`
-         + `left:${n(-(e.x - e.largura / 2) / e.largura * 100)}%;`
-         + `top:${n(-(e.y - e.altura / 2) / e.altura * 100)}%;`
-         // para a aproximação do card no hover girar em torno do que está à vista
-         + `transform-origin:${n(e.x * 100)}% ${n(e.y * 100)}%;`;
+    /* Do recorte salvo saem os três números do transform. A escala de partida
+       é a do `cover`, então largura e altura já vêm em fração dela.
+
+       Em `translate(T) scale(Z)` o CSS aplica a escala PRIMEIRO e só depois
+       desloca, sem multiplicar o deslocamento — por isso o `zoom` entra na
+       conta do desvio. Sem ele o recorte só acerta quando o zoom é 1. */
+    const zoom = 1 / Math.max(e.largura, e.altura);
+    const sobraX = Math.max(1, e.altura / e.largura);   // quanto o cover extravasa
+    const sobraY = Math.max(1, e.largura / e.altura);
+    const desvioX = zoom * (0.5 - e.x) * sobraX * 100;
+    const desvioY = zoom * (0.5 - e.y) * sobraY * 100;
+    return `--enq:translate(${n(desvioX)}%,${n(desvioY)}%) scale(${n(zoom)})`;
+  }
+
+  /** Atributos prontos (class + style) da foto enquadrada. */
+  function atribEnquadramento(enq, classes = '') {
+    const estilo = estiloEnquadramento(enq);
+    const lista = [classes, estilo ? 'foto-enq' : ''].filter(Boolean).join(' ');
+    return (lista ? ` class="${lista}"` : '') + (estilo ? ` style="${estilo}"` : '');
   }
 
   /* ===================================================================
@@ -713,7 +735,8 @@ const DB = (() => {
     // apoio
     precoFinal, precoRiscado, emPromocao, gerarSlug, gerarId,
     comprimirImagem, pesoImagemKB, nomeDuplicado,
-    estiloEnquadramento, normalizarEnquadramento, PROPORCAO_CARD, ZOOM_MAXIMO,
+    estiloEnquadramento, atribEnquadramento, normalizarEnquadramento,
+    PROPORCAO_CARD, ZOOM_MAXIMO,
 
     // backup
     exportar, importar, restaurarPadrao,
